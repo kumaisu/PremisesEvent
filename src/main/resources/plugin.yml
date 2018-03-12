@@ -1,0 +1,16 @@
+name: PremisesEvent
+version: 0.0.1
+main: com.mycompany.premisesevent.PremisesEvent
+description: Premises Event Control plugin
+author: Kumaisu
+database: true
+commands:
+    premises:
+        description: Premises Event Control Command
+        aliases: pec
+        permission: PremisesEvent
+        permission-message: You do not have permission.
+        usage: |
+            /<command> get PlayerName
+            /<command> join PlayerName
+            /<command> status [PlayerName]
