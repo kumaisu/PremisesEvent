@@ -1,11 +1,11 @@
 Field: true
-AreaPos1: 100,100
-AreaPos2: 200,200
+AreaPos1: 100,1,100
+AreaPos2: 200,128,200
 # Count Stones
 Count:
     - STONE:0,10
     - STONE:1,10
     - STONE:3,10
-    - STONEBRICK,-20
+    - STONEBRICK,-10
 Present:
     - diamond-pickaxe,イベント参加賞,34-5,35-5
