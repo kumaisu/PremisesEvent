@@ -4,9 +4,25 @@ AreaPos1: 100,1,100
 AreaPos2: 200,128,200
 # Count Stones
 Count:
-    - STONE:0,10
-    - STONE:1,10
-    - STONE:3,10
-    - STONEBRICK,-10
+    - STONE:0
+    - STONE:1
+    - STONE:3
+    - STONE:5
+    - GRAVEL
+    - NETHERRACK
+    - QUARTZ_ORE
+    - SOUL_SAND
+    - DIRT
+    - GRASS
+    - DIAMOND_ORE
+    - EMERALD_ORE
+    - IRON_ORE
+    - GOLD_ORE
+    - REDSTONE_ORE
+    - COAL_ORE
+    - LAPIS_ORE
+Ignore:
+    - STONEBRICK
+    - NETHER_BRICK
 Present:
     - diamond-pickaxe,イベント参加賞,34-5,35-5

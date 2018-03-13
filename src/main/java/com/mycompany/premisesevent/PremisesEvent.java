@@ -5,6 +5,7 @@
  */
 package com.mycompany.premisesevent;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
@@ -49,21 +50,38 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onBlockBreak( BlockBreakEvent event ) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
-        player.sendMessage( ChatColor.GREEN + "Break to " + block.getType().name() );
-        player.sendMessage( ChatColor.GREEN + block.getState().getData().toString() );
-        player.sendMessage( ChatColor.GREEN + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) );
+        Material material = block.getType();
+        player.sendMessage( ChatColor.GREEN + "Break to " + block.getState().getData().toString() + ChatColor.YELLOW + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) );
+        if ( block.getType().equals(Material.STONE) ) {
+            switch ( block.getData() ) {
+                case 1:
+                    player.sendMessage( ChatColor.AQUA + "Hey! Hey! get Granite");
+                    break;
+                case 3:
+                    player.sendMessage( ChatColor.AQUA + "Hey! Hey! get Diorite");
+                    break;
+                case 5:
+                    player.sendMessage( ChatColor.AQUA + "Hey! Hey! get Andesite");
+                    break;
+                default:
+                    player.sendMessage( ChatColor.AQUA + "Hey! Hey! get Other Stone");
+            }
+        }
     }
     
     @Override
     public boolean onCommand(CommandSender sender,Command cmd, String commandLabel, String[] args) {
-        Player p = ( Player )sender;
+        if ( !( sender instanceof Player ) ) {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "コマンドはコンソールから操作できません" );
+            return false;
+        }
+        Player p = ( sender instanceof Player ) ? (Player)sender:(Player)null;
         if ( cmd.getName().equalsIgnoreCase( "Premises" ) ) {
             if ( args.length > 0 ) {
                 /*
                 /<command> get PlayerName
                 /<command> join PlayerName
                 /<command> status [PlayerName]
-                /<command> stat
                 */
                 switch ( args[0] ) {
                     case "get":
@@ -73,6 +91,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         pcontrol.save( p );
                         return true;
                     case "status":
+                        if ( !( args[1] == null ) ) {
+                            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player Status: " + args[1] );
+                        }
                         sender.sendMessage( ChatColor.GREEN + ("--------------------------------------------------"));
                         sender.sendMessage( ChatColor.AQUA + "                     Ores mined by: " + p.getDisplayName() );
                         sender.sendMessage( ChatColor.AQUA + "CobbleStone: " + p.getStatistic(Statistic.MINE_BLOCK, Material.COBBLESTONE));
