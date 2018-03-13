@@ -27,17 +27,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class PremisesEvent extends JavaPlugin implements Listener {
 
     private Plugin plugin;
+    private Config config;
+    private PlayerControl pcontrol;
 
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents( this, this );
         plugin = (Plugin) this;
+        pcontrol = new PlayerControl( plugin );
     }
 
     @EventHandler
     public void onBlockPlace( BlockPlaceEvent event ) {
         Player player = event.getPlayer();
-        // event.getBlockReplacedState().setMetadata( "PLACED", new FixedMetadataValue( plugin, true ) );
         Block block = event.getBlock();
         block.setMetadata( "PLACED", new FixedMetadataValue( plugin, true ) );
         player.sendMessage( ChatColor.YELLOW + "Set Custom MetaData" );
@@ -49,7 +51,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Block block = event.getBlock();
         player.sendMessage( ChatColor.GREEN + "Break to " + block.getType().name() );
         player.sendMessage( ChatColor.GREEN + block.getState().getData().toString() );
-        //  block.getMetadata( "PLACED" ); // Check if it is null. If so, it was generated naturally / not placed by the player
         player.sendMessage( ChatColor.GREEN + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) );
     }
     
@@ -66,8 +67,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 */
                 switch ( args[0] ) {
                     case "get":
+                        pcontrol.load( p );
                         return true;
                     case "join":
+                        pcontrol.save( p );
                         return true;
                     case "status":
                         sender.sendMessage( ChatColor.GREEN + ("--------------------------------------------------"));
@@ -79,9 +82,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         sender.sendMessage( ChatColor.AQUA + "NetherBrick: " + p.getStatistic(Statistic.MINE_BLOCK, Material.NETHER_BRICK));
                         sender.sendMessage( ChatColor.AQUA + "QUARTZ Ore: " + p.getStatistic(Statistic.MINE_BLOCK, Material.QUARTZ_ORE));
                         sender.sendMessage( ChatColor.AQUA + "SOUL_SAND: " + p.getStatistic(Statistic.MINE_BLOCK, Material.SOUL_SAND));
-                        /*
-                        sender.sendMessage( ChatColor.AQUA + "NetherWarte: " + p.getStatistic(Statistic.MINE_BLOCK, Material.NETHER_WARTS));
-                        */
                         sender.sendMessage( ChatColor.AQUA + "Dirt: " + p.getStatistic(Statistic.MINE_BLOCK, Material.DIRT));
                         sender.sendMessage( ChatColor.AQUA + "Grass: " + p.getStatistic(Statistic.MINE_BLOCK, Material.GRASS));
                         sender.sendMessage( ChatColor.AQUA + "Diamond Ore: " + p.getStatistic(Statistic.MINE_BLOCK, Material.DIAMOND_ORE));

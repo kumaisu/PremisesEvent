@@ -1,4 +1,5 @@
 Field: true
+World: world
 AreaPos1: 100,1,100
 AreaPos2: 200,128,200
 # Count Stones
