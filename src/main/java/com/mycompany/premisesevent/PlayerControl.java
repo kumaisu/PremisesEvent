@@ -24,6 +24,12 @@ import org.bukkit.plugin.Plugin;
 public class PlayerControl {
 
     private final Plugin plugin;
+    
+    /*
+    プレイヤーデータ
+    */
+    private String FirstDate;
+    private int Score;
 
     public PlayerControl( Plugin plugin ) {
         this.plugin = plugin;
@@ -37,9 +43,10 @@ public class PlayerControl {
         File UKfile = new File( plugin.getDataFolder(), player.getUniqueId() + ".yml" );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
         
-        String DS = UKData.getString( "Joined" );
+        FirstDate = UKData.getString( "Joined" );
+        Score = UKData.getInt( "Score" );
         
-        player.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + DS );
+        player.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate + " Score:" + Score );
     }
     
     public void save( Player player ) {
@@ -49,6 +56,8 @@ public class PlayerControl {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         UKData.set( "Joined", sdf.format( new Date() ) );
+        UKData.set( "Score", 0 );
+
         try {
             UKData.save( UKfile );
         }
@@ -61,4 +70,11 @@ public class PlayerControl {
         
     }
 
+    public String getJoinDate() {
+        return FirstDate;
+    }
+    
+    public int getScore() {
+        return Score;
+    }
 }

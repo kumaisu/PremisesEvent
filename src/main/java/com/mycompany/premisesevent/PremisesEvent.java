@@ -27,22 +27,21 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class PremisesEvent extends JavaPlugin implements Listener {
 
-    private Plugin plugin;
     private Config config;
-    private PlayerControl pcontrol;
+    private PlayerControl pc;
 
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents( this, this );
-        plugin = (Plugin) this;
-        pcontrol = new PlayerControl( plugin );
+        config = new Config( this );
+        pc = new PlayerControl( ( Plugin ) this );
     }
 
     @EventHandler
     public void onBlockPlace( BlockPlaceEvent event ) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
-        block.setMetadata( "PLACED", new FixedMetadataValue( plugin, true ) );
+        block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
         player.sendMessage( ChatColor.YELLOW + "Set Custom MetaData" );
     }
     
@@ -75,7 +74,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "コマンドはコンソールから操作できません" );
             return false;
         }
-        Player p = ( sender instanceof Player ) ? (Player)sender:(Player)null;
+        Player p = (Player)sender;
         if ( cmd.getName().equalsIgnoreCase( "Premises" ) ) {
             if ( args.length > 0 ) {
                 /*
@@ -85,16 +84,16 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 */
                 switch ( args[0] ) {
                     case "get":
-                        pcontrol.load( p );
+                        pc.load( p );
                         return true;
                     case "join":
-                        pcontrol.save( p );
+                        pc.save( p );
                         return true;
                     case "status":
                         if ( !( args[1] == null ) ) {
                             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player Status: " + args[1] );
                         }
-                        sender.sendMessage( ChatColor.GREEN + ("--------------------------------------------------"));
+                        sender.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
                         sender.sendMessage( ChatColor.AQUA + "                     Ores mined by: " + p.getDisplayName() );
                         sender.sendMessage( ChatColor.AQUA + "CobbleStone: " + p.getStatistic(Statistic.MINE_BLOCK, Material.COBBLESTONE));
                         sender.sendMessage( ChatColor.AQUA + "Stone: " + p.getStatistic(Statistic.MINE_BLOCK, Material.STONE));
@@ -112,7 +111,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         sender.sendMessage( ChatColor.AQUA + "Redstone Ore: " + p.getStatistic(Statistic.MINE_BLOCK, Material.REDSTONE_ORE));
                         sender.sendMessage( ChatColor.AQUA + "Coal Ore: " + p.getStatistic(Statistic.MINE_BLOCK, Material.COAL_ORE));
                         sender.sendMessage( ChatColor.AQUA + "Lapis Ore: " + p.getStatistic(Statistic.MINE_BLOCK, Material.LAPIS_ORE));
-                        sender.sendMessage( ChatColor.GREEN + ("--------------------------------------------------"));
+                        sender.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
                         return true;
                     default:
                         sender.sendMessage( ChatColor.RED + "[Premises] Unknown Command" );
