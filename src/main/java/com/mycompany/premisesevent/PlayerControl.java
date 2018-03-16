@@ -32,6 +32,7 @@ public class PlayerControl {
     private int Score;
 
     public PlayerControl( Plugin plugin ) {
+        this.Score = 0;
         this.plugin = plugin;
     }
     
@@ -56,7 +57,7 @@ public class PlayerControl {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         UKData.set( "Joined", sdf.format( new Date() ) );
-        UKData.set( "Score", 0 );
+        UKData.set( "Score", Score );
 
         try {
             UKData.save( UKfile );

@@ -50,22 +50,27 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         Material material = block.getType();
+        String getsn = block.getType().toString();
         player.sendMessage( ChatColor.GREEN + "Break to " + block.getState().getData().toString() + ChatColor.YELLOW + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) );
         if ( block.getType().equals(Material.STONE) ) {
             switch ( block.getData() ) {
                 case 1:
                     player.sendMessage( ChatColor.AQUA + "Hey! Hey! get Granite");
+                    getsn = "GRANITE";
                     break;
                 case 3:
                     player.sendMessage( ChatColor.AQUA + "Hey! Hey! get Diorite");
+                    getsn = "DIORITE";
                     break;
                 case 5:
                     player.sendMessage( ChatColor.AQUA + "Hey! Hey! get Andesite");
+                    getsn = "ANDESITE";
                     break;
                 default:
                     player.sendMessage( ChatColor.AQUA + "Hey! Hey! get Other Stone");
             }
         }
+        player.sendMessage( "You get " + getsn + " Point: " + config.getPoint( getsn ) );
     }
     
     @Override
