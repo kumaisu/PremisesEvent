@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
@@ -32,12 +33,12 @@ public class PlayerControl {
     プレイヤーデータ
     */
     private String FirstDate;
-    private int Score;
+    private int PlayerScore;
     private final Map<String,Integer> BlockCount = new HashMap<>();
 
     public PlayerControl( Plugin plugin ) {
         this.plugin = plugin;
-        this.Score = 0;
+        this.PlayerScore = 0;
     }
     
     /*
@@ -49,30 +50,44 @@ public class PlayerControl {
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
         
         FirstDate = UKData.getString( "Joined" );
-        Score = UKData.getInt( "Score" );
+        PlayerScore = UKData.getInt( "Score" );
+
+        for (String key : UKData.getConfigurationSection( "Counter" ).getKeys( false ) ) {
+            BlockCount.put( key, UKData.getInt( "Counter." + key ) );
+        }
         
-        player.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate + " Score:" + Score );
+        // player.sendMessage( ChatColor.AQUA + "Data Loaded" );
     }
     
     public void save( Player player ) {
         File UKfile = new File( plugin.getDataFolder(), player.getUniqueId() + ".yml" );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-        UKData.set( "Joined", sdf.format( new Date() ) );
-        UKData.set( "Score", Score );
+        UKData.set( "Joined", FirstDate );
+        UKData.set( "Score", PlayerScore );
 
+        for(Iterator<Map.Entry<String, Integer>> iterator = BlockCount.entrySet().iterator() ; iterator.hasNext() ;){
+            Map.Entry<String, Integer> entry = iterator.next();
+            UKData.set( "Counter." + entry.getKey(), entry.getValue() );
+        }
+        
         try {
             UKData.save( UKfile );
         }
         catch (IOException e) {
             plugin.getServer().getLogger().log( Level.WARNING, "{0}Could not save UnknownIP File.", ChatColor.RED );
         }
+
+        // player.sendMessage( ChatColor.AQUA + "Data Saved" );
     }
     
     public void JoinPlayer( CommandSender sender ) {
-        
+        Player player = (Player)sender;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        FirstDate = sdf.format( new Date() );
+        save( player );
+        player.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );
     }
 
     public String getJoinDate() {
@@ -80,19 +95,20 @@ public class PlayerControl {
     }
     
     public int getScore() {
-        return Score;
+        return PlayerScore;
     }
     
     public void addScore( int amount ) {
-        Score += amount;
+        PlayerScore += amount;
     }
     
     public int getStoneCount( String StoneName ) {
-        int CD = 0;
+        int CD;
         try {
             CD = BlockCount.get( StoneName );
         } catch( Exception e ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "No Data for " + StoneName );
+            // Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "No Data for " + StoneName );
+            return 0;
         }
         return CD;
     }
