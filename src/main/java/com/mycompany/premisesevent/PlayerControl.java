@@ -9,7 +9,10 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -30,10 +33,11 @@ public class PlayerControl {
     */
     private String FirstDate;
     private int Score;
+    private final Map<String,Integer> BlockCount = new HashMap<>();
 
     public PlayerControl( Plugin plugin ) {
-        this.Score = 0;
         this.plugin = plugin;
+        this.Score = 0;
     }
     
     /*
@@ -77,5 +81,25 @@ public class PlayerControl {
     
     public int getScore() {
         return Score;
+    }
+    
+    public void addScore( int amount ) {
+        Score += amount;
+    }
+    
+    public int getStoneCount( String StoneName ) {
+        int CD = 0;
+        try {
+            CD = BlockCount.get( StoneName );
+        } catch( Exception e ) {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "No Data for " + StoneName );
+        }
+        return CD;
+    }
+    
+    public void addStoneCount( String StoneName ) {
+        int CD = getStoneCount( StoneName );
+        CD++;
+        BlockCount.put( StoneName, CD );
     }
 }

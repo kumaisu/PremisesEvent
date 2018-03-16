@@ -21,7 +21,7 @@ public class Config {
     private final Plugin plugin;
     private FileConfiguration config = null;
 
-    private final Map< String, Integer > map = new HashMap<>();
+    private final Map< String, Integer > GetPoint = new HashMap<>();
     private List< String > stones;
     
     public Config(Plugin plugin) {
@@ -44,10 +44,10 @@ public class Config {
         config = plugin.getConfig();
         
         stones = new ArrayList<>();
-        List< String > getstr = ( List< String > ) config.getList( "Count" );
+        List< String > getstr = ( List< String > ) config.getList( "PointStone" );
         for( int i = 0; i<getstr.size(); i++ ) {
-            String[] param = getstr.get(i).split(",");
-            map.put( param[0], Integer.valueOf( param[1] ) );
+            String[] param = getstr.get( i ).split(",");
+            GetPoint.put( param[0], Integer.valueOf( param[1] ) );
             stones.add( param[0] );
         }
     }
@@ -57,7 +57,10 @@ public class Config {
     }
     
     public int getPoint( String sd ) {
-        return map.get( sd );
+        if ( stones.contains( sd ) ) {
+            return GetPoint.get( sd );
+        }
+        return 0;
     }
-    
+
 }

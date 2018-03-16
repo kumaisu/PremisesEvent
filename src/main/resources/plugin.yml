@@ -11,6 +11,5 @@ commands:
         permission: PremisesEvent
         permission-message: You do not have permission.
         usage: |
-            /<command> get PlayerName
             /<command> join PlayerName
             /<command> status [PlayerName]
