@@ -5,10 +5,7 @@
  */
 package com.mycompany.premisesevent;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -69,8 +66,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Block block = event.getBlock();
         String blockName = getStoneName( block );
         block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
-        player.sendMessage( ChatColor.YELLOW + "Set Custom MetaData" );
-        player.sendMessage( "You Loss " + blockName + " Point: " + config.getPoint( blockName ) );
+
+        Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ) );
     }
     
     @EventHandler
@@ -80,7 +77,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Material material = block.getType();
         String blockName = getStoneName( block );
 
-        player.sendMessage( "You get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")" );
+        Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")" );
 
         pc.load( player );
         pc.addScore( config.getPoint( blockName ) );
@@ -97,7 +94,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "コマンドはコンソールから操作できません" );
             return false;
         }
+        ItemControl ic = new ItemControl( this );
         Player p = (Player)sender;
+
         if ( cmd.getName().equalsIgnoreCase( "Premises" ) ) {
             if ( args.length > 0 ) {
                 /*
@@ -105,8 +104,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 /<command> status [PlayerName]
                 */
                 switch ( args[0] ) {
+                    case "Present":
+                        ic.ItemPresent( (Player)sender );
+                        return true;
                     case "join":
                         pc.JoinPlayer( sender );
+                        ic.ItemPresent( (Player)sender );
                         return true;
                     case "status":
                         if ( args.length > 1 ) {
