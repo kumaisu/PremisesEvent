@@ -38,6 +38,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     private Scoreboard board;
     private Objective obj;
     private Score score;
+    private boolean EntryFlag = false;
 
     @Override
     public void onEnable() {
@@ -54,38 +55,51 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin( PlayerJoinEvent e){
         Player p = e.getPlayer();
+
+        EntryFlag = pc.load( p );
         
-        p.setScoreboard( board );
-        
-        score = obj.getScore( ChatColor.GREEN + "Score:" );
+        if ( EntryFlag ) {
+            p.setScoreboard( board );
+            score = obj.getScore( ChatColor.GREEN + "Score:" );
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + p.getDisplayName() + " is participating in the this Event" );
+        } else {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + p.getDisplayName() + " has not joined the this Event" );
+        }
     }
     
     @EventHandler
     public void onBlockPlace( BlockPlaceEvent event ) {
-        Player player = event.getPlayer();
-        Block block = event.getBlock();
-        String blockName = getStoneName( block );
-        block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
+        if ( EntryFlag ) {
+            Player player = event.getPlayer();
+            Block block = event.getBlock();
+            String blockName = getStoneName( block );
+            block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
 
-        Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ) );
+            Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ) );
+        }
     }
     
     @EventHandler
     public void onBlockBreak( BlockBreakEvent event ) {
-        Player player = event.getPlayer();
-        Block block = event.getBlock();
-        Material material = block.getType();
-        String blockName = getStoneName( block );
+        if ( EntryFlag ) {
+            Player player = event.getPlayer();
+            Block block = event.getBlock();
+            Material material = block.getType();
+            String blockName = getStoneName( block );
 
-        Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")" );
+            if ( config.getStones().contains( blockName ) ) {
+                Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")" );
+                //  pc.load( player );
+                pc.addScore( config.getPoint( blockName ) );
+                pc.addStoneCount( blockName );
+                pc.save( player );
+                // プレイヤーのスコアーを更新し反映します
+                score.setScore( pc.getScore() );
+            } else {
+                player.sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
+            }
 
-        pc.load( player );
-        pc.addScore( config.getPoint( blockName ) );
-        pc.addStoneCount( blockName );
-        pc.save( player );
-
-        // 全プレイヤーの現在の体力を反映します
-        score.setScore( pc.getScore() );
+        }
     }
     
     @Override
@@ -108,8 +122,13 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         ic.ItemPresent( (Player)sender );
                         return true;
                     case "join":
-                        pc.JoinPlayer( sender );
-                        ic.ItemPresent( (Player)sender );
+                        if ( !EntryFlag ) {
+                            pc.JoinPlayer( sender );
+                            ic.ItemPresent( p );
+                            p.setScoreboard( board );
+                            score = obj.getScore( ChatColor.GREEN + "Score:" );
+                            EntryFlag = true;
+                        }
                         return true;
                     case "status":
                         if ( args.length > 1 ) {
@@ -117,7 +136,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                             // pc.load( 設定したプレイヤー構造体を取得する方法探す );
                         } else {
                             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player Status: This Player" );
-                            pc.load( (Player)sender );
+                            pc.load( p );
                         }
 
                         sender.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );

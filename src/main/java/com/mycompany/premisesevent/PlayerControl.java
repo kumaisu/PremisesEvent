@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import org.bukkit.ChatColor;
@@ -43,33 +42,34 @@ public class PlayerControl {
     /*
      * 設定をロードします
      */
-    public void load( Player player ) {
+    public boolean load( Player player ) {
         // 設定ファイルを保存
         File UKfile = new File( plugin.getDataFolder(), player.getUniqueId() + ".yml" );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
-        
+
+        if( !UKfile.exists() ) { return false; }
+
         FirstDate = UKData.getString( "Joined" );
         PlayerScore = UKData.getInt( "Score" );
-
-        for (String key : UKData.getConfigurationSection( "Counter" ).getKeys( false ) ) {
-            BlockCount.put( key, UKData.getInt( "Counter." + key ) );
-        }
         
-        // player.sendMessage( ChatColor.AQUA + "Data Loaded" );
+        if ( UKData.contains( "Counter" ) ) {
+            UKData.getConfigurationSection( "Counter" ).getKeys( false ).forEach( ( key ) -> {
+                BlockCount.put( key, UKData.getInt( "Counter." + key ) );
+            } );
+        }
+        return true;
     }
     
     public void save( Player player ) {
         File UKfile = new File( plugin.getDataFolder(), player.getUniqueId() + ".yml" );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
 
-
         UKData.set( "Joined", FirstDate );
         UKData.set( "Score", PlayerScore );
 
-        for(Iterator<Map.Entry<String, Integer>> iterator = BlockCount.entrySet().iterator() ; iterator.hasNext() ;){
-            Map.Entry<String, Integer> entry = iterator.next();
+        BlockCount.entrySet().forEach( ( entry ) -> {
             UKData.set( "Counter." + entry.getKey(), entry.getValue() );
-        }
+        } );
         
         try {
             UKData.save( UKfile );
@@ -77,7 +77,6 @@ public class PlayerControl {
         catch (IOException e) {
             plugin.getServer().getLogger().log( Level.WARNING, "{0}Could not save UnknownIP File.", ChatColor.RED );
         }
-
         // player.sendMessage( ChatColor.AQUA + "Data Saved" );
     }
     
