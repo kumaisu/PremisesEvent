@@ -58,12 +58,11 @@ public class ItemControl {
 
         if ( itemstack == null ) {
             ItemStack is = new ItemStack(Material.DIAMOND_PICKAXE, 1);
-            is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 7 );            // Efficiency 
+            is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 5 );            // Efficiency 
             is.addUnsafeEnchantment( Enchantment.DURABILITY, 0 );           // Unbreaking
             is.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, 0 );       // Infinity
         
-            lores.add( "§7効率強化 Ⅶ" );
-            // lores.add( "§7耐久力 Ⅹ" );
+            lores.add( "§7効率強化 Ⅴ" );
             lores.add( "§d整地イベント参加賞" );
 
             ItemMeta im = is.getItemMeta();             //ItemStackから、ItemMetaを取得
@@ -75,7 +74,35 @@ public class ItemControl {
             player.getInventory().addItem( is );
             player.sendMessage( ChatColor.GREEN + "イベント用ツールをプレゼントしました" );
         } else {
+            String[] stringArray = { "", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ" };
+
+            int ench = itemstack.getItemMeta().getEnchantLevel( Enchantment.ARROW_INFINITE );
+            int digs = itemstack.getItemMeta().getEnchantLevel( Enchantment.DIG_SPEED );
+
+            if ( ench == 10 ) {
+                digs++;
+                itemstack.addUnsafeEnchantment( Enchantment.DIG_SPEED, digs );
+                ench = 0;
+            } else {
+                ench++;
+            }
             
+            itemstack.addUnsafeEnchantment( Enchantment.DURABILITY, ench );
+            itemstack.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, ench );
+            lores.add( "§7効率強化 " + stringArray[digs] );
+            if ( ench > 0 ) {
+                lores.add( "§7耐久力 " + stringArray[ench] );
+            }
+            lores.add( "§d整地イベント参加賞" );
+
+            ItemMeta im = itemstack.getItemMeta();      //ItemStackから、ItemMetaを取得
+            im.setLore( lores );                        //loreを設定します。
+            itemstack.setItemMeta(im);                  //元のItemStackに、変更したItemMetaを設定
+
+            itemstack.setDurability( (short) 0 );
+
+            player.getInventory().addItem( itemstack );
+            player.sendMessage( ChatColor.AQUA + "イベント用ツールをアップデートしました" );
         }
     }
 }

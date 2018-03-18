@@ -5,6 +5,7 @@
  */
 package com.mycompany.premisesevent;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,14 +14,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -94,6 +99,46 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
     }
     
+    @EventHandler //    看板ブロックを右クリック
+    public void onSignClick( PlayerInteractEvent event ) {
+
+        if ( event.getAction() != Action.RIGHT_CLICK_BLOCK ) return;
+
+        Player player = event.getPlayer();
+
+        if ( pc.get( player.getUniqueId() ).getEntry() ) {
+            Block clickedBlock = event.getClickedBlock();
+            Material material = clickedBlock.getType();
+            if ( material == Material.SIGN_POST || material == Material.WALL_SIGN ) {
+                Sign sign = (Sign) clickedBlock.getState();
+                if ( sign.getLine(0).equals( "[Premises]" ) ) {
+
+                    ItemStack item = player.getInventory().getItemInMainHand();
+                    
+                    if ( item.getItemMeta().hasDisplayName() ) {
+                        if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( "§bイベントつるはし" ) ) {
+                            double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );
+                            if ( CheckDurability <= item.getDurability() ) {
+                                player.sendMessage( "修理可能");
+                                ItemControl ic = new ItemControl( this );
+                                player.getInventory().setItemInMainHand( null );
+                                ic.ItemUpdate( player, item );
+                            } else {
+                                player.sendMessage(
+                                    ChatColor.YELLOW + "ツールダメージは " +
+                                    ChatColor.WHITE + item.getDurability() +
+                                    ChatColor.YELLOW + " なので " +
+                                    ChatColor.WHITE + CheckDurability +
+                                    ChatColor.YELLOW + " 以上増やしてね"
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender,Command cmd, String commandLabel, String[] args) {
         if ( !( sender instanceof Player ) ) {
@@ -114,6 +159,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         ic.ItemUpdate( p, null );
                         return true;
                     case "join":
+                        if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
+                            p.sendMessage( ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です" );
+                            return false;
+                        }
                         if ( !pc.get( p.getUniqueId() ).getEntry() ) {
                             pc.get( p.getUniqueId() ).JoinPlayer( p );
                             ic.ItemPresent( p );

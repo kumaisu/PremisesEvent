@@ -2,10 +2,10 @@ Field: true
 World: world
 AreaPos1: 100,1,100
 AreaPos2: 200,128,200
+RePresent: 2000
+Repair: 0.1
 Present:
     - diamond-pickaxe,イベント参加賞,34-5,35-5
-RePresent: 2500
-Repair: 100
 
 # Count Stones
 PointStone:
