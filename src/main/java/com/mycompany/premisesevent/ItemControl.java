@@ -7,6 +7,7 @@ package com.mycompany.premisesevent;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -49,6 +50,7 @@ public class ItemControl {
         is.setItemMeta(im);                         //元のItemStackに、変更したItemMetaを設定
 
         player.getInventory().addItem( is );
+        player.sendMessage( ChatColor.GREEN + "イベント用装備をプレゼントしました" );
     }
     
     public void ItemUpdate( Player player, ItemStack itemstack ) {
@@ -71,6 +73,7 @@ public class ItemControl {
             is.setItemMeta(im);                         //元のItemStackに、変更したItemMetaを設定
 
             player.getInventory().addItem( is );
+            player.sendMessage( ChatColor.GREEN + "イベント用ツールをプレゼントしました" );
         } else {
             
         }

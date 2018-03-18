@@ -5,7 +5,10 @@
  */
 package com.mycompany.premisesevent;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,10 +24,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
 
 /**
  *
@@ -33,34 +32,22 @@ import org.bukkit.scoreboard.Scoreboard;
 public class PremisesEvent extends JavaPlugin implements Listener {
 
     private Config config;
-    private PlayerControl pc;
-    private final String OBJECTIVE_NAME = "Premises";
-    private Scoreboard board;
-    private Objective obj;
-    private Score score;
-    private boolean EntryFlag = false;
+    private final Map<UUID, PlayerControl> pc = new HashMap<>();
 
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents( this, this );
         config = new Config( this );
-        pc = new PlayerControl( ( Plugin ) this );
-
-        board = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
-        obj = board.registerNewObjective( OBJECTIVE_NAME, "dummy" );
-        obj.setDisplayName( "Mining Count" );
-        obj.setDisplaySlot( DisplaySlot.SIDEBAR );
-     }
+    }
 
     @EventHandler
     public void onPlayerJoin( PlayerJoinEvent e){
         Player p = e.getPlayer();
 
-        EntryFlag = pc.load( p );
+        pc.put( p.getUniqueId(), new PlayerControl( ( Plugin ) this ) );
+        pc.get( p.getUniqueId() ).load( p );
         
-        if ( EntryFlag ) {
-            p.setScoreboard( board );
-            score = obj.getScore( ChatColor.GREEN + "Score:" );
+        if ( pc.get( p.getUniqueId() ).getEntry() ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + p.getDisplayName() + " is participating in the this Event" );
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + p.getDisplayName() + " has not joined the this Event" );
@@ -69,34 +56,37 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     
     @EventHandler
     public void onBlockPlace( BlockPlaceEvent event ) {
-        if ( EntryFlag ) {
-            Player player = event.getPlayer();
+        Player player = event.getPlayer();
+        if ( pc.get( player.getUniqueId() ).getEntry() ) {
             Block block = event.getBlock();
             String blockName = getStoneName( block );
             block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
 
-            Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ) );
+            if ( config.getStones().contains( blockName ) ) {
+                //  Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ) );
+                pc.get( player.getUniqueId() ).addScore( - config.getPoint( blockName ) );
+                pc.get( player.getUniqueId() ).save( player );
+            } else {
+                //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
+            }
         }
     }
     
     @EventHandler
     public void onBlockBreak( BlockBreakEvent event ) {
-        if ( EntryFlag ) {
-            Player player = event.getPlayer();
+        Player player = event.getPlayer();
+        if ( pc.get( player.getUniqueId() ).getEntry() ) {
             Block block = event.getBlock();
             Material material = block.getType();
             String blockName = getStoneName( block );
 
             if ( config.getStones().contains( blockName ) ) {
-                Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")" );
-                //  pc.load( player );
-                pc.addScore( config.getPoint( blockName ) );
-                pc.addStoneCount( blockName );
-                pc.save( player );
-                // プレイヤーのスコアーを更新し反映します
-                score.setScore( pc.getScore() );
-            } else {
-                player.sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
+                //  Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")" );
+                pc.get( player.getUniqueId() ).addScore( config.getPoint( blockName ) );
+                pc.get( player.getUniqueId() ).addStoneCount( blockName );
+                pc.get( player.getUniqueId() ).save( player );
+            //  } else {
+                //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
             }
 
         }
@@ -122,12 +112,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         ic.ItemPresent( (Player)sender );
                         return true;
                     case "join":
-                        if ( !EntryFlag ) {
-                            pc.JoinPlayer( sender );
+                        if ( !pc.get( p.getUniqueId() ).getEntry() ) {
+                            pc.get( p.getUniqueId() ).JoinPlayer( sender );
                             ic.ItemPresent( p );
-                            p.setScoreboard( board );
-                            score = obj.getScore( ChatColor.GREEN + "Score:" );
-                            EntryFlag = true;
+                            ic.ItemUpdate( p, null );
                         }
                         return true;
                     case "status":
@@ -136,16 +124,16 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                             // pc.load( 設定したプレイヤー構造体を取得する方法探す );
                         } else {
                             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player Status: This Player" );
-                            pc.load( p );
+                            pc.get( p.getUniqueId() ).load( p );
                         }
 
                         sender.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
                         sender.sendMessage( ChatColor.AQUA + "Ores mined by: " + p.getDisplayName() );
-                        sender.sendMessage( ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + pc.getScore() );
+                        sender.sendMessage( ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + pc.get( p.getUniqueId() ).getScore() );
 
                         List<String> SL = config.getStones();
                         for( int i = 0; i<SL.size(); i++ ) {
-                            int sc = pc.getStoneCount( SL.get( i ) );
+                            int sc = pc.get( p.getUniqueId() ).getStoneCount( SL.get( i ) );
                             if ( sc>0 ) {
                                 sender.sendMessage( ChatColor.GREEN + SL.get( i ) + ": " + ChatColor.YELLOW + sc );
                             }
