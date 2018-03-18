@@ -2,26 +2,29 @@ Field: true
 World: world
 AreaPos1: 100,1,100
 AreaPos2: 200,128,200
-# Count Stones
-PointStone:
-    - STONE:0
-    - STONE:1
-    - STONE:3
-    - STONE:5
-    - GRAVEL
-    - NETHERRACK
-    - QUARTZ_ORE
-    - SOUL_SAND
-    - DIRT
-    - GRASS
-    - DIAMOND_ORE
-    - EMERALD_ORE
-    - IRON_ORE
-    - GOLD_ORE
-    - REDSTONE_ORE
-    - COAL_ORE
-    - LAPIS_ORE
-    - SMOOTH_BRICK
-    - NETHER_BRICK
 Present:
     - diamond-pickaxe,イベント参加賞,34-5,35-5
+RePresent: 2500
+Repair: 100
+
+# Count Stones
+PointStone:
+    - STONE,1
+    - GRANITE,3
+    - DIORITE,3
+    - ANDESITE,3
+    - GRAVEL,2
+    - NETHERRACK,1
+    - QUARTZ_ORE,5
+    - SOUL_SAND,2
+    - DIRT,2
+    - GRASS,2
+    - DIAMOND_ORE,5
+    - EMERALD_ORE,10
+    - IRON_ORE,4
+    - GOLD_ORE,4
+    - REDSTONE_ORE,3
+    - COAL_ORE,3
+    - LAPIS_ORE,4
+    - SMOOTH_BRICK,-10
+    - NETHER_BRICK,-10

@@ -11,11 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -105,8 +103,7 @@ public class PlayerControl {
         // player.sendMessage( ChatColor.AQUA + "Data Saved" );
     }
     
-    public void JoinPlayer( CommandSender sender ) {
-        Player player = (Player)sender;
+    public void JoinPlayer( Player player ) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         FirstDate = sdf.format( new Date() );
         save( player );

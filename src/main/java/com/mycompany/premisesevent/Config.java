@@ -62,5 +62,9 @@ public class Config {
         }
         return 0;
     }
+    
+    public int getRePresent() {
+        return config.getInt( "RePresent" );
+    }
 
 }

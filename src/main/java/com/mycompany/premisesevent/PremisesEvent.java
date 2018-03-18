@@ -66,6 +66,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 //  Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ) );
                 pc.get( player.getUniqueId() ).addScore( - config.getPoint( blockName ) );
                 pc.get( player.getUniqueId() ).save( player );
+                player.setPlayerListName( ChatColor.YELLOW + String.valueOf( pc.get( player.getUniqueId() ).getScore() ) + ChatColor.WHITE + " " + player.getDisplayName() );
             } else {
                 //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
             }
@@ -85,6 +86,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 pc.get( player.getUniqueId() ).addScore( config.getPoint( blockName ) );
                 pc.get( player.getUniqueId() ).addStoneCount( blockName );
                 pc.get( player.getUniqueId() ).save( player );
+                player.setPlayerListName( ChatColor.YELLOW + String.valueOf( pc.get( player.getUniqueId() ).getScore() ) + ChatColor.WHITE + " " + player.getDisplayName() );
             //  } else {
                 //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
             }
@@ -109,11 +111,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 */
                 switch ( args[0] ) {
                     case "Present":
-                        ic.ItemPresent( (Player)sender );
+                        ic.ItemUpdate( p, null );
                         return true;
                     case "join":
                         if ( !pc.get( p.getUniqueId() ).getEntry() ) {
-                            pc.get( p.getUniqueId() ).JoinPlayer( sender );
+                            pc.get( p.getUniqueId() ).JoinPlayer( p );
                             ic.ItemPresent( p );
                             ic.ItemUpdate( p, null );
                         }
