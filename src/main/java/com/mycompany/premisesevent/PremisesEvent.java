@@ -7,12 +7,12 @@ package com.mycompany.premisesevent;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
@@ -49,11 +49,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin( PlayerJoinEvent e){
         Player p = e.getPlayer();
-
+        
         pc.put( p.getUniqueId(), new PlayerControl( ( Plugin ) this ) );
-        pc.get( p.getUniqueId() ).load( p );
+        pc.get( p.getUniqueId() ).setDisplayName( p.getDisplayName() );
+        pc.get( p.getUniqueId() ).setUUID( p.getUniqueId() );
+        pc.get( p.getUniqueId() ).load();
         
         if ( pc.get( p.getUniqueId() ).getEntry() ) {
+            pc.get( p.getUniqueId() ).ScoreBoardEntry( p );
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + p.getDisplayName() + " is participating in the this Event" );
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + p.getDisplayName() + " has not joined the this Event" );
@@ -71,7 +74,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             if ( config.getStones().contains( blockName ) ) {
                 //  Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ) );
                 pc.get( player.getUniqueId() ).addScore( - config.getPoint( blockName ) );
-                pc.get( player.getUniqueId() ).save( player );
+                pc.get( player.getUniqueId() ).save();
                 player.setPlayerListName( ChatColor.YELLOW + String.valueOf( pc.get( player.getUniqueId() ).getScore() ) + ChatColor.WHITE + " " + player.getDisplayName() );
             } else {
                 //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
@@ -91,8 +94,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 //  Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")" );
                 pc.get( player.getUniqueId() ).addScore( config.getPoint( blockName ) );
                 pc.get( player.getUniqueId() ).addStoneCount( blockName );
-                pc.get( player.getUniqueId() ).save( player );
-                player.setPlayerListName( ChatColor.YELLOW + String.valueOf( pc.get( player.getUniqueId() ).getScore() ) + ChatColor.WHITE + " " + player.getDisplayName() );
+                pc.get( player.getUniqueId() ).save();
+                player.setPlayerListName( ChatColor.WHITE + " " + player.getDisplayName() + ChatColor.YELLOW + String.valueOf( pc.get( player.getUniqueId() ).getScore() ) );
             //  } else {
                 //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
             }
@@ -125,25 +128,15 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                                 ic.ItemUpdate( player, item );
                             } else {
                                 player.sendMessage(
-                                    ChatColor.YELLOW + "ツールダメージは " +
-                                    ChatColor.WHITE + item.getDurability() +
+                                    ChatColor.YELLOW + "ツール耐久値は " +
+                                    ChatColor.WHITE + ( item.getType().getMaxDurability() - item.getDurability() ) +
                                     ChatColor.YELLOW + " なので " +
-                                    ChatColor.WHITE + CheckDurability +
-                                    ChatColor.YELLOW + " 以上増やしてね"
+                                    ChatColor.WHITE + ( (int) ( item.getType().getMaxDurability() - CheckDurability ) ) +
+                                    ChatColor.YELLOW + " 以下にしてね"
                                 );
                             }
                         }
                     }
-                }
-                if ( sign.getLine(0).equals( "[ItemData]" ) ) {
-                    ItemStack item = player.getInventory().getItemInMainHand();
-                    player.sendMessage( ChatColor.AQUA + item.getType().toString() + " Data" );
-                    player.sendMessage( ChatColor.GREEN + "DisplayName : " + item.getItemMeta().getDisplayName() );
-                    player.sendMessage( ChatColor.GREEN + "Localized   : " + item.getItemMeta().getLocalizedName() );
-                    player.sendMessage( ChatColor.GREEN + "Unbreakable : " + ( item.getItemMeta().isUnbreakable() ? "True":"False" ) );
-                    player.sendMessage( ChatColor.GREEN + "Enchant無限 : " + item.getItemMeta().getEnchantLevel( Enchantment.ARROW_INFINITE ) );
-                    player.sendMessage( ChatColor.GREEN + "Enchant効率 : " + item.getItemMeta().getEnchantLevel( Enchantment.DIG_SPEED ) );
-                    player.sendMessage( ChatColor.GREEN + "Enchant耐久 : " + item.getItemMeta().getEnchantLevel( Enchantment.DURABILITY ) );
                 }
             }
         }
@@ -185,30 +178,29 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         }
                         return true;
                     case "status":
+                        UUID uuid;
+
                         if ( args.length > 1 ) {
                             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player Status: " + args[1] );
-                            // pc.load( 設定したプレイヤー構造体を取得する方法探す );
-                        } else {
-                            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player Status: This Player" );
-                            pc.get( p.getUniqueId() ).load( p );
-                        }
 
-                        sender.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
-                        sender.sendMessage( ChatColor.AQUA + "Ores mined by: " + p.getDisplayName() );
-                        sender.sendMessage( ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + pc.get( p.getUniqueId() ).getScore() );
-
-                        List<String> SL = config.getStones();
-                        for( int i = 0; i<SL.size(); i++ ) {
-                            int sc = pc.get( p.getUniqueId() ).getStoneCount( SL.get( i ) );
-                            if ( sc>0 ) {
-                                sender.sendMessage( ChatColor.GREEN + SL.get( i ) + ": " + ChatColor.YELLOW + sc );
+                            OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( args[1] );
+                            if ( op.hasPlayedBefore() ) {
+                                uuid = op.getUniqueId();
+                                pc.put( uuid, new PlayerControl( ( Plugin ) this ) );
+                                pc.get( uuid ).setDisplayName( op.getName() );
+                                pc.get( uuid ).setUUID( op.getUniqueId() );
+                                pc.get( uuid ).load();
+                            } else {
+                                p.sendMessage( ChatColor.RED + "This Player is not joined to server." );
+                                return false;
                             }
+                        } else {
+                            uuid = p.getUniqueId();
+                            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player Status: This Player" );
                         }
+                        
+                        pc.get( uuid ).getStatus( p );
 
-                        /*
-                        sender.sendMessage( ChatColor.AQUA + "Stone: " + p.getStatistic(Statistic.MINE_BLOCK, Material.STONE));
-                        */
-                        sender.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
                         return true;
                     default:
                         sender.sendMessage( ChatColor.RED + "[Premises] Unknown Command" );

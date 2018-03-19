@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,6 +45,8 @@ public class PlayerControl {
     /*
     プレイヤーデータ
     */
+    private UUID uuid;
+    private String DisplayName;
     private boolean EntryFlag = false;
     private String FirstDate;
     private int PlayerScore;
@@ -52,23 +56,31 @@ public class PlayerControl {
         this.plugin = plugin;
         this.PlayerScore = 0;
     }
+
+    public void setUUID( UUID setuuid ) {
+        uuid = setuuid;
+    }
     
-    public void ScoreBoardEntry( Player p ) {
+    public void setDisplayName( String name ) {
+        DisplayName = name;
+    }
+    
+    public void ScoreBoardEntry( Player player ) {
         obj.setDisplayName( "Mining Count" );
         obj.setDisplaySlot( DisplaySlot.SIDEBAR );
-        p.setScoreboard( board );
+        player.setScoreboard( board );
         score = obj.getScore( ChatColor.YELLOW + "Score:" );
     }
     
     /*
      * 設定をロードします
      */
-    public void load( Player player ) {
+    public boolean load() {
         // 設定ファイルを保存
-        File UKfile = new File( plugin.getDataFolder(), player.getUniqueId() + ".yml" );
+        File UKfile = new File( plugin.getDataFolder(), uuid + ".yml" );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
 
-        if( !UKfile.exists() ) { return; }
+        if( !UKfile.exists() ) { return false; }
 
         FirstDate = UKData.getString( "Joined" );
         PlayerScore = UKData.getInt( "Score" );
@@ -79,11 +91,11 @@ public class PlayerControl {
             } );
         }
         EntryFlag = true;
-        ScoreBoardEntry( player );
+        return true;
     }
     
-    public void save( Player player ) {
-        File UKfile = new File( plugin.getDataFolder(), player.getUniqueId() + ".yml" );
+    public void save() {
+        File UKfile = new File( plugin.getDataFolder(), uuid + ".yml" );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
 
         UKData.set( "Joined", FirstDate );
@@ -103,12 +115,14 @@ public class PlayerControl {
         // player.sendMessage( ChatColor.AQUA + "Data Saved" );
     }
     
-    public void JoinPlayer( Player player ) {
+    public void JoinPlayer( Player p ) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         FirstDate = sdf.format( new Date() );
-        save( player );
-        load( player );
-        player.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );
+        save();
+        ScoreBoardEntry( p );
+        EntryFlag = true;
+
+        p.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );
     }
 
     public boolean getEntry() {
@@ -148,5 +162,17 @@ public class PlayerControl {
         // プレイヤーの掘削数を更新し反映します
         mines.put( StoneName, obj.getScore( ChatColor.GREEN + StoneName + ":" ) );
         mines.get( StoneName ).setScore( CD );
+    }
+    
+    public void getStatus( Player p ) {
+        p.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
+        p.sendMessage( ChatColor.AQUA + "Block mined by: " + DisplayName );
+        p.sendMessage( ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore() );
+
+        BlockCount.entrySet().forEach( ( entry ) -> {
+            p.sendMessage( ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue() );
+        } );
+
+        p.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
     }
 }
