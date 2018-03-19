@@ -95,7 +95,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 pc.get( player.getUniqueId() ).addScore( config.getPoint( blockName ) );
                 pc.get( player.getUniqueId() ).addStoneCount( blockName );
                 pc.get( player.getUniqueId() ).save();
-                player.setPlayerListName( ChatColor.WHITE + " " + player.getDisplayName() + ChatColor.YELLOW + String.valueOf( pc.get( player.getUniqueId() ).getScore() ) );
+                player.setPlayerListName( ChatColor.WHITE + player.getDisplayName() + " " + ChatColor.YELLOW + String.valueOf( pc.get( player.getUniqueId() ).getScore() ) );
             //  } else {
                 //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
             }

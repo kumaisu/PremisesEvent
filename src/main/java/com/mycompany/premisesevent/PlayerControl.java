@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -77,7 +76,8 @@ public class PlayerControl {
      */
     public boolean load() {
         // 設定ファイルを保存
-        File UKfile = new File( plugin.getDataFolder(), uuid + ".yml" );
+        File dataFolder = new File( plugin.getDataFolder() + File.separator + "users" );
+        File UKfile = new File( dataFolder, uuid + ".yml" );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
 
         if( !UKfile.exists() ) { return false; }
@@ -95,7 +95,10 @@ public class PlayerControl {
     }
     
     public void save() {
-        File UKfile = new File( plugin.getDataFolder(), uuid + ".yml" );
+        File dataFolder = new File( plugin.getDataFolder() + File.separator + "users" );
+        if( !dataFolder.exists() ) { dataFolder.mkdir(); }
+
+        File UKfile = new File( dataFolder, uuid + ".yml" );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
 
         UKData.set( "Joined", FirstDate );
