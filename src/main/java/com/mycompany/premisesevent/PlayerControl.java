@@ -107,6 +107,7 @@ public class PlayerControl {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         FirstDate = sdf.format( new Date() );
         save( player );
+        load( player );
         player.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );
     }
 

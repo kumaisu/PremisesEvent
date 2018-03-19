@@ -30,7 +30,7 @@ public class ItemControl {
 
     public void ItemPresent( Player player ) {
 
-        ItemStack is = new ItemStack(Material.DIAMOND_BOOTS, 1);
+        ItemStack is = new ItemStack( Material.CHAINMAIL_BOOTS, 1 );    // ChainMail Boots
         is.addUnsafeEnchantment( Enchantment.PROTECTION_FALL, 5 );      // Featherfall
         is.addUnsafeEnchantment( Enchantment.PROTECTION_FIRE, 5 );      // ProtectionFire
         is.addUnsafeEnchantment( Enchantment.DURABILITY, 3 );           // Unbreaking
@@ -47,7 +47,7 @@ public class ItemControl {
         im.setDisplayName( "§bイベントブーツ" );    //Item名を設定
         im.setLore( lores );                        //loreを設定します。
         im.addItemFlags( ItemFlag.HIDE_ENCHANTS );  //本来のエンチャント情報を隠す
-        is.setItemMeta(im);                         //元のItemStackに、変更したItemMetaを設定
+        is.setItemMeta( im );                       //元のItemStackに、変更したItemMetaを設定
 
         player.getInventory().addItem( is );
         player.sendMessage( ChatColor.GREEN + "イベント用装備をプレゼントしました" );

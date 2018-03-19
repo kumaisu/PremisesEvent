@@ -17,6 +17,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -119,7 +120,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( "§bイベントつるはし" ) ) {
                             double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );
                             if ( CheckDurability <= item.getDurability() ) {
-                                player.sendMessage( "修理可能");
                                 ItemControl ic = new ItemControl( this );
                                 player.getInventory().setItemInMainHand( null );
                                 ic.ItemUpdate( player, item );
@@ -134,6 +134,16 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                             }
                         }
                     }
+                }
+                if ( sign.getLine(0).equals( "[ItemData]" ) ) {
+                    ItemStack item = player.getInventory().getItemInMainHand();
+                    player.sendMessage( ChatColor.AQUA + item.getType().toString() + " Data" );
+                    player.sendMessage( ChatColor.GREEN + "DisplayName : " + item.getItemMeta().getDisplayName() );
+                    player.sendMessage( ChatColor.GREEN + "Localized   : " + item.getItemMeta().getLocalizedName() );
+                    player.sendMessage( ChatColor.GREEN + "Unbreakable : " + ( item.getItemMeta().isUnbreakable() ? "True":"False" ) );
+                    player.sendMessage( ChatColor.GREEN + "Enchant無限 : " + item.getItemMeta().getEnchantLevel( Enchantment.ARROW_INFINITE ) );
+                    player.sendMessage( ChatColor.GREEN + "Enchant効率 : " + item.getItemMeta().getEnchantLevel( Enchantment.DIG_SPEED ) );
+                    player.sendMessage( ChatColor.GREEN + "Enchant耐久 : " + item.getItemMeta().getEnchantLevel( Enchantment.DURABILITY ) );
                 }
             }
         }
@@ -155,9 +165,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 /<command> status [PlayerName]
                 */
                 switch ( args[0] ) {
-                    case "Present":
-                        ic.ItemUpdate( p, null );
-                        return true;
+                    case "take":
+                        if ( pc.get( p.getUniqueId() ).getScore() > 2000 ) {
+                            ic.ItemUpdate( p, null );
+                            pc.get( p.getUniqueId() ).addScore( -2000 );
+                            return true;
+                        } else {
+                            p.sendMessage( ChatColor.RED + "Scoreが足りないので配布できません" );
+                        }
                     case "join":
                         if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
                             p.sendMessage( ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です" );
