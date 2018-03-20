@@ -17,7 +17,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -66,40 +65,39 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @EventHandler
     public void onBlockPlace( BlockPlaceEvent event ) {
         Player player = event.getPlayer();
-        if ( pc.get( player.getUniqueId() ).getEntry() ) {
-            Block block = event.getBlock();
-            String blockName = getStoneName( block );
-            block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
+        if ( !pc.get( player.getUniqueId() ).getEntry() ) return;
 
-            if ( config.getStones().contains( blockName ) ) {
-                //  Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ) );
-                pc.get( player.getUniqueId() ).addScore( - config.getPoint( blockName ) );
-                pc.get( player.getUniqueId() ).save();
-                player.setPlayerListName( ChatColor.YELLOW + String.valueOf( pc.get( player.getUniqueId() ).getScore() ) + ChatColor.WHITE + " " + player.getDisplayName() );
-            } else {
-                //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
-            }
+        Block block = event.getBlock();
+        String blockName = getStoneName( block );
+        block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
+
+        if ( config.getStones().contains( blockName ) ) {
+            //  Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ) );
+            pc.get( player.getUniqueId() ).addScore( - config.getPoint( blockName ) );
+            pc.get( player.getUniqueId() ).save();
+            player.setPlayerListName( ChatColor.YELLOW + String.valueOf( pc.get( player.getUniqueId() ).getScore() ) + ChatColor.WHITE + " " + player.getDisplayName() );
+        } else {
+            //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
         }
     }
     
     @EventHandler
     public void onBlockBreak( BlockBreakEvent event ) {
         Player player = event.getPlayer();
-        if ( pc.get( player.getUniqueId() ).getEntry() ) {
-            Block block = event.getBlock();
-            Material material = block.getType();
-            String blockName = getStoneName( block );
+        if ( !pc.get( player.getUniqueId() ).getEntry() ) return;
 
-            if ( config.getStones().contains( blockName ) ) {
-                //  Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")" );
-                pc.get( player.getUniqueId() ).addScore( config.getPoint( blockName ) );
-                pc.get( player.getUniqueId() ).addStoneCount( blockName );
-                pc.get( player.getUniqueId() ).save();
-                player.setPlayerListName( ChatColor.WHITE + player.getDisplayName() + " " + ChatColor.YELLOW + String.valueOf( pc.get( player.getUniqueId() ).getScore() ) );
-            //  } else {
-                //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
-            }
+        Block block = event.getBlock();
+        Material material = block.getType();
+        String blockName = getStoneName( block );
 
+        if ( config.getStones().contains( blockName ) ) {
+            //  Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")" );
+            pc.get( player.getUniqueId() ).addScore( config.getPoint( blockName ) );
+            pc.get( player.getUniqueId() ).addStoneCount( blockName );
+            pc.get( player.getUniqueId() ).save();
+            player.setPlayerListName( ChatColor.WHITE + player.getDisplayName() + " " + ChatColor.YELLOW + String.valueOf( pc.get( player.getUniqueId() ).getScore() ) );
+        //  } else {
+            //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
         }
     }
     
@@ -109,16 +107,15 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( event.getAction() != Action.RIGHT_CLICK_BLOCK ) return;
 
         Player player = event.getPlayer();
+        if ( !pc.get( player.getUniqueId() ).getEntry() ) return;
 
-        if ( pc.get( player.getUniqueId() ).getEntry() ) {
-            Block clickedBlock = event.getClickedBlock();
-            Material material = clickedBlock.getType();
-            if ( material == Material.SIGN_POST || material == Material.WALL_SIGN ) {
-                Sign sign = (Sign) clickedBlock.getState();
-                if ( sign.getLine(0).equals( "[Premises]" ) ) {
-
+        Block clickedBlock = event.getClickedBlock();
+        Material material = clickedBlock.getType();
+        if ( material == Material.SIGN_POST || material == Material.WALL_SIGN ) {
+            Sign sign = (Sign) clickedBlock.getState();
+            switch ( sign.getLine(0) ) {
+                case "[Premises]":
                     ItemStack item = player.getInventory().getItemInMainHand();
-                    
                     if ( item.getItemMeta().hasDisplayName() ) {
                         if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( "§bイベントつるはし" ) ) {
                             double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );
@@ -137,51 +134,51 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                             }
                         }
                     }
-                }
+                    break;
+                case "[P-Join]":
+                    Join( player );
+                    break;
+                case "[P-Status]":
+                    pc.get( player.getUniqueId() ).getStatus( player );
+                    break;
+                default:
             }
         }
     }
 
     @Override
-    public boolean onCommand(CommandSender sender,Command cmd, String commandLabel, String[] args) {
+    public boolean onCommand( CommandSender sender, Command cmd, String commandLabel, String[] args ) {
         if ( !( sender instanceof Player ) ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "コマンドはコンソールから操作できません" );
             return false;
         }
-        ItemControl ic = new ItemControl( this );
-        Player p = (Player)sender;
+        Player p = ( Player ) sender;
 
         if ( cmd.getName().equalsIgnoreCase( "Premises" ) ) {
             if ( args.length > 0 ) {
                 /*
-                /<command> join PlayerName
+                /<command> join
                 /<command> status [PlayerName]
+                /<command> take
                 */
                 switch ( args[0] ) {
                     case "take":
                         if ( pc.get( p.getUniqueId() ).getScore() > 2000 ) {
+                            ItemControl ic = new ItemControl( this );
                             ic.ItemUpdate( p, null );
                             pc.get( p.getUniqueId() ).addScore( -2000 );
                             return true;
                         } else {
                             p.sendMessage( ChatColor.RED + "Scoreが足りないので配布できません" );
-                        }
-                    case "join":
-                        if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
-                            p.sendMessage( ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です" );
                             return false;
                         }
-                        if ( !pc.get( p.getUniqueId() ).getEntry() ) {
-                            pc.get( p.getUniqueId() ).JoinPlayer( p );
-                            ic.ItemPresent( p );
-                            ic.ItemUpdate( p, null );
-                        }
-                        return true;
+                    case "join":
+                        return Join( p );
                     case "status":
                         UUID uuid;
 
                         if ( args.length > 1 ) {
-                            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player Status: " + args[1] );
+                            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player : " + args[1] );
 
                             OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( args[1] );
                             if ( op.hasPlayedBefore() ) {
@@ -196,7 +193,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                             }
                         } else {
                             uuid = p.getUniqueId();
-                            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player Status: This Player" );
                         }
                         
                         pc.get( uuid ).getStatus( p );
@@ -229,4 +225,17 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         return retStr;
     }
 
+    public boolean Join( Player p ) {
+        if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
+            p.sendMessage( ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です" );
+            return false;
+        }
+        if ( !pc.get( p.getUniqueId() ).getEntry() ) {
+            pc.get( p.getUniqueId() ).JoinPlayer( p );
+            ItemControl ic = new ItemControl( this );
+            ic.ItemPresent( p );
+            ic.ItemUpdate( p, null );
+        }
+        return true;
+    }
 }

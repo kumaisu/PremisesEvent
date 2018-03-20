@@ -168,6 +168,7 @@ public class PlayerControl {
     }
     
     public void getStatus( Player p ) {
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look Status: " + DisplayName );
         p.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
         p.sendMessage( ChatColor.AQUA + "Block mined by: " + DisplayName );
         p.sendMessage( ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore() );
