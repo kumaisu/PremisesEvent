@@ -141,6 +141,7 @@ public class PlayerControl {
             ic.ItemUpdate( p, null );
         }
 
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + p.getDisplayName() + " received the redistribution of the item !!" );
         return true;
     }
     
@@ -149,6 +150,7 @@ public class PlayerControl {
             ItemControl ic = new ItemControl( plugin );
             ic.ItemUpdate( player, null );
             addScore( -2000 );
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Tool Update !!" );
             return true;
         } else {
             player.sendMessage( ChatColor.RED + "Scoreが足りないので配布できません" );

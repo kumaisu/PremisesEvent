@@ -8,9 +8,8 @@ commands:
     premises:
         description: Premises Event Control Command
         aliases: pec
-        permission: PremisesEvent
-        permission-message: You do not have permission.
         usage: |
             /<command> join
             /<command> status [PlayerName]
             /<command> get
+            /<command> update

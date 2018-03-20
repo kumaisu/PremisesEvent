@@ -57,12 +57,12 @@ public class ItemControl {
         List<String> lores = new ArrayList();
 
         if ( itemstack == null ) {
-            ItemStack is = new ItemStack(Material.DIAMOND_PICKAXE, 1);
-            is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 5 );            // Efficiency 
+            ItemStack is = new ItemStack(Material.IRON_PICKAXE, 1);
+            is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 6 );            // Efficiency 
             is.addUnsafeEnchantment( Enchantment.DURABILITY, 0 );           // Unbreaking
             is.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, 0 );       // Infinity
         
-            lores.add( "§7効率強化 Ⅴ" );
+            lores.add( "§7効率強化 Ⅵ" );
             lores.add( "§d整地イベント参加賞" );
 
             ItemMeta im = is.getItemMeta();             //ItemStackから、ItemMetaを取得

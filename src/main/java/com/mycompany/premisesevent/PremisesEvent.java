@@ -5,7 +5,6 @@
  */
 package com.mycompany.premisesevent;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -99,13 +98,44 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         //  } else {
             //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
         }
+
+        ItemStack item = player.getInventory().getItemInMainHand();
+        
+        if ( item.getItemMeta().hasDisplayName() ) {
+            if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( "§bイベントつるはし" ) ) {
+                if ( ( item.getType().getMaxDurability() * 0.9 ) <= item.getDurability() ) player.sendMessage( ChatColor.RED + "ツールの耐久値がヤバイですよ" );
+            }
+        }
+    }
+    
+    public void ToolUpdate( Player player ) {
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if ( item.getItemMeta().hasDisplayName() ) {
+            if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( "§bイベントつるはし" ) ) {
+                double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );
+                if ( CheckDurability <= item.getDurability() ) {
+                    ItemControl ic = new ItemControl( this );
+                    player.getInventory().setItemInMainHand( null );
+                    ic.ItemUpdate( player, item );
+                    Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Tool Update !!" );
+                } else {
+                    player.sendMessage(
+                        ChatColor.YELLOW + "ツール耐久値は " +
+                        ChatColor.WHITE + ( item.getType().getMaxDurability() - item.getDurability() ) +
+                        ChatColor.YELLOW + " なので " +
+                        ChatColor.WHITE + ( (int) ( item.getType().getMaxDurability() - CheckDurability ) ) +
+                        ChatColor.YELLOW + " 以下にしてね"
+                    );
+                }
+            }
+        }
     }
     
     @EventHandler //    看板ブロックを右クリック
     public void onSignClick( PlayerInteractEvent event ) {
-
+               
         if ( event.getAction() != Action.RIGHT_CLICK_BLOCK ) return;
-
+        
         Player player = event.getPlayer();
         Block clickedBlock = event.getClickedBlock();
         Material material = clickedBlock.getType();
@@ -122,27 +152,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).getStatus( player );
                     break;
                 case "[P-Update]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() ) {
-                        ItemStack item = player.getInventory().getItemInMainHand();
-                        if ( item.getItemMeta().hasDisplayName() ) {
-                            if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( "§bイベントつるはし" ) ) {
-                                double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );
-                                if ( CheckDurability <= item.getDurability() ) {
-                                    ItemControl ic = new ItemControl( this );
-                                    player.getInventory().setItemInMainHand( null );
-                                    ic.ItemUpdate( player, item );
-                                } else {
-                                    player.sendMessage(
-                                        ChatColor.YELLOW + "ツール耐久値は " +
-                                        ChatColor.WHITE + ( item.getType().getMaxDurability() - item.getDurability() ) +
-                                        ChatColor.YELLOW + " なので " +
-                                        ChatColor.WHITE + ( (int) ( item.getType().getMaxDurability() - CheckDurability ) ) +
-                                        ChatColor.YELLOW + " 以下にしてね"
-                                    );
-                                }
-                            }
-                        }
-                    }
+                    if ( pc.get( player.getUniqueId() ).getEntry() ) ToolUpdate( player );
                     break;
                 default:
             }
@@ -166,31 +176,37 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 */
                 switch ( args[0] ) {
                     case "get":
-                        return pc.get( p.getUniqueId() ).itemget( p );
+                        if ( pc.get( p.getUniqueId() ).getEntry() ) return pc.get( p.getUniqueId() ).itemget( p );
+                        return true;
+                    case "update":
+                        if ( pc.get( p.getUniqueId() ).getEntry() ) ToolUpdate( p );
+                        return true;
                     case "join":
                         return pc.get( p.getUniqueId() ).JoinPlayer( p );
                     case "status":
-                        UUID uuid;
+                        if ( pc.get( p.getUniqueId() ).getEntry() ) {
+                            UUID uuid;
 
-                        if ( args.length > 1 ) {
-                            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player : " + args[1] );
+                            if ( args.length > 1 ) {
+                                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player : " + args[1] );
 
-                            OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( args[1] );
-                            if ( op.hasPlayedBefore() ) {
-                                uuid = op.getUniqueId();
-                                pc.put( uuid, new PlayerControl( ( Plugin ) this ) );
-                                pc.get( uuid ).setDisplayName( op.getName() );
-                                pc.get( uuid ).setUUID( op.getUniqueId() );
-                                pc.get( uuid ).load();
+                                OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( args[1] );
+                                if ( op.hasPlayedBefore() ) {
+                                    uuid = op.getUniqueId();
+                                    pc.put( uuid, new PlayerControl( ( Plugin ) this ) );
+                                    pc.get( uuid ).setDisplayName( op.getName() );
+                                    pc.get( uuid ).setUUID( op.getUniqueId() );
+                                    pc.get( uuid ).load();
+                                } else {
+                                    p.sendMessage( ChatColor.RED + "This Player is not joined to server." );
+                                    return false;
+                                }
                             } else {
-                                p.sendMessage( ChatColor.RED + "This Player is not joined to server." );
-                                return false;
+                                uuid = p.getUniqueId();
                             }
-                        } else {
-                            uuid = p.getUniqueId();
-                        }
                         
-                        pc.get( uuid ).getStatus( p );
+                            pc.get( uuid ).getStatus( p );
+                        }
 
                         return true;
                     default:
