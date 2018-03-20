@@ -8,6 +8,7 @@ package com.mycompany.premisesevent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -118,14 +119,41 @@ public class PlayerControl {
         // player.sendMessage( ChatColor.AQUA + "Data Saved" );
     }
     
-    public void JoinPlayer( Player p ) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        FirstDate = sdf.format( new Date() );
-        save();
-        ScoreBoardEntry( p );
-        EntryFlag = true;
+    public boolean JoinPlayer( Player p ) {
+        
+        if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
+            p.sendMessage( ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です" );
+            return false;
+        }
 
-        p.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );
+        if ( !getEntry() ) {
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            FirstDate = sdf.format( new Date() );
+            save();
+            ScoreBoardEntry( p );
+            EntryFlag = true;
+
+            p.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );
+
+            ItemControl ic = new ItemControl( plugin );
+            ic.ItemPresent( p );
+            ic.ItemUpdate( p, null );
+        }
+
+        return true;
+    }
+    
+    public boolean itemget( Player player ) {
+        if ( getScore() > 2000 ) {
+            ItemControl ic = new ItemControl( plugin );
+            ic.ItemUpdate( player, null );
+            addScore( -2000 );
+            return true;
+        } else {
+            player.sendMessage( ChatColor.RED + "Scoreが足りないので配布できません" );
+            return false;
+        }
     }
 
     public boolean getEntry() {

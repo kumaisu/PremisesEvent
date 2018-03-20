@@ -107,39 +107,42 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( event.getAction() != Action.RIGHT_CLICK_BLOCK ) return;
 
         Player player = event.getPlayer();
-        if ( !pc.get( player.getUniqueId() ).getEntry() ) return;
-
         Block clickedBlock = event.getClickedBlock();
         Material material = clickedBlock.getType();
         if ( material == Material.SIGN_POST || material == Material.WALL_SIGN ) {
             Sign sign = (Sign) clickedBlock.getState();
             switch ( sign.getLine(0) ) {
-                case "[Premises]":
-                    ItemStack item = player.getInventory().getItemInMainHand();
-                    if ( item.getItemMeta().hasDisplayName() ) {
-                        if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( "§bイベントつるはし" ) ) {
-                            double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );
-                            if ( CheckDurability <= item.getDurability() ) {
-                                ItemControl ic = new ItemControl( this );
-                                player.getInventory().setItemInMainHand( null );
-                                ic.ItemUpdate( player, item );
-                            } else {
-                                player.sendMessage(
-                                    ChatColor.YELLOW + "ツール耐久値は " +
-                                    ChatColor.WHITE + ( item.getType().getMaxDurability() - item.getDurability() ) +
-                                    ChatColor.YELLOW + " なので " +
-                                    ChatColor.WHITE + ( (int) ( item.getType().getMaxDurability() - CheckDurability ) ) +
-                                    ChatColor.YELLOW + " 以下にしてね"
-                                );
+                case "[P-Get]":
+                    if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player );
+                    break;
+                case "[P-Join]":
+                    pc.get( player.getUniqueId() ).JoinPlayer( player );
+                    break;
+                case "[P-Status]":
+                    if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).getStatus( player );
+                    break;
+                case "[P-Update]":
+                    if ( pc.get( player.getUniqueId() ).getEntry() ) {
+                        ItemStack item = player.getInventory().getItemInMainHand();
+                        if ( item.getItemMeta().hasDisplayName() ) {
+                            if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( "§bイベントつるはし" ) ) {
+                                double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );
+                                if ( CheckDurability <= item.getDurability() ) {
+                                    ItemControl ic = new ItemControl( this );
+                                    player.getInventory().setItemInMainHand( null );
+                                    ic.ItemUpdate( player, item );
+                                } else {
+                                    player.sendMessage(
+                                        ChatColor.YELLOW + "ツール耐久値は " +
+                                        ChatColor.WHITE + ( item.getType().getMaxDurability() - item.getDurability() ) +
+                                        ChatColor.YELLOW + " なので " +
+                                        ChatColor.WHITE + ( (int) ( item.getType().getMaxDurability() - CheckDurability ) ) +
+                                        ChatColor.YELLOW + " 以下にしてね"
+                                    );
+                                }
                             }
                         }
                     }
-                    break;
-                case "[P-Join]":
-                    Join( player );
-                    break;
-                case "[P-Status]":
-                    pc.get( player.getUniqueId() ).getStatus( player );
                     break;
                 default:
             }
@@ -162,18 +165,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 /<command> take
                 */
                 switch ( args[0] ) {
-                    case "take":
-                        if ( pc.get( p.getUniqueId() ).getScore() > 2000 ) {
-                            ItemControl ic = new ItemControl( this );
-                            ic.ItemUpdate( p, null );
-                            pc.get( p.getUniqueId() ).addScore( -2000 );
-                            return true;
-                        } else {
-                            p.sendMessage( ChatColor.RED + "Scoreが足りないので配布できません" );
-                            return false;
-                        }
+                    case "get":
+                        return pc.get( p.getUniqueId() ).itemget( p );
                     case "join":
-                        return Join( p );
+                        return pc.get( p.getUniqueId() ).JoinPlayer( p );
                     case "status":
                         UUID uuid;
 
@@ -223,19 +218,5 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         }
         return retStr;
-    }
-
-    public boolean Join( Player p ) {
-        if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
-            p.sendMessage( ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です" );
-            return false;
-        }
-        if ( !pc.get( p.getUniqueId() ).getEntry() ) {
-            pc.get( p.getUniqueId() ).JoinPlayer( p );
-            ItemControl ic = new ItemControl( this );
-            ic.ItemPresent( p );
-            ic.ItemUpdate( p, null );
-        }
-        return true;
     }
 }

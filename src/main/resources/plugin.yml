@@ -13,4 +13,4 @@ commands:
         usage: |
             /<command> join
             /<command> status [PlayerName]
-            /<command> take
+            /<command> get
