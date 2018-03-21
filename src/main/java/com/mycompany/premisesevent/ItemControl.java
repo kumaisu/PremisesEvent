@@ -80,9 +80,14 @@ public class ItemControl {
             int digs = itemstack.getItemMeta().getEnchantLevel( Enchantment.DIG_SPEED );
 
             if ( ench == 10 ) {
-                digs++;
+                if ( digs<10 ) {
+                    digs++;
+                    ench = 0;
+                } else {
+                    ench = 10;
+                }
+                
                 itemstack.addUnsafeEnchantment( Enchantment.DIG_SPEED, digs );
-                ench = 0;
             } else {
                 ench++;
             }
