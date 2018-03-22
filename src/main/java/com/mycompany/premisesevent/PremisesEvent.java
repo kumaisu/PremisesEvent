@@ -209,6 +209,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         }
 
                         return true;
+                    case "toplist":
+                        TopList TL = new TopList( this );
+                        TL.Top( p );
+                        return true;
                     default:
                         sender.sendMessage( ChatColor.RED + "[Premises] Unknown Command" );
                         return false;

@@ -13,3 +13,4 @@ commands:
             /<command> status [PlayerName]
             /<command> get
             /<command> update
+            /<command> toplist

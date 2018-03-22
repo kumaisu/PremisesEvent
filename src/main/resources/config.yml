@@ -9,7 +9,11 @@ Present:
 
 # Count Stones
 PointStone:
+    - SANDSTONE,1
+    - STAINED_CLAY,1
+    - HARD_CLAY,1
     - STONE,1
+    - SAND,2
     - GRANITE,3
     - DIORITE,3
     - ANDESITE,3

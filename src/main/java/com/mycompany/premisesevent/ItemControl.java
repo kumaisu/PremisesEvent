@@ -75,6 +75,7 @@ public class ItemControl {
             player.sendMessage( ChatColor.GREEN + "イベント用ツールをプレゼントしました" );
         } else {
             String[] stringArray = { "", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ" };
+            String UpdateMessage;
 
             int ench = itemstack.getItemMeta().getEnchantLevel( Enchantment.ARROW_INFINITE );
             int digs = itemstack.getItemMeta().getEnchantLevel( Enchantment.DIG_SPEED );
@@ -86,7 +87,6 @@ public class ItemControl {
                 } else {
                     ench = 10;
                 }
-                
                 itemstack.addUnsafeEnchantment( Enchantment.DIG_SPEED, digs );
             } else {
                 ench++;
@@ -95,8 +95,10 @@ public class ItemControl {
             itemstack.addUnsafeEnchantment( Enchantment.DURABILITY, ench );
             itemstack.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, ench );
             lores.add( "§7効率強化 " + stringArray[digs] );
+            UpdateMessage = ChatColor.WHITE + "効率強化" + stringArray[digs];
             if ( ench > 0 ) {
                 lores.add( "§7耐久力 " + stringArray[ench] );
+                UpdateMessage += ",耐久力" + stringArray[ench];
             }
             lores.add( "§d整地イベント参加賞" );
 
@@ -107,7 +109,7 @@ public class ItemControl {
             itemstack.setDurability( (short) 0 );
 
             player.getInventory().addItem( itemstack );
-            player.sendMessage( ChatColor.AQUA + "イベント用ツールをアップデートしました" );
+            player.sendMessage( ChatColor.AQUA + "イベント用ツールを[" + UpdateMessage + ChatColor.AQUA + "]にアップデートしました" );
         }
     }
 }
