@@ -8,20 +8,25 @@ This plug-in is a tool to support players achievement and event item distributio
 · To count the block destruction  
 · Score scoring on the type of block  
 · Distribution of special items and support for updates  
-  
+· Score ranking display function  
+
 このプラグインは、整地イベントの際に、プレイヤーの成果やイベントアイテム配布をサポートするツールです  
   
 ・ブロック破壊数をカウントする機能（Configでブロック指定）  
 ・ブロックに得点を設定し、スコアリングする機能  
 ・イベント特殊アイテムの配布およびアップデートをサポートする機能  
+・スコアランキング表示機能  
   
 **Usage**  
 [Player]  
 /Premises join  
 /Premises status  
+/Premises get  
+/Premises update  
+/toplist  
   
 [Admin]  
-/Premises Present  
+none  
   
 **Future**  
 · Determine spontaneous generation and installation and affect scoring  

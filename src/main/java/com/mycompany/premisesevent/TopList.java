@@ -8,7 +8,6 @@ package com.mycompany.premisesevent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +53,8 @@ public class TopList {
     }
 
     public void Top( Player player ) {
+        player.sendMessage( ChatColor.GREEN + "イベントプレイヤーランキング" );
+
         Map<String, Integer> rank = new HashMap<>();
         File folder;
         folder = new File( plugin.getDataFolder() + File.separator + "users" + File.separator );
@@ -69,25 +70,17 @@ public class TopList {
         Collections.sort( list_entries, ( Entry<String, Integer> obj1, Entry<String, Integer> obj2 ) -> obj2.getValue().compareTo( obj1.getValue() ) );
 
         // 4. ループで要素順に値を取得する
-        player.sendMessage( ChatColor.GREEN + "イベントプレイヤーランキング" );
-        boolean OutRange = true;
         int i = 0;
         for( Entry<String, Integer> entry : list_entries ) {
             i++;
-            String SM = ChatColor.WHITE + String.format( "%2d", i ) + " : ";
-            if ( entry.getKey().equals( player.getDisplayName() ) ) {
-                OutRange = false;
-                SM += ChatColor.AQUA;
-            } else {
-                SM += ChatColor.GRAY;
-            }
-            SM += ChatColor.AQUA + String.format( "%-15s", entry.getKey() ) + ChatColor.YELLOW + String.format( "%8d", entry.getValue() );
-            player.sendMessage( SM );
-            if ( i>9 ) break;
-        }
-        
-        if ( OutRange ) {
-            player.sendMessage( "-- : " + ChatColor.AQUA + String.format( "%-15s", player.getDisplayName() ) + ChatColor.YELLOW + String.format( "%8d", rank.get( player.getDisplayName() ) ) );
+            if ( ( i<11 ) || entry.getKey().equals( player.getDisplayName() ) )
+                player.sendMessage(
+                    ChatColor.WHITE + String.format( "%2d", i ) + " : " +
+                    ( entry.getKey().equals( player.getDisplayName() ) ? ChatColor.AQUA:ChatColor.GRAY ) +
+                    String.format( "%-15s", entry.getKey() ) + ChatColor.YELLOW +
+                    String.format( "%8d", entry.getValue() )
+                );
+            if ( i == 10 ) player.sendMessage( ChatColor.GREEN + "============================" );
         }
     }
 }
