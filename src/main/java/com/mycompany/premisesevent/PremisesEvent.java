@@ -167,6 +167,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
         Player p = ( Player ) sender;
 
+        if ( cmd.getName().equalsIgnoreCase( "toplist" ) ) {
+            TopList TL = new TopList( this );
+            TL.Top( p );
+            return true;
+        }
+
         if ( cmd.getName().equalsIgnoreCase( "Premises" ) ) {
             if ( args.length > 0 ) {
                 /*
@@ -208,10 +214,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                             pc.get( uuid ).getStatus( p );
                         }
 
-                        return true;
-                    case "toplist":
-                        TopList TL = new TopList( this );
-                        TL.Top( p );
                         return true;
                     default:
                         sender.sendMessage( ChatColor.RED + "[Premises] Unknown Command" );

@@ -5,6 +5,10 @@ description: Premises Event Control plugin
 author: Kumaisu
 database: true
 commands:
+    toplist:
+        description: Event Players Ranking Command
+        aliases: top
+        usage: /<command>
     premises:
         description: Premises Event Control Command
         aliases: pec

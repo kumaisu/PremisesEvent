@@ -70,14 +70,24 @@ public class TopList {
 
         // 4. ループで要素順に値を取得する
         player.sendMessage( ChatColor.GREEN + "イベントプレイヤーランキング" );
+        boolean OutRange = true;
         int i = 0;
         for( Entry<String, Integer> entry : list_entries ) {
             i++;
-            player.sendMessage(
-                ChatColor.WHITE + String.format( "%2d", i ) + " : " +
-                ChatColor.AQUA + String.format( "%-15s", entry.getKey() ) +
-                ChatColor.YELLOW + String.format( "%d", entry.getValue() )
-            );
+            String SM = ChatColor.WHITE + String.format( "%2d", i ) + " : ";
+            if ( entry.getKey().equals( player.getDisplayName() ) ) {
+                OutRange = false;
+                SM += ChatColor.AQUA;
+            } else {
+                SM += ChatColor.GRAY;
+            }
+            SM += ChatColor.AQUA + String.format( "%-15s", entry.getKey() ) + ChatColor.YELLOW + String.format( "%8d", entry.getValue() );
+            player.sendMessage( SM );
+            if ( i>9 ) break;
+        }
+        
+        if ( OutRange ) {
+            player.sendMessage( "-- : " + ChatColor.AQUA + String.format( "%-15s", player.getDisplayName() ) + ChatColor.YELLOW + String.format( "%8d", rank.get( player.getDisplayName() ) ) );
         }
     }
 }
