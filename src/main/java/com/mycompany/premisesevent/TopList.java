@@ -52,8 +52,17 @@ public class TopList {
         return UKData.getInt( "Score" );
     }
 
+    public void Prt( Player p ,String Msg ) {
+        if ( p == null ) {
+            Bukkit.getServer().getConsoleSender().sendMessage( Msg );
+        } else {
+            p.sendMessage( Msg );
+        }
+    }
+    
     public void Top( Player player ) {
-        player.sendMessage( ChatColor.GREEN + "イベントプレイヤーランキング" );
+        String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
+        Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング" );
 
         Map<String, Integer> rank = new HashMap<>();
         File folder;
@@ -73,14 +82,14 @@ public class TopList {
         int i = 0;
         for( Entry<String, Integer> entry : list_entries ) {
             i++;
-            if ( ( i<11 ) || entry.getKey().equals( player.getDisplayName() ) )
-                player.sendMessage(
+            if ( ( i<11 ) || entry.getKey().equals( PlayerName ) )
+                Prt( player, 
                     ChatColor.WHITE + String.format( "%2d", i ) + " : " +
-                    ( entry.getKey().equals( player.getDisplayName() ) ? ChatColor.AQUA:ChatColor.GRAY ) +
+                    ( entry.getKey().equals( PlayerName ) ? ChatColor.AQUA:ChatColor.GRAY ) +
                     String.format( "%-15s", entry.getKey() ) + ChatColor.YELLOW +
                     String.format( "%8d", entry.getValue() )
                 );
-            if ( i == 10 ) player.sendMessage( ChatColor.GREEN + "============================" );
+            if ( i == 10 ) Prt( player, ChatColor.GREEN + "============================" );
         }
     }
 }

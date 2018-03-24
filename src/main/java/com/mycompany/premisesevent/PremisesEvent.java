@@ -182,16 +182,19 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand( CommandSender sender, Command cmd, String commandLabel, String[] args ) {
-        if ( !( sender instanceof Player ) ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "コマンドはコンソールから操作できません" );
-            return false;
-        }
-        Player p = ( Player ) sender;
+        Player p;
+
+        p = ( sender instanceof Player ? ( Player ) sender:null );
 
         if ( cmd.getName().equalsIgnoreCase( "toplist" ) ) {
             TopList TL = new TopList( this );
             TL.Top( p );
             return true;
+        }
+
+        if ( p == null ) {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "コマンドはコンソールから操作できません" );
+            return false;
         }
 
         if ( cmd.getName().equalsIgnoreCase( "Premises" ) ) {

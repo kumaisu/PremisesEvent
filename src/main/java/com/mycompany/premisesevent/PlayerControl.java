@@ -146,6 +146,9 @@ public class PlayerControl {
             ItemControl ic = new ItemControl( plugin );
             ic.ItemPresent( p );
             ic.ItemUpdate( p, null );
+            
+            Bukkit.broadcastMessage( ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
+
         } else {
             plugin.getServer().getLogger().log( Level.WARNING, "{0}Double registration failure.", ChatColor.RED );
             p.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
@@ -192,8 +195,8 @@ public class PlayerControl {
         try {
             CD = BlockCount.get( StoneName );
         } catch( Exception e ) {
-            // Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "No Data for " + StoneName );
-            return 0;
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "No Data for [" + StoneName + "]" );
+            CD = 0;
         }
         return CD;
     }
