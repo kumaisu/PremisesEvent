@@ -56,6 +56,23 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( pc.get( p.getUniqueId() ).getEntry() ) {
             pc.get( p.getUniqueId() ).ScoreBoardEntry( p );
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + p.getDisplayName() + " is participating in the this Event" );
+
+            ItemControl ic = new ItemControl( this );
+            if ( pc.get( p.getUniqueId() ).getPresentFlag() ) {
+                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.YELLOW + p.getDisplayName() + " for RePresent Amor" );
+                p.sendMessage( ChatColor.YELLOW + "イベント装備の再配布" );
+                ic.ItemPresent( p );
+            }
+            if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
+                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.YELLOW + p.getDisplayName() + " for RePresent Tool" );
+                p.sendMessage( ChatColor.YELLOW + "イベントツールの再配布" );
+                ic.ItemUpdate( p, null );
+            }
+        
+            //  暫定で強制的に再配布フラグを消すため
+            //  saveは、ログアウト時1回だけにする方が良いと思ってるんだけど、、検討不足
+            //  サーバーダウン時の対応で、onDisableでもセーブする必要あるかな?
+            pc.get( p.getUniqueId() ).save();
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + p.getDisplayName() + " has not joined the this Event" );
         }
@@ -74,7 +91,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             //  Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ) );
             pc.get( player.getUniqueId() ).addScore( - config.getPoint( blockName ) );
             pc.get( player.getUniqueId() ).save();
-            player.setPlayerListName( ChatColor.WHITE + String.format( "%-15s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
+            player.setPlayerListName( ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
         } else {
             //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
         }
@@ -94,7 +111,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             pc.get( player.getUniqueId() ).addScore( config.getPoint( blockName ) );
             pc.get( player.getUniqueId() ).addStoneCount( blockName );
             pc.get( player.getUniqueId() ).save();
-            player.setPlayerListName( ChatColor.WHITE + String.format( "%-15s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
+            player.setPlayerListName( ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
         //  } else {
             //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
         }
@@ -109,7 +126,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     }
     
     public void ToolUpdate( Player player ) {
+
+        if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) return;
+
         ItemStack item = player.getInventory().getItemInMainHand();
+
         if ( item.getItemMeta().hasDisplayName() ) {
             if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( "§bイベントつるはし" ) ) {
                 double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );

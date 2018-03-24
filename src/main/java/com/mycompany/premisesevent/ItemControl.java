@@ -7,6 +7,7 @@ package com.mycompany.premisesevent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -51,6 +52,7 @@ public class ItemControl {
 
         player.getInventory().addItem( is );
         player.sendMessage( ChatColor.GREEN + "イベント用装備をプレゼントしました" );
+        plugin.getServer().getLogger().log( Level.INFO, "{0}Successfully gifted present tool.", ChatColor.GREEN );
     }
     
     public void ItemUpdate( Player player, ItemStack itemstack ) {
@@ -73,6 +75,7 @@ public class ItemControl {
 
             player.getInventory().addItem( is );
             player.sendMessage( ChatColor.GREEN + "イベント用ツールをプレゼントしました" );
+            plugin.getServer().getLogger().log( Level.INFO, "{0}Successfully gifted update tool.", ChatColor.GREEN );
         } else {
             String[] stringArray = { "", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ" };
             String UpdateMessage;

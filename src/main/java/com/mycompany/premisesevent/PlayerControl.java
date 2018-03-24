@@ -50,6 +50,8 @@ public class PlayerControl {
     private boolean EntryFlag = false;
     private String FirstDate;
     private int PlayerScore;
+    private boolean PresentFlag;
+    private boolean UpdateFlag;
     private final Map<String,Integer> BlockCount = new HashMap<>();
 
     public PlayerControl( Plugin plugin ) {
@@ -85,6 +87,8 @@ public class PlayerControl {
 
         FirstDate = UKData.getString( "Joined" );
         PlayerScore = UKData.getInt( "Score" );
+        PresentFlag = UKData.getBoolean( "Present" );
+        UpdateFlag = UKData.getBoolean( "Update" );
         
         if ( UKData.contains( "Counter" ) ) {
             UKData.getConfigurationSection( "Counter" ).getKeys( false ).forEach( ( key ) -> {
@@ -102,8 +106,11 @@ public class PlayerControl {
         File UKfile = new File( dataFolder, uuid + ".yml" );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
 
+        UKData.set( "Name", Bukkit.getOfflinePlayer( uuid ).getName() );
         UKData.set( "Joined", FirstDate );
         UKData.set( "Score", PlayerScore );
+        UKData.set( "Present", false );
+        UKData.set( "Update", false );
 
         BlockCount.entrySet().forEach( ( entry ) -> {
             UKData.set( "Counter." + entry.getKey(), entry.getValue() );
@@ -139,9 +146,12 @@ public class PlayerControl {
             ItemControl ic = new ItemControl( plugin );
             ic.ItemPresent( p );
             ic.ItemUpdate( p, null );
+        } else {
+            plugin.getServer().getLogger().log( Level.WARNING, "{0}Double registration failure.", ChatColor.RED );
+            p.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
+            return false;
         }
 
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + p.getDisplayName() + " received the redistribution of the item !!" );
         return true;
     }
     
@@ -150,7 +160,7 @@ public class PlayerControl {
             ItemControl ic = new ItemControl( plugin );
             ic.ItemUpdate( player, null );
             addScore( -2000 );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Tool Update !!" );
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Redistributing update tools !!" );
             return true;
         } else {
             player.sendMessage( ChatColor.RED + "Scoreが足りないので配布できません" );
@@ -202,11 +212,19 @@ public class PlayerControl {
         p.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
         p.sendMessage( ChatColor.AQUA + "Block mined by: " + DisplayName );
         p.sendMessage( ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore() );
-
+        
         BlockCount.entrySet().forEach( ( entry ) -> {
             p.sendMessage( ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue() );
         } );
 
         p.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
+    }
+    
+    public boolean getPresentFlag() {
+        return PresentFlag;
+    }
+    
+    public boolean getUpdateFlag() {
+        return UpdateFlag;
     }
 }
