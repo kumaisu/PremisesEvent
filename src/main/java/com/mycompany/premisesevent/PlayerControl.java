@@ -128,32 +128,29 @@ public class PlayerControl {
     
     public boolean JoinPlayer( Player p ) {
         
+        if ( getEntry() ) {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
+            p.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
+            return false;
+        }
+
         if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
             p.sendMessage( ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です" );
             return false;
         }
 
-        if ( !getEntry() ) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        FirstDate = sdf.format( new Date() );
+        save();
+        ScoreBoardEntry( p );
+        EntryFlag = true;
+        p.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            FirstDate = sdf.format( new Date() );
-            save();
-            ScoreBoardEntry( p );
-            EntryFlag = true;
+        ItemControl ic = new ItemControl( plugin );
+        ic.ItemPresent( p );
+        ic.ItemUpdate( p, null );
 
-            p.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );
-
-            ItemControl ic = new ItemControl( plugin );
-            ic.ItemPresent( p );
-            ic.ItemUpdate( p, null );
-            
-            Bukkit.broadcastMessage( ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
-
-        } else {
-            plugin.getServer().getLogger().log( Level.WARNING, "{0}Double registration failure.", ChatColor.RED );
-            p.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
-            return false;
-        }
+        Bukkit.broadcastMessage( ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
 
         return true;
     }
