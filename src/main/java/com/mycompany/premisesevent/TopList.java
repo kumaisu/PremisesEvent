@@ -63,6 +63,7 @@ public class TopList {
     public void Top( Player player ) {
         String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
         Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング" );
+        Prt( player, ChatColor.GREEN + "============================" );
 
         Map<String, Integer> rank = new HashMap<>();
         File folder;
@@ -82,14 +83,16 @@ public class TopList {
         int i = 0;
         for( Entry<String, Integer> entry : list_entries ) {
             i++;
-            if ( ( i<11 ) || entry.getKey().equals( PlayerName ) )
+            if ( ( i<11 ) || entry.getKey().equals( PlayerName ) || ( player == null ) )
                 Prt( player, 
                     ChatColor.WHITE + String.format( "%2d", i ) + " : " +
                     ( entry.getKey().equals( PlayerName ) ? ChatColor.AQUA:ChatColor.GRAY ) +
                     String.format( "%-15s", entry.getKey() ) + ChatColor.YELLOW +
                     String.format( "%8d", entry.getValue() )
                 );
-            if ( i == 10 ) Prt( player, ChatColor.GREEN + "============================" );
+            if ( ( i == 10 ) && ( player != null ) ) Prt( player, ChatColor.GREEN + "============================" );
         }
+            
+        Prt( player, ChatColor.GREEN + "============================" );
     }
 }

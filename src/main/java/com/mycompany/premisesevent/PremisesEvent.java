@@ -196,6 +196,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 case "[P-Update]":
                     if ( pc.get( player.getUniqueId() ).getEntry() ) ToolUpdate( player );
                     break;
+                case "[P-TOP]":
+                    TopList TL = new TopList( this );
+                    TL.Top( player );
+                    break;
                 default:
             }
         }
