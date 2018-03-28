@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -91,6 +92,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onBlockPlace( BlockPlaceEvent event ) {
         Player player = event.getPlayer();
         if ( !pc.get( player.getUniqueId() ).getEntry() ) return;
+        if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
 
         Block block = event.getBlock();
         String blockName = getStoneName( block );
@@ -112,6 +114,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onBlockBreak( BlockBreakEvent event ) {
         Player player = event.getPlayer();
         if ( !pc.get( player.getUniqueId() ).getEntry() ) return;
+        if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
 
         Block block = event.getBlock();
         Material material = block.getType();
@@ -185,7 +188,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Sign sign = (Sign) clickedBlock.getState();
             switch ( sign.getLine(0) ) {
                 case "[P-Get]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player );
+                    if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, config.getRePresent() );
                     break;
                 case "[P-Join]":
                     pc.get( player.getUniqueId() ).JoinPlayer( player );
@@ -221,6 +224,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             return true;
         }
 
+        if ( cmd.getName().equalsIgnoreCase( "pstatus" ) ) {
+            config.Status();
+            return true;
+        }
+
         if ( player == null ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "コマンドはコンソールから操作できません" );
             return false;
@@ -235,7 +243,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 */
                 switch ( args[0] ) {
                     case "get":
-                        if ( pc.get( player.getUniqueId() ).getEntry() ) return pc.get( player.getUniqueId() ).itemget( player );
+                        if ( pc.get( player.getUniqueId() ).getEntry() ) return pc.get( player.getUniqueId() ).itemget( player, config.getRePresent() );
                         return true;
                     case "update":
                         if ( pc.get( player.getUniqueId() ).getEntry() ) ToolUpdate( player );

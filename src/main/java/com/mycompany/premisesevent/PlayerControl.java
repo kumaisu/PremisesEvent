@@ -155,11 +155,11 @@ public class PlayerControl {
         return true;
     }
     
-    public boolean itemget( Player player ) {
-        if ( getScore() > 2000 ) {
+    public boolean itemget( Player player, int Rep ) {
+        if ( getScore() > Rep ) {
             ItemControl ic = new ItemControl( plugin );
             ic.ItemUpdate( player, null );
-            addScore( -2000 );
+            addScore( -Rep );
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Redistributing update tools !!" );
             return true;
         } else {

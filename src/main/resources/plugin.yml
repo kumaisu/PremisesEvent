@@ -5,6 +5,9 @@ description: Premises Event Control plugin
 author: Kumaisu
 database: true
 commands:
+    pstatus:
+        description: Event System Status
+        usage: /<command>
     toplist:
         description: Event Players Ranking Command
         aliases: top
