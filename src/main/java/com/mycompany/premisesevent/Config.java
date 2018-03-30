@@ -139,13 +139,15 @@ public class Config {
         if ( loc.getBlockY()<Event_Y1 || loc.getBlockY()>Event_Y2 ) return false;
         if ( loc.getBlockZ()<Event_Z1 || loc.getBlockZ()>Event_Z2 ) return false;
 
+        /*
         Bukkit.getServer().getConsoleSender().sendMessage(
                 "Loc = " + loc.getWorld().getName() +
                 "X(" + loc.getBlockX() +
                 ")Y(" + loc.getBlockY() +
                 ")Z(" + loc.getBlockZ() + ")"
         );
-        
+        */
+
         return true;
     }
 

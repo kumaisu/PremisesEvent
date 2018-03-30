@@ -81,8 +81,10 @@ public class TopList {
 
         // 4. ループで要素順に値を取得する
         int i = 0;
+        boolean lineflag = true;
         for( Entry<String, Integer> entry : list_entries ) {
             i++;
+            if ( entry.getKey().equals( PlayerName ) ) lineflag = false;
             if ( ( i<11 ) || entry.getKey().equals( PlayerName ) || ( player == null ) )
                 Prt( player, 
                     ChatColor.WHITE + String.format( "%2d", i ) + " : " +
@@ -90,7 +92,7 @@ public class TopList {
                     String.format( "%-15s", entry.getKey() ) + ChatColor.YELLOW +
                     String.format( "%8d", entry.getValue() )
                 );
-            if ( ( i == 10 ) && ( player != null ) ) Prt( player, ChatColor.GREEN + "============================" );
+            if ( ( i == 10 ) && lineflag ) Prt( player, ChatColor.GREEN + "============================" );
         }
             
         Prt( player, ChatColor.GREEN + "============================" );
