@@ -26,6 +26,7 @@ public class Config {
 
     private final Map< String, Integer > GetPoint = new HashMap<>();
     private List< String > stones;
+    private boolean OPMode;
     private int RePresent;
     private int UpCost;
     private double Repair;
@@ -69,6 +70,7 @@ public class Config {
         RePresent = config.getInt( "RePresent" );
         UpCost = config.getInt( "UpdateCost" );
         Repair = config.getDouble( "Repair" );
+        OPMode = config.getBoolean( "CreativeCount" );
 
         Event_World = config.getString( "World" );
 
@@ -137,6 +139,10 @@ public class Config {
     
     public boolean GetField() {
         return Field;
+    }
+    
+    public boolean CreativeCount() {
+        return OPMode;
     }
 
     public boolean CheckArea( Location loc ) {

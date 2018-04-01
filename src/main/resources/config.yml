@@ -1,15 +1,29 @@
+#   Whether to perform a field check
+#   If it is false, it will be the entire server
 Field: true
 World: world
 AreaPos1: 200,50,100
 AreaPos2: 100,2,200
+
+#   Required score for redistributing gift Tool Items
 RePresent: 2000
+
+#   Score required for event tool update
 UpdateCost: 200
+
+#   CreativeCount True = no Count False = Alwayes Count
+CreativeCount: true
+
+#   Percentage of endurance value that can be updated ( 0.1 = 10% )
 Repair: 0.1
+
+#   Present Tool Item Setting
 Present:
     - diamond-pickaxe,イベント参加賞,34-5,35-5
 
 # Count Stones
 PointStone:
+    - OBSIDIAN,10
     - SANDSTONE,1
     - STAINED_CLAY,1
     - HARD_CLAY,1
@@ -31,7 +45,9 @@ PointStone:
     - IRON_ORE,4
     - GOLD_ORE,4
     - REDSTONE_ORE,3
+    - GLOWING_REDSTONE_ORE,3
     - COAL_ORE,3
     - LAPIS_ORE,4
-    - SMOOTH_BRICK,-10
-    - NETHER_BRICK,-10
+    - SMOOTH_BRICK,-10000
+    - NETHER_BRICK,-10000
+    - BONE_BLOCK,-10000

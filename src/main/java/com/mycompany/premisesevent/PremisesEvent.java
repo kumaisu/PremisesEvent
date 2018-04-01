@@ -93,7 +93,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         if ( !pc.get( player.getUniqueId() ).getEntry() ) return;
         if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
-        if ( player.getGameMode() == GameMode.CREATIVE ) return;
+        if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
 
         Block block = event.getBlock();
         String blockName = getStoneName( block );
@@ -116,7 +116,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         if ( !pc.get( player.getUniqueId() ).getEntry() ) return;
         if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
-        if ( player.getGameMode() == GameMode.CREATIVE ) return;
+        if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
 
         Block block = event.getBlock();
         Material material = block.getType();
