@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -93,6 +93,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         if ( !pc.get( player.getUniqueId() ).getEntry() ) return;
         if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
+        if ( player.getGameMode() == GameMode.CREATIVE ) return;
 
         Block block = event.getBlock();
         String blockName = getStoneName( block );
@@ -115,6 +116,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         if ( !pc.get( player.getUniqueId() ).getEntry() ) return;
         if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
+        if ( player.getGameMode() == GameMode.CREATIVE ) return;
 
         Block block = event.getBlock();
         Material material = block.getType();

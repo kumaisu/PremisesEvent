@@ -3,6 +3,7 @@ World: world
 AreaPos1: 200,50,100
 AreaPos2: 100,2,200
 RePresent: 2000
+UpdateCost: 200
 Repair: 0.1
 Present:
     - diamond-pickaxe,イベント参加賞,34-5,35-5

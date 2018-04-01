@@ -27,6 +27,7 @@ public class Config {
     private final Map< String, Integer > GetPoint = new HashMap<>();
     private List< String > stones;
     private int RePresent;
+    private int UpCost;
     private double Repair;
     private boolean Field;
     private String Event_World;
@@ -66,6 +67,7 @@ public class Config {
 
         Field = config.getBoolean( "Field" );
         RePresent = config.getInt( "RePresent" );
+        UpCost = config.getInt( "UpdateCost" );
         Repair = config.getDouble( "Repair" );
 
         Event_World = config.getString( "World" );
@@ -127,6 +129,10 @@ public class Config {
     
     public int getRePresent() {
         return RePresent;
+    }
+    
+    public int getUpCost() {
+        return UpCost;
     }
     
     public boolean GetField() {
