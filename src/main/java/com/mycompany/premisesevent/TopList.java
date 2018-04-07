@@ -5,7 +5,11 @@
  */
 package com.mycompany.premisesevent;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,6 +56,15 @@ public class TopList {
         return UKData.getInt( "Score" );
     }
 
+    public int getCount( String filename, String StoneName ) {
+        File getFile = new File( plugin.getDataFolder() + File.separator + "users" + File.separator + filename );
+        FileConfiguration UKData = YamlConfiguration.loadConfiguration( getFile );
+
+        if( !getFile.exists() ) { return 0; }
+
+        return UKData.getInt( "Counter." + StoneName );
+    }
+
     public void Prt( Player p ,String Msg ) {
         if ( p == null ) {
             Bukkit.getServer().getConsoleSender().sendMessage( Msg );
@@ -96,5 +109,30 @@ public class TopList {
         }
             
         Prt( player, ChatColor.GREEN + "============================" );
+    }
+    
+    public void ToCSV( List<String>stone ) throws IOException {
+        try {
+            File cvsFile = new File( plugin.getDataFolder() + File.separator + "data.csv" );
+            //  cvs Header を作成
+            try (PrintWriter pw = new PrintWriter( new BufferedWriter( new FileWriter( cvsFile ) ) )) {
+                //  cvs Header を作成
+                String Header = "UserName";
+                Header = stone.stream().map( ( s ) -> "," + s ).reduce( Header, String::concat );
+                pw.println( Header );
+                
+                File folder;
+                folder = new File( plugin.getDataFolder() + File.separator + "users" + File.separator );
+                File files[] = folder.listFiles();
+                
+                for( File file : files ) {
+                    String DataStr = Bukkit.getOfflinePlayer( UUID.fromString( getPreffix( file.getName() ) ) ).getName();
+                    DataStr = stone.stream().map( ( s ) -> "," + getCount( file.getName(), s )).reduce( DataStr, String::concat );
+                    pw.println( DataStr );
+                }
+            }
+        } catch ( IOException e ) {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Failed to output file !!" );
+        }
     }
 }

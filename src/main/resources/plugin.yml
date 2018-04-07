@@ -20,3 +20,7 @@ commands:
             /<command> status [PlayerName]
             /<command> get
             /<command> update
+permissions:
+    Premises.admin:
+        description: Command Permission
+        default: op

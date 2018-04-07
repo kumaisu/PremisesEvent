@@ -5,9 +5,12 @@
  */
 package com.mycompany.premisesevent;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -226,7 +229,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             return true;
         }
 
-        if ( cmd.getName().equalsIgnoreCase( "pstatus" ) ) {
+        if ( cmd.getName().equalsIgnoreCase( "pstatus" ) && ( player == null || player.hasPermission( "Premises.admin" ) ) ) {
             config.Status();
             return true;
         }
@@ -236,7 +239,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             return false;
         }
 
-        if ( cmd.getName().equalsIgnoreCase( "Premises" ) ) {
+        if ( cmd.getName().equalsIgnoreCase( "Premises" ) && player.hasPermission( "Premises.admin" ) ) {
             if ( args.length > 0 ) {
                 /*
                 /<command> join
@@ -244,6 +247,16 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 /<command> take
                 */
                 switch ( args[0] ) {
+                    case "cvs":
+                        TopList TL = new TopList( this );
+                        {
+                            try {
+                                TL.ToCSV( config.getStones() );
+                            } catch ( IOException ex ) {
+                                Logger.getLogger( PremisesEvent.class.getName() ).log( Level.SEVERE, null, ex );
+                            }
+                        }
+                        return true;
                     case "get":
                         if ( pc.get( player.getUniqueId() ).getEntry() ) return pc.get( player.getUniqueId() ).itemget( player, config.getRePresent() );
                         return true;
