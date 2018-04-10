@@ -20,6 +20,7 @@ commands:
             /<command> status [PlayerName]
             /<command> get
             /<command> update
+            /<command> csv
 permissions:
     Premises.admin:
         description: Command Permission

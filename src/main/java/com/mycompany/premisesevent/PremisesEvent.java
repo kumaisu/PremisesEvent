@@ -41,12 +41,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class PremisesEvent extends JavaPlugin implements Listener {
 
     private Config config;
+    private String EventName;
     private final Map<UUID, PlayerControl> pc = new HashMap<>();
 
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents( this, this );
         config = new Config( this );
+        EventName = config.getEventName();
     }
 
     @EventHandler
@@ -56,7 +58,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         pc.put( p.getUniqueId(), new PlayerControl( ( Plugin ) this ) );
         pc.get( p.getUniqueId() ).setDisplayName( p.getDisplayName() );
         pc.get( p.getUniqueId() ).setUUID( p.getUniqueId() );
-        pc.get( p.getUniqueId() ).load();
+        pc.get( p.getUniqueId() ).load( EventName );
         
         if ( pc.get( p.getUniqueId() ).getEntry() ) {
             pc.get( p.getUniqueId() ).ScoreBoardEntry( p );
@@ -88,7 +90,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.YELLOW + "[Premises] " + player.getDisplayName() + " logged out, Saved the Score" );
 
-        pc.get( player.getUniqueId() ).save();
+        pc.get( player.getUniqueId() ).save( EventName );
     }
 
     @EventHandler
@@ -196,7 +198,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, config.getRePresent() );
                     break;
                 case "[P-Join]":
-                    pc.get( player.getUniqueId() ).JoinPlayer( player );
+                    pc.get( player.getUniqueId() ).JoinPlayer( player, EventName );
                     break;
                 case "[P-Status]":
                     if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).getStatus( player );
@@ -205,7 +207,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     if ( pc.get( player.getUniqueId() ).getEntry() ) ToolUpdate( player );
                     break;
                 case "[P-TOP]":
-                    TopList TL = new TopList( this );
+                    TopList TL = new TopList( this, EventName );
                     TL.Top( player );
                     break;
                 default:
@@ -221,10 +223,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
             Bukkit.getServer().getOnlinePlayers().stream().filter( ( onPlayer ) -> ( pc.get( onPlayer.getUniqueId() ).getEntry() ) ).forEachOrdered( ( onPlayer ) -> {
                 Bukkit.getServer().getConsoleSender().sendMessage( onPlayer.getDisplayName() + "is Online Event[" + ( pc.get( onPlayer.getUniqueId() ).getEntry() ? "true":"false" ) + "]" );
-                pc.get( onPlayer.getUniqueId() ).save();
+                pc.get( onPlayer.getUniqueId() ).save( EventName );
             } );
 
-            TopList TL = new TopList( this );
+            TopList TL = new TopList( this, EventName );
             TL.Top( player );
             return true;
         }
@@ -247,8 +249,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 /<command> take
                 */
                 switch ( args[0] ) {
-                    case "cvs":
-                        TopList TL = new TopList( this );
+                    case "csv":
+                        TopList TL = new TopList( this, EventName );
                         {
                             try {
                                 TL.ToCSV( config.getStones() );
@@ -264,7 +266,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         if ( pc.get( player.getUniqueId() ).getEntry() ) ToolUpdate( player );
                         return true;
                     case "join":
-                        return pc.get( player.getUniqueId() ).JoinPlayer( player );
+                        return pc.get( player.getUniqueId() ).JoinPlayer( player, EventName );
                     case "status":
                         if ( pc.get( player.getUniqueId() ).getEntry() ) {
                             UUID uuid;
@@ -278,7 +280,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                                     pc.put( uuid, new PlayerControl( ( Plugin ) this ) );
                                     pc.get( uuid ).setDisplayName( op.getName() );
                                     pc.get( uuid ).setUUID( op.getUniqueId() );
-                                    pc.get( uuid ).load();
+                                    pc.get( uuid ).load( EventName );
                                 } else {
                                     player.sendMessage( ChatColor.RED + "This Player is not joined to server." );
                                     return false;

@@ -77,9 +77,9 @@ public class PlayerControl {
     /*
      * 設定をロードします
      */
-    public boolean load() {
+    public boolean load( String EN ) {
         // 設定ファイルを保存
-        File dataFolder = new File( plugin.getDataFolder() + File.separator + "users" );
+        File dataFolder = new File( plugin.getDataFolder() + File.separator + EN + File.separator + "users" );
         File UKfile = new File( dataFolder, uuid + ".yml" );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
 
@@ -99,8 +99,8 @@ public class PlayerControl {
         return true;
     }
     
-    public void save() {
-        File dataFolder = new File( plugin.getDataFolder() + File.separator + "users" );
+    public void save( String EN ) {
+        File dataFolder = new File( plugin.getDataFolder() + File.separator + EN + File.separator + "users" );
         if( !dataFolder.exists() ) { dataFolder.mkdir(); }
 
         File UKfile = new File( dataFolder, uuid + ".yml" );
@@ -126,7 +126,7 @@ public class PlayerControl {
         // player.sendMessage( ChatColor.AQUA + "Data Saved" );
     }
     
-    public boolean JoinPlayer( Player p ) {
+    public boolean JoinPlayer( Player p, String EN ) {
         
         if ( getEntry() ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
@@ -141,7 +141,7 @@ public class PlayerControl {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         FirstDate = sdf.format( new Date() );
-        save();
+        save( EN );
         ScoreBoardEntry( p );
         EntryFlag = true;
         p.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );

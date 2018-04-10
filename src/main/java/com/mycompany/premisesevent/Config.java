@@ -118,6 +118,10 @@ public class Config {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=======================" );
     }
     
+    public String getEventName() {
+        return config.getString( "EventName" );
+    }
+
     public List getStones() {
         return stones;
     }

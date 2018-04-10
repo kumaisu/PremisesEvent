@@ -31,9 +31,11 @@ import org.bukkit.plugin.Plugin;
 public class TopList {
 
     private final Plugin plugin;
+    private final String EventName;
 
-    public TopList( Plugin plugin ) {
+    public TopList( Plugin plugin, String EN ) {
         this.plugin = plugin;
+        EventName = EN;
     }
 
     public static String getPreffix( String fileName ) {
@@ -48,7 +50,7 @@ public class TopList {
     }
 
     public int getScore( String filename ) {
-        File getFile = new File( plugin.getDataFolder() + File.separator + "users" + File.separator + filename );
+        File getFile = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator + filename );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( getFile );
 
         if( !getFile.exists() ) { return 0; }
@@ -57,7 +59,7 @@ public class TopList {
     }
 
     public int getCount( String filename, String StoneName ) {
-        File getFile = new File( plugin.getDataFolder() + File.separator + "users" + File.separator + filename );
+        File getFile = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator + filename );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( getFile );
 
         if( !getFile.exists() ) { return 0; }
@@ -80,7 +82,7 @@ public class TopList {
 
         Map<String, Integer> rank = new HashMap<>();
         File folder;
-        folder = new File( plugin.getDataFolder() + File.separator + "users" + File.separator );
+        folder = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator );
         File files[] = folder.listFiles();
 
         // 1.File からスコアの取り出しし、マッピングする
@@ -113,20 +115,20 @@ public class TopList {
     
     public void ToCSV( List<String>stone ) throws IOException {
         try {
-            File cvsFile = new File( plugin.getDataFolder() + File.separator + "data.csv" );
+            File cvsFile = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "data.csv" );
             //  cvs Header を作成
             try (PrintWriter pw = new PrintWriter( new BufferedWriter( new FileWriter( cvsFile ) ) )) {
                 //  cvs Header を作成
-                String Header = "UserName";
+                String Header = "UserName,Score";
                 Header = stone.stream().map( ( s ) -> "," + s ).reduce( Header, String::concat );
                 pw.println( Header );
                 
                 File folder;
-                folder = new File( plugin.getDataFolder() + File.separator + "users" + File.separator );
+                folder = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator );
                 File files[] = folder.listFiles();
                 
                 for( File file : files ) {
-                    String DataStr = Bukkit.getOfflinePlayer( UUID.fromString( getPreffix( file.getName() ) ) ).getName();
+                    String DataStr = Bukkit.getOfflinePlayer( UUID.fromString( getPreffix( file.getName() ) ) ).getName() + "," + getScore( file.getName() );
                     DataStr = stone.stream().map( ( s ) -> "," + getCount( file.getName(), s )).reduce( DataStr, String::concat );
                     pw.println( DataStr );
                 }

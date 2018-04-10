@@ -1,5 +1,6 @@
 #   Whether to perform a field check
 #   If it is false, it will be the entire server
+EventName: EventName
 Field: true
 World: world
 AreaPos1: 200,50,100
