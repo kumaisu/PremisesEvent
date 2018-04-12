@@ -166,5 +166,13 @@ public class Config {
 
         return true;
     }
+    
+    public boolean FreeBreak() {
+        return config.getBoolean( "FreeBreak" );
+    }
+    
+    public boolean ToolBreak() {
+        return config.getBoolean( "ToolBreak" );
+    }
 
 }

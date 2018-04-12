@@ -96,9 +96,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @EventHandler
     public void onBlockPlace( BlockPlaceEvent event ) {
         Player player = event.getPlayer();
-        if ( !pc.get( player.getUniqueId() ).getEntry() ) return;
-        if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
         if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
+        if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
+        if ( !pc.get( player.getUniqueId() ).getEntry() ) {
+            if ( !config.FreeBreak() )  event.setCancelled( true );
+            return;
+        }
 
         Block block = event.getBlock();
         String blockName = getStoneName( block );
@@ -119,13 +122,31 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @EventHandler
     public void onBlockBreak( BlockBreakEvent event ) {
         Player player = event.getPlayer();
-        if ( !pc.get( player.getUniqueId() ).getEntry() ) return;
-        if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
         if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
+        if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
+        if ( !pc.get( player.getUniqueId() ).getEntry() ) {
+            if ( !config.FreeBreak() ) event.setCancelled( true );
+            return;
+        }
 
         Block block = event.getBlock();
         Material material = block.getType();
         String blockName = getStoneName( block );
+        ItemStack item = player.getInventory().getItemInMainHand();
+
+        /*
+        #   Free Block Break
+        #   true = All Player
+        #   false = EntryPlayer Only
+        FreeBreak: true
+
+        #   Special Pickaxe Only Break
+        ToolBreak: false
+        */
+        if ( config.ToolBreak() && ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( "§bイベントつるはし" ) ) ) {
+            event.setCancelled( true );
+            return;
+        }
 
         if ( config.getStones().contains( blockName ) ) {
             /* これを表示すると、サーバーコンソールがこのログで埋まってしまうので注意
@@ -145,8 +166,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         player.setPlayerListName( ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
 
-        ItemStack item = player.getInventory().getItemInMainHand();
-        
         if ( item.getType() == Material.AIR ) return;
         
         if ( item.getItemMeta().hasDisplayName() ) {

@@ -6,6 +6,14 @@ World: world
 AreaPos1: 200,50,100
 AreaPos2: 100,2,200
 
+#   Free Block Break
+#   true = All Player
+#   false = EntryPlayer Only
+FreeBreak: true
+
+#   Special Pickaxe Only Break
+ToolBreak: false
+
 #   Required score for redistributing gift Tool Items
 RePresent: 2000
 
