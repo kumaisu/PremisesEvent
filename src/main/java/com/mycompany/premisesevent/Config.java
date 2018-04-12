@@ -31,6 +31,10 @@ public class Config {
     private int UpCost;
     private double Repair;
     private boolean Field;
+    private String EventToolName;
+    private boolean FreeBreak;
+    private boolean ToolBreak;
+    private String EventName;
     private String Event_World;
     private int Event_X1;
     private int Event_X2;
@@ -66,12 +70,16 @@ public class Config {
             stones.add( param[0] );
         }
 
+        EventName = config.getString( "EventName" );
         Field = config.getBoolean( "Field" );
         RePresent = config.getInt( "RePresent" );
         UpCost = config.getInt( "UpdateCost" );
         Repair = config.getDouble( "Repair" );
         OPMode = config.getBoolean( "CreativeCount" );
-
+        EventToolName = config.getString( "EventToolName" );
+        FreeBreak = config.getBoolean( "FreeBreak" );
+        ToolBreak = config.getBoolean( "ToolBreak" );
+        
         Event_World = config.getString( "World" );
 
         String pos = config.getString( "AreaPos1" );
@@ -107,19 +115,26 @@ public class Config {
 
     public void Status() {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=== Premises Status ===" );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Field     : " + ( Field ? "TRUE":"FALSE" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "RePresent : " + RePresent );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Repair    : " + Repair );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "EventName : " + ChatColor.YELLOW + EventName );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "RePresent : " + ChatColor.YELLOW + RePresent );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "UpdateCost: " + ChatColor.YELLOW + UpCost );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Repair    : " + ChatColor.YELLOW + Repair );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "FreeBreak : " + ChatColor.YELLOW + ( FreeBreak ? "TRUE":"FALSE" ) );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ToolBreak : " + ChatColor.YELLOW + ( ToolBreak ? "TRUE":"FALSE" ) );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Creative  : " + ChatColor.YELLOW + ( OPMode ? "TRUE":"FALSE" ) );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ToolName  : " + EventToolName );
+        
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Field     : " + ChatColor.YELLOW + ( Field ? "TRUE":"FALSE" ) );
         if ( Field ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Check World: " + Event_World );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area1 X=" + Event_X1 + ",Y=" + Event_Y1 + ",Z=" + Event_Z1 );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area2 X=" + Event_X2 + ",Y=" + Event_Y2 + ",Z=" + Event_Z2 );
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World );
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + Event_X1 + ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + Event_Y1 + ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z1 );
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + Event_X2 + ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + Event_Y2 + ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2 );
         }
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=======================" );
     }
     
     public String getEventName() {
-        return config.getString( "EventName" );
+        return EventName;
     }
 
     public List getStones() {
@@ -131,6 +146,10 @@ public class Config {
             return GetPoint.get( sd );
         }
         return 0;
+    }
+    
+    public String getEventToolName() {
+        return EventToolName;
     }
     
     public int getRePresent() {
@@ -168,11 +187,11 @@ public class Config {
     }
     
     public boolean FreeBreak() {
-        return config.getBoolean( "FreeBreak" );
+        return FreeBreak;
     }
     
     public boolean ToolBreak() {
-        return config.getBoolean( "ToolBreak" );
+        return ToolBreak;
     }
 
 }

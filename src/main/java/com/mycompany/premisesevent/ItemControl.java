@@ -55,20 +55,21 @@ public class ItemControl {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "Successfully gifted present tool." );
     }
     
-    public void ItemUpdate( Player player, ItemStack itemstack ) {
+    public void ItemUpdate( Player player, ItemStack itemstack, String ToolName, Material tool ) {
         List<String> lores = new ArrayList();
 
         if ( itemstack == null ) {
-            ItemStack is = new ItemStack(Material.IRON_PICKAXE, 1);
-            is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 6 );            // Efficiency 
+            //  ItemStack is = new ItemStack( Material.IRON_PICKAXE, 1);
+            ItemStack is = new ItemStack( tool, 1);
+            is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 5 );            // Efficiency 
             is.addUnsafeEnchantment( Enchantment.DURABILITY, 0 );           // Unbreaking
             is.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, 0 );       // Infinity
         
-            lores.add( "§7効率強化 Ⅵ" );
+            lores.add( "§7効率強化 Ⅴ" );
             lores.add( "§d整地イベント参加賞" );
 
             ItemMeta im = is.getItemMeta();             //ItemStackから、ItemMetaを取得
-            im.setDisplayName( "§bイベントつるはし" );  //Item名を設定
+            im.setDisplayName( ToolName );              //Item名を設定
             im.setLore( lores );                        //loreを設定します。
             im.addItemFlags( ItemFlag.HIDE_ENCHANTS );  //本来のエンチャント情報を隠す
             is.setItemMeta(im);                         //元のItemStackに、変更したItemMetaを設定

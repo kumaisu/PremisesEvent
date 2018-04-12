@@ -18,7 +18,7 @@ ToolBreak: false
 RePresent: 2000
 
 #   Score required for event tool update
-UpdateCost: 200
+UpdateCost: 0
 
 #   CreativeCount True = no Count False = Alwayes Count
 CreativeCount: true
@@ -27,6 +27,7 @@ CreativeCount: true
 Repair: 0.1
 
 #   Present Tool Item Setting
+EventToolName: §bイベントツール
 Present:
     - diamond-pickaxe,イベント参加賞,34-5,35-5
 

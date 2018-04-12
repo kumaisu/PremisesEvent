@@ -16,9 +16,11 @@ import java.util.UUID;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -32,6 +34,7 @@ import org.bukkit.scoreboard.Scoreboard;
 public class PlayerControl {
 
     private final Plugin plugin;
+    private final Config config;
     
     /*
     スコアボードコントロール
@@ -54,9 +57,10 @@ public class PlayerControl {
     private boolean UpdateFlag;
     private final Map<String,Integer> BlockCount = new HashMap<>();
 
-    public PlayerControl( Plugin plugin ) {
+    public PlayerControl( Plugin plugin, Config config ) {
         this.plugin = plugin;
         this.PlayerScore = 0;
+        this.config = config;
     }
 
     public void setUUID( UUID setuuid ) {
@@ -77,9 +81,9 @@ public class PlayerControl {
     /*
      * 設定をロードします
      */
-    public boolean load( String EN ) {
+    public boolean load() {
         // 設定ファイルを保存
-        File dataFolder = new File( plugin.getDataFolder() + File.separator + EN + File.separator + "users" );
+        File dataFolder = new File( plugin.getDataFolder() + File.separator + config.getEventName() + File.separator + "users" );
         File UKfile = new File( dataFolder, uuid + ".yml" );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
 
@@ -99,8 +103,8 @@ public class PlayerControl {
         return true;
     }
     
-    public void save( String EN ) {
-        File dataFolder = new File( plugin.getDataFolder() + File.separator + EN + File.separator + "users" );
+    public void save() {
+        File dataFolder = new File( plugin.getDataFolder() + File.separator + config.getEventName() + File.separator + "users" );
         if( !dataFolder.exists() ) { dataFolder.mkdir(); }
 
         File UKfile = new File( dataFolder, uuid + ".yml" );
@@ -126,7 +130,7 @@ public class PlayerControl {
         // player.sendMessage( ChatColor.AQUA + "Data Saved" );
     }
     
-    public boolean JoinPlayer( Player p, String EN ) {
+    public boolean JoinPlayer( Player p ) {
         
         if ( getEntry() ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
@@ -141,24 +145,26 @@ public class PlayerControl {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         FirstDate = sdf.format( new Date() );
-        save( EN );
+        save();
         ScoreBoardEntry( p );
         EntryFlag = true;
         p.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );
 
         ItemControl ic = new ItemControl( plugin );
         ic.ItemPresent( p );
-        ic.ItemUpdate( p, null );
+        ic.ItemUpdate( p, null,config.getEventToolName(), Material.IRON_PICKAXE );
+        ic.ItemUpdate( p, null, config.getEventToolName(), Material.IRON_SPADE );
 
         Bukkit.broadcastMessage( ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
 
         return true;
     }
     
-    public boolean itemget( Player player, int Rep ) {
+    public boolean itemget( Player player ) {
+        int Rep = config.getRePresent();
         if ( getScore() > Rep ) {
             ItemControl ic = new ItemControl( plugin );
-            ic.ItemUpdate( player, null );
+            ic.ItemUpdate( player, null, config.getEventToolName(),Material.IRON_PICKAXE );
             addScore( -Rep );
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Redistributing update tools !!" );
             return true;
@@ -168,6 +174,39 @@ public class PlayerControl {
         }
     }
 
+    public void ToolUpdate( Player player ) {
+
+        if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) return;
+
+        int Rep = config.getUpCost();
+        if ( getScore() > Rep ) {
+            ItemStack item = player.getInventory().getItemInMainHand();
+
+            if ( item.getItemMeta().hasDisplayName() ) {
+                if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) {
+                    double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );
+                    if ( CheckDurability <= item.getDurability() ) {
+                        ItemControl ic = new ItemControl( plugin );
+                        player.getInventory().setItemInMainHand( null );
+                        ic.ItemUpdate( player, item, config.getEventToolName(), null );
+                        addScore( -Rep );
+                        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Tool Update !!" );
+                    } else {
+                        player.sendMessage(
+                            ChatColor.YELLOW + "ツール耐久値は " +
+                            ChatColor.WHITE + ( item.getType().getMaxDurability() - item.getDurability() ) +
+                            ChatColor.YELLOW + " なので " +
+                            ChatColor.WHITE + ( (int) ( item.getType().getMaxDurability() - CheckDurability ) ) +
+                            ChatColor.YELLOW + " 以下にしてね"
+                        );
+                    }
+                }
+            }
+        } else {
+            player.sendMessage( ChatColor.RED + "Scoreが足りないのでアップデートできません" );
+        }
+    }
+    
     public boolean getEntry() {
         return EntryFlag;
     }
