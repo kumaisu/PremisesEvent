@@ -152,21 +152,23 @@ public class PlayerControl {
 
         ItemControl ic = new ItemControl( plugin );
         ic.ItemPresent( p );
-        ic.ItemUpdate( p, null,config.getEventToolName(), Material.IRON_PICKAXE );
-        ic.ItemUpdate( p, null, config.getEventToolName(), Material.IRON_SPADE );
+        for( int i = 0; i<config.getTools().size(); i++ ) {
+            //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "Config Tool Name : " + config.getTools().get( i ) );
+            ic.ItemUpdate( p, null, config.getEventToolName(), Material.getMaterial( config.getTools().get( i ).toString() ) );
+        }
 
         Bukkit.broadcastMessage( ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
 
         return true;
     }
     
-    public boolean itemget( Player player ) {
+    public boolean itemget( Player player, Material Tool ) {
         int Rep = config.getRePresent();
         if ( getScore() > Rep ) {
             ItemControl ic = new ItemControl( plugin );
-            ic.ItemUpdate( player, null, config.getEventToolName(),Material.IRON_PICKAXE );
+            ic.ItemUpdate( player, null, config.getEventToolName(), Tool );
             addScore( -Rep );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Redistributing update tools !!" );
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Tool.name() + " update tools !!" );
             return true;
         } else {
             player.sendMessage( ChatColor.RED + "Scoreが足りないので配布できません" );

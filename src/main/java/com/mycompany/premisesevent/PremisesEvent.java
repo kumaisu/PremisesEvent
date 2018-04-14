@@ -73,8 +73,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
                 Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.YELLOW + p.getDisplayName() + " for RePresent Tool" );
                 p.sendMessage( ChatColor.YELLOW + "イベントツールの再配布" );
-                ic.ItemUpdate( p, null, config.getEventToolName(), Material.IRON_PICKAXE );
-                ic.ItemUpdate( p, null, config.getEventToolName(), Material.IRON_SPADE );
+                for( int i = 0; i<config.getTools().size(); i++ ) {
+                    ic.ItemUpdate( p, null, config.getEventToolName(), Material.getMaterial( config.getTools().get( i ).toString() ) );
+                }
             }
         
             //  暫定で強制的に再配布フラグを消すため
@@ -121,21 +122,29 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @EventHandler
     public void onBlockBreak( BlockBreakEvent event ) {
         Player player = event.getPlayer();
-        if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
-        if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
+
         if ( !pc.get( player.getUniqueId() ).getEntry() ) {
-            if ( !config.FreeBreak() ) event.setCancelled( true );
+            if ( !config.FreeBreak() ) {
+                player.sendMessage( ChatColor.RED + "イベントに参加してください" );
+                event.setCancelled( true );
+            }
             return;
         }
+
+        if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
+        if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
 
         Block block = event.getBlock();
         Material material = block.getType();
         String blockName = getStoneName( block );
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if ( config.ToolBreak() && ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) ) {
-            event.setCancelled( true );
-            return;
+        if ( config.ToolBreak() ) {
+            if ( item.getItemMeta().getDisplayName()==null || !item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) )  {
+                player.sendMessage( ChatColor.RED + "指定ツールで行ってください" );
+                event.setCancelled( true );
+                return;
+            }
         }
 
         if ( config.getStones().contains( blockName ) ) {
@@ -175,7 +184,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Sign sign = (Sign) clickedBlock.getState();
             switch ( sign.getLine(0) ) {
                 case "[P-Get]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player );
+                    if ( config.getTools().contains( sign.getLine( 1 ) ) ) {
+                        if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( sign.getLine( 1 ) ) );
+                    } else {
+                        player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
+                    }
                     break;
                 case "[P-Join]":
                     pc.get( player.getUniqueId() ).JoinPlayer( player );
@@ -240,7 +253,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         }
                         return true;
                     case "get":
-                        if ( pc.get( player.getUniqueId() ).getEntry() ) return pc.get( player.getUniqueId() ).itemget( player );
+                        if ( ( args.length>1 ) && ( config.getTools().contains( args[1] ) ) ) {
+                            if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( args[1] ) );
+                        } else {
+                            player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
+                        }
                         return true;
                     case "update":
                         if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player );

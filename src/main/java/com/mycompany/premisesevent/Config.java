@@ -26,6 +26,7 @@ public class Config {
 
     private final Map< String, Integer > GetPoint = new HashMap<>();
     private List< String > stones;
+    private List< String > tools;
     private boolean OPMode;
     private int RePresent;
     private int UpCost;
@@ -69,6 +70,8 @@ public class Config {
             GetPoint.put( param[0], Integer.valueOf( param[1] ) );
             stones.add( param[0] );
         }
+
+        tools = ( List< String > )config.getList( "Present" );
 
         EventName = config.getString( "EventName" );
         Field = config.getBoolean( "Field" );
@@ -124,6 +127,10 @@ public class Config {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Creative  : " + ChatColor.YELLOW + ( OPMode ? "TRUE":"FALSE" ) );
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ToolName  : " + EventToolName );
         
+        for( int i = 0; i<tools.size(); i++ ) {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ) );
+        }
+
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Field     : " + ChatColor.YELLOW + ( Field ? "TRUE":"FALSE" ) );
         if ( Field ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World );
@@ -192,6 +199,10 @@ public class Config {
     
     public boolean ToolBreak() {
         return ToolBreak;
+    }
+    
+    public List getTools() {
+        return tools;
     }
 
 }
