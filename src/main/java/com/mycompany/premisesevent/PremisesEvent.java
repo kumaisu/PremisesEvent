@@ -90,9 +90,13 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerQuit( PlayerQuitEvent event ) {
         Player player = event.getPlayer();
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.YELLOW + "[Premises] " + player.getDisplayName() + " logged out, Saved the Score" );
+        if ( pc.get( player.getUniqueId() ).getEntry() ) {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.YELLOW + "[Premises] " + player.getDisplayName() + " logged out, Saved the Score" );
 
-        pc.get( player.getUniqueId() ).save();
+            pc.get( player.getUniqueId() ).save();
+        } else {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "[Premises] " + player.getDisplayName() + " logged out, not Save" );
+        }
     }
 
     @EventHandler
@@ -184,10 +188,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Sign sign = (Sign) clickedBlock.getState();
             switch ( sign.getLine(0) ) {
                 case "[P-Get]":
-                    if ( config.getTools().contains( sign.getLine( 1 ) ) ) {
-                        if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( sign.getLine( 1 ) ) );
+                    if ( pc.get( player.getUniqueId() ).getEntry() ) {
+                        if ( config.getTools().contains( sign.getLine( 1 ) ) ) {
+                            if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( sign.getLine( 1 ) ) );
+                        } else {
+                            player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
+                        }
                     } else {
-                        player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
+                        player.sendMessage( ChatColor.RED + "イベント参加者のみです" );
                     }
                     break;
                 case "[P-Join]":
@@ -253,10 +261,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         }
                         return true;
                     case "get":
-                        if ( ( args.length>1 ) && ( config.getTools().contains( args[1] ) ) ) {
-                            if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( args[1] ) );
+                        if ( pc.get( player.getUniqueId() ).getEntry() ) {
+                            if ( ( args.length>1 ) && ( config.getTools().contains( args[1] ) ) ) {
+                                if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( args[1] ) );
+                            } else {
+                                player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
+                            }
                         } else {
-                            player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
+                            player.sendMessage( ChatColor.RED + "イベント参加者のみです" );
                         }
                         return true;
                     case "update":

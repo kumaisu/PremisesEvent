@@ -62,6 +62,7 @@ public class ItemControl {
             //  ItemStack is = new ItemStack( Material.IRON_PICKAXE, 1);
             ItemStack is = new ItemStack( tool, 1);
             is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 5 );            // Efficiency 
+            is.addUnsafeEnchantment( Enchantment.LURE, 5);                  // Lure
             is.addUnsafeEnchantment( Enchantment.DURABILITY, 0 );           // Unbreaking
             is.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, 0 );       // Infinity
         
@@ -82,7 +83,7 @@ public class ItemControl {
             String UpdateMessage;
 
             int ench = itemstack.getItemMeta().getEnchantLevel( Enchantment.ARROW_INFINITE );
-            int digs = itemstack.getItemMeta().getEnchantLevel( Enchantment.DIG_SPEED );
+            int digs = itemstack.getItemMeta().getEnchantLevel( Enchantment.LURE );
 
             if ( ench == 10 ) {
                 if ( digs<10 ) {
@@ -92,6 +93,7 @@ public class ItemControl {
                     ench = 10;
                 }
                 itemstack.addUnsafeEnchantment( Enchantment.DIG_SPEED, digs );
+                itemstack.addUnsafeEnchantment( Enchantment.LURE, digs );
             } else {
                 ench++;
             }
