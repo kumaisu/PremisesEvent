@@ -127,6 +127,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onBlockBreak( BlockBreakEvent event ) {
         Player player = event.getPlayer();
 
+        if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
+        if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
+
         if ( !pc.get( player.getUniqueId() ).getEntry() ) {
             if ( !config.FreeBreak() ) {
                 player.sendMessage( ChatColor.RED + "イベントに参加してください" );
@@ -134,9 +137,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
             return;
         }
-
-        if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
-        if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
 
         Block block = event.getBlock();
         Material material = block.getType();

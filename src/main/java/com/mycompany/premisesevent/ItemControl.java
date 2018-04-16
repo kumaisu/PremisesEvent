@@ -61,19 +61,19 @@ public class ItemControl {
         if ( itemstack == null ) {
             //  ItemStack is = new ItemStack( Material.IRON_PICKAXE, 1);
             ItemStack is = new ItemStack( tool, 1);
-            is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 5 );            // Efficiency 
-            is.addUnsafeEnchantment( Enchantment.LURE, 5);                  // Lure
+            is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 6 );            // Efficiency 
+            is.addUnsafeEnchantment( Enchantment.LURE, 6 );                 // Lure
             is.addUnsafeEnchantment( Enchantment.DURABILITY, 0 );           // Unbreaking
             is.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, 0 );       // Infinity
         
-            lores.add( "§7効率強化 Ⅴ" );
+            lores.add( "§7効率強化 Ⅵ" );
             lores.add( "§d整地イベント参加賞" );
 
-            ItemMeta im = is.getItemMeta();             //ItemStackから、ItemMetaを取得
-            im.setDisplayName( ToolName );              //Item名を設定
-            im.setLore( lores );                        //loreを設定します。
-            im.addItemFlags( ItemFlag.HIDE_ENCHANTS );  //本来のエンチャント情報を隠す
-            is.setItemMeta(im);                         //元のItemStackに、変更したItemMetaを設定
+            ItemMeta im = is.getItemMeta();             //  ItemStackから、ItemMetaを取得
+            im.setDisplayName( ToolName );              //  Item名を設定
+            im.setLore( lores );                        //  loreを設定します。
+            im.addItemFlags( ItemFlag.HIDE_ENCHANTS );  //  本来のエンチャント情報を隠す
+            is.setItemMeta( im );                       //  元のItemStackに、変更したItemMetaを設定
 
             player.getInventory().addItem( is );
             player.sendMessage( ChatColor.GREEN + "イベント用ツールをプレゼントしました" );
@@ -92,12 +92,12 @@ public class ItemControl {
                 } else {
                     ench = 10;
                 }
-                itemstack.addUnsafeEnchantment( Enchantment.DIG_SPEED, digs );
-                itemstack.addUnsafeEnchantment( Enchantment.LURE, digs );
             } else {
                 ench++;
             }
             
+            itemstack.addUnsafeEnchantment( Enchantment.DIG_SPEED, digs );
+            itemstack.addUnsafeEnchantment( Enchantment.LURE, digs );
             itemstack.addUnsafeEnchantment( Enchantment.DURABILITY, ench );
             itemstack.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, ench );
             lores.add( "§7効率強化 " + stringArray[digs] );
