@@ -60,7 +60,7 @@ public class ItemControl {
 
         if ( itemstack == null ) {
             //  ItemStack is = new ItemStack( Material.IRON_PICKAXE, 1);
-            ItemStack is = new ItemStack( tool, 1);
+            ItemStack is = new ItemStack( tool, 1 );
             is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 6 );            // Efficiency 
             is.addUnsafeEnchantment( Enchantment.LURE, 6 );                 // Lure
             is.addUnsafeEnchantment( Enchantment.DURABILITY, 0 );           // Unbreaking

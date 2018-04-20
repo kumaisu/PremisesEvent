@@ -77,7 +77,7 @@ public class Config {
         Field = config.getBoolean( "Field" );
         RePresent = config.getInt( "RePresent" );
         UpCost = config.getInt( "UpdateCost" );
-        Repair = config.getDouble( "Repair" );
+        Repair = 1 - config.getDouble( "Repair" );
         OPMode = config.getBoolean( "CreativeCount" );
         EventToolName = config.getString( "EventToolName" );
         FreeBreak = config.getBoolean( "FreeBreak" );
@@ -165,6 +165,10 @@ public class Config {
     
     public int getUpCost() {
         return UpCost;
+    }
+    
+    public double getRepair() {
+        return Repair;
     }
     
     public boolean GetField() {
