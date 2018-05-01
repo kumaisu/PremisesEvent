@@ -181,20 +181,7 @@ public class Config {
 
     public boolean CheckArea( Location loc ) {
         if ( !loc.getWorld().getName().equals( Event_World ) ) return false;
-        if ( loc.getBlockX()<Event_X1 || loc.getBlockX()>Event_X2 ) return false;
-        if ( loc.getBlockY()<Event_Y1 || loc.getBlockY()>Event_Y2 ) return false;
-        if ( loc.getBlockZ()<Event_Z1 || loc.getBlockZ()>Event_Z2 ) return false;
-
-        /*
-        Bukkit.getServer().getConsoleSender().sendMessage(
-                "Loc = " + loc.getWorld().getName() +
-                "X(" + loc.getBlockX() +
-                ")Y(" + loc.getBlockY() +
-                ")Z(" + loc.getBlockZ() + ")"
-        );
-        */
-
-        return true;
+        return !( ( loc.getBlockX()<Event_X1 || loc.getBlockX()>Event_X2 ) || ( loc.getBlockY()<Event_Y1 || loc.getBlockY()>Event_Y2 ) || ( loc.getBlockZ()<Event_Z1 || loc.getBlockZ()>Event_Z2 ) );
     }
     
     public boolean FreeBreak() {
