@@ -143,7 +143,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         String blockName = getStoneName( block );
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if ( config.ToolBreak() ) {
+        
+        if ( config.ToolBreak() && !( item.getType() == Material.TORCH ) ) {
             if ( item.getItemMeta().getDisplayName()==null || !item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) )  {
                 player.sendMessage( ChatColor.RED + "指定ツールで行ってください" );
                 event.setCancelled( true );
