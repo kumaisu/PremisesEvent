@@ -158,6 +158,7 @@ public class PlayerControl {
         }
 
         Bukkit.broadcastMessage( ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
 
         return true;
     }

@@ -91,11 +91,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onPlayerQuit( PlayerQuitEvent event ) {
         Player player = event.getPlayer();
         if ( pc.get( player.getUniqueId() ).getEntry() ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.YELLOW + "[Premises] " + player.getDisplayName() + " logged out, Saved the Score" );
+            Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + " logged out, Saved the Score" );
 
             pc.get( player.getUniqueId() ).save();
+            pc.remove( player.getUniqueId() );
         } else {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "[Premises] " + player.getDisplayName() + " logged out, not Save" );
+            Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + " logged out, not Save" );
         }
     }
 
