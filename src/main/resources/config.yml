@@ -11,7 +11,7 @@ AreaPos2: 100,2,200
 #   false = EntryPlayer Only
 FreeBreak: true
 
-#   Special Pickaxe Only Break
+#   Special Tools Only Break
 ToolBreak: false
 
 #   Required score for redistributing gift Tool Items

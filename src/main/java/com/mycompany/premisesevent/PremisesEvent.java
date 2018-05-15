@@ -96,7 +96,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             pc.get( player.getUniqueId() ).save();
             pc.remove( player.getUniqueId() );
         } else {
-            Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + " logged out, not Save" );
+            Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.LIGHT_PURPLE + " logged out, not Save" );
         }
     }
 
@@ -145,8 +145,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         ItemStack item = player.getInventory().getItemInMainHand();
 
         
-        if ( config.ToolBreak() && !( item.getType() == Material.TORCH ) ) {
-            if ( item.getItemMeta().getDisplayName()==null || !item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) )  {
+        if ( config.ToolBreak() && ( item.getType() != Material.TORCH ) ) {
+            //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.YELLOW + "Tool Chek !!" );
+            //  トーチかイベントツール意外なら
+            if (
+                    ( item.getType() == Material.AIR ) ||
+                    ( item.getItemMeta().getDisplayName() == null ) ||
+                    ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) 
+               ) {
                 player.sendMessage( ChatColor.RED + "指定ツールで行ってください" );
                 event.setCancelled( true );
                 return;
