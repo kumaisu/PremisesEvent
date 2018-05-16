@@ -71,6 +71,10 @@ public class PlayerControl {
         DisplayName = name;
     }
     
+    public String getDisplayName() {
+        return DisplayName;
+    }
+    
     public void ScoreBoardEntry( Player player ) {
         obj.setDisplayName( "Mining Count" );
         obj.setDisplaySlot( DisplaySlot.SIDEBAR );
@@ -193,7 +197,6 @@ public class PlayerControl {
                         player.getInventory().setItemInMainHand( null );
                         ic.ItemUpdate( player, item, config.getEventToolName(), null );
                         addScore( -Rep );
-                        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Tool Update !!" );
                     } else {
                         player.sendMessage(
                             ChatColor.YELLOW + "ツール耐久値は " +
@@ -203,11 +206,9 @@ public class PlayerControl {
                             ChatColor.YELLOW + " 以下にしてね"
                         );
                     }
-                }
-            }
-        } else {
-            player.sendMessage( ChatColor.RED + "Scoreが足りないのでアップデートできません" );
-        }
+                } else player.sendMessage( ChatColor.YELLOW + "ツール名が違います" );
+            } else player.sendMessage( ChatColor.YELLOW + "イベント用のツールではありません" );
+        } else player.sendMessage( ChatColor.RED + "Scoreが足りないのでアップデートできません" );
     }
     
     public boolean getEntry() {

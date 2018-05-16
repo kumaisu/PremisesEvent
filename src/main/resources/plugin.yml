@@ -18,8 +18,9 @@ commands:
         usage: |
             /<command> join
             /<command> status [PlayerName]
-            /<command> get
+            /<command> get [Item Material]
             /<command> update
+            /<command> check
             /<command> csv
 permissions:
     Premises.admin:

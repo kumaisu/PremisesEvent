@@ -88,14 +88,14 @@ public class ItemControl {
             player.sendMessage( ChatColor.GREEN + "イベント用ツールをプレゼントしました" );
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "Successfully gifted update tool." );
         } else {
-            String[] stringArray = { "", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ" };
+            String[] stringArray = { "", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "ⅩⅠ" };
             String UpdateMessage;
 
             int ench = itemstack.getItemMeta().getEnchantLevel( Enchantment.ARROW_INFINITE );
             int digs = itemstack.getItemMeta().getEnchantLevel( Enchantment.LURE );
 
             if ( ench == 10 ) {
-                if ( digs<10 ) {
+                if ( digs < 10 ) {
                     digs++;
                     ench = 0;
                 } else {
@@ -117,14 +117,24 @@ public class ItemControl {
             }
             lores.add( "§d整地イベント参加賞" );
 
-            ItemMeta im = itemstack.getItemMeta();      //ItemStackから、ItemMetaを取得
-            im.setLore( lores );                        //loreを設定します。
-            itemstack.setItemMeta(im);                  //元のItemStackに、変更したItemMetaを設定
+            ItemMeta im = itemstack.getItemMeta();      //  ItemStackから、ItemMetaを取得
+            im.setLore( lores );                        //  loreを設定します。
+            itemstack.setItemMeta(im);                  //  元のItemStackに、変更したItemMetaを設定
 
             itemstack.setDurability( (short) 0 );
 
             player.getInventory().addItem( itemstack );
             player.sendMessage( ChatColor.AQUA + "イベント用ツールを[" + UpdateMessage + ChatColor.AQUA + "]にアップデートしました" );
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Tool Update !![" + UpdateMessage + "]"  );
         }
+    }
+    
+    public void ShowItemStatus( Player player ) {
+            ItemStack PlayerItem = player.getInventory().getItemInMainHand();
+            player.sendMessage( ChatColor.GREEN + "Detect Enchant..." );
+            player.sendMessage( "効率強化 : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.DIG_SPEED ) );
+            player.sendMessage( "耐久力   : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.DURABILITY ) );
+            player.sendMessage( "入れ食い : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.LURE ) );
+            player.sendMessage( "無限     : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.ARROW_INFINITE ) );
     }
 }

@@ -50,6 +50,16 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         config = new Config( this );
         EventName = config.getEventName();
     }
+    
+    @Override
+    public void onDisable(){
+        Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] Disable processing..." );
+        pc.entrySet().forEach( ( entry ) -> {
+            pc.get( entry.getKey() ).save();
+            Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + pc.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score" );
+        } );
+    }
+    
 
     @EventHandler
     public void onPlayerJoin( PlayerJoinEvent event ){
@@ -150,7 +160,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             //  トーチかイベントツール意外なら
             if (
                     ( item.getType() == Material.AIR ) ||
-                    ( item.getItemMeta().getDisplayName() == null ) ||
+                    ( !item.getItemMeta().hasDisplayName() ) ||
                     ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) 
                ) {
                 player.sendMessage( ChatColor.RED + "指定ツールで行ってください" );
@@ -169,6 +179,21 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             */
             pc.get( player.getUniqueId() ).addScore( config.getPoint( blockName ) );
             pc.get( player.getUniqueId() ).addStoneCount( blockName );
+
+            //  デバッグ（または保守）用、一定数到達記録をコンソールログに残す
+            if ( config.getScoreNotice() > 0 ) {
+                if ( ( pc.get( player.getUniqueId() ).getScore() % config.getScoreNotice() ) == 0 ) {
+                    Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + player.getDisplayName() + " reached " + pc.get( player.getUniqueId() ).getScore() + " points." );
+                }
+            }
+
+            //  ブロードキャスト、一定スコア達成をオンラインプレイヤーに知らせる
+            if ( config.getScoreBroadcast() > 0 ) {
+                if ( ( pc.get( player.getUniqueId() ).getScore() % config.getScoreBroadcast() ) == 0 ) {
+                    Bukkit.broadcastMessage( ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + pc.get( player.getUniqueId() ).getScore() + ChatColor.WHITE + " 点に到達しました" );
+                }
+            }
+
         } else {
             if ( player.isOp() ) Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This [" + ChatColor.GOLD + block.getType().toString() + ChatColor.LIGHT_PURPLE + "] is not a target" );
         }
@@ -200,23 +225,23 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     if ( pc.get( player.getUniqueId() ).getEntry() ) {
                         if ( config.getTools().contains( sign.getLine( 1 ) ) ) {
                             if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( sign.getLine( 1 ) ) );
-                        } else {
-                            player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
-                        }
-                    } else {
-                        player.sendMessage( ChatColor.RED + "イベント参加者のみです" );
-                    }
+                        } else player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
+                    } else player.sendMessage( ChatColor.RED + "イベント参加者のみです" );
                     break;
                 case "[P-Join]":
                     pc.get( player.getUniqueId() ).JoinPlayer( player );
                     break;
                 case "[P-Status]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).getStatus( player );
+                    if ( pc.get( player.getUniqueId() ).getEntry() ) {
+                        pc.get( player.getUniqueId() ).save();
+                        pc.get( player.getUniqueId() ).getStatus( player );
+                    }
                     break;
                 case "[P-Update]":
                     if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player );
                     break;
                 case "[P-TOP]":
+                    if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).save();
                     TopList TL = new TopList( this, EventName );
                     TL.Top( player );
                     break;
@@ -230,6 +255,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Player player = ( sender instanceof Player ? ( Player ) sender:null );
 
         if ( cmd.getName().equalsIgnoreCase( "toplist" ) ) {
+
+            if ( player != null && pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).save();
 
             Bukkit.getServer().getOnlinePlayers().stream().filter( ( onPlayer ) -> ( pc.get( onPlayer.getUniqueId() ).getEntry() ) ).forEachOrdered( ( onPlayer ) -> {
                 Bukkit.getServer().getConsoleSender().sendMessage( onPlayer.getDisplayName() + "is Online Event[" + ( pc.get( onPlayer.getUniqueId() ).getEntry() ? "true":"false" ) + "]" );
@@ -273,12 +300,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         if ( pc.get( player.getUniqueId() ).getEntry() ) {
                             if ( ( args.length>1 ) && ( config.getTools().contains( args[1] ) ) ) {
                                 if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( args[1] ) );
-                            } else {
-                                player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
-                            }
-                        } else {
-                            player.sendMessage( ChatColor.RED + "イベント参加者のみです" );
-                        }
+                            } else player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
+                        } else player.sendMessage( ChatColor.RED + "イベント参加者のみです" );
                         return true;
                     case "update":
                         if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player );
@@ -305,12 +328,22 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                                 }
                             } else {
                                 uuid = player.getUniqueId();
+                                pc.get( uuid ).save();
                             }
                         
                             pc.get( uuid ).getStatus( player );
+                            
+                            if ( player.getUniqueId() != uuid ) pc.remove( uuid );
                         }
 
                         return true;
+                    case "check":
+                        //　持っているアイテムのエンチャント状況をステータス表示する
+                        if ( player.hasPermission( "Premises.admin" ) ) {
+                            ItemControl ic = new ItemControl( this );
+                            ic.ShowItemStatus( player );
+                            return true;
+                        }
                     default:
                         sender.sendMessage( ChatColor.RED + "[Premises] Unknown Command" );
                         return false;

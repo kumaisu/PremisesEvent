@@ -26,6 +26,11 @@ CreativeCount: true
 #   Percentage of endurance value that can be updated ( 0.1 = 10% )
 Repair: 0.1
 
+#   Player's score arrival notice
+#   0(zero) is disable
+ScoreNotice: 10000
+ScoreBroadcast: 100000
+
 #   Present Tool Item Setting
 EventToolName: §bイベントツール
 Present:

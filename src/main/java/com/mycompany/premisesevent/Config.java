@@ -28,6 +28,8 @@ public class Config {
     private List< String > stones;
     private List< String > tools;
     private boolean OPMode;
+    private int ScoreNotice;
+    private int ScoreBroadcast;
     private int RePresent;
     private int UpCost;
     private double Repair;
@@ -75,6 +77,8 @@ public class Config {
 
         EventName = config.getString( "EventName" );
         Field = config.getBoolean( "Field" );
+        ScoreNotice = config.getInt( "ScoreNotice" );
+        ScoreBroadcast = config.getInt( "ScoreBroadcast" );
         RePresent = config.getInt( "RePresent" );
         UpCost = config.getInt( "UpdateCost" );
         Repair = 1 - config.getDouble( "Repair" );
@@ -196,4 +200,11 @@ public class Config {
         return tools;
     }
 
+    public int getScoreNotice() {
+        return ScoreNotice;
+    }
+    
+    public int getScoreBroadcast() {
+        return ScoreBroadcast;
+    }
 }
