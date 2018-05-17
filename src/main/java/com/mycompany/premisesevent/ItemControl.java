@@ -125,7 +125,7 @@ public class ItemControl {
 
             player.getInventory().addItem( itemstack );
             player.sendMessage( ChatColor.AQUA + "イベント用ツールを[" + UpdateMessage + ChatColor.AQUA + "]にアップデートしました" );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Tool Update !![" + UpdateMessage + "]"  );
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + player.getDisplayName() + ChatColor.GOLD + " Tool Update !! [効率強化" + digs + " 耐久力" + ench + "]"  );
         }
     }
     

@@ -101,7 +101,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onPlayerQuit( PlayerQuitEvent event ) {
         Player player = event.getPlayer();
         if ( pc.get( player.getUniqueId() ).getEntry() ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + " logged out, Saved the Score" );
+            Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " logged out, Saved the Score" );
 
             pc.get( player.getUniqueId() ).save();
             pc.remove( player.getUniqueId() );
@@ -181,6 +181,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             pc.get( player.getUniqueId() ).addStoneCount( blockName );
 
             //  デバッグ（または保守）用、一定数到達記録をコンソールログに残す
+            //  不具合や他責によるスコアの未記録時の対応ログとして表示
             if ( config.getScoreNotice() > 0 ) {
                 if ( ( pc.get( player.getUniqueId() ).getScore() % config.getScoreNotice() ) == 0 ) {
                     Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + player.getDisplayName() + " reached " + pc.get( player.getUniqueId() ).getScore() + " points." );
@@ -190,7 +191,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             //  ブロードキャスト、一定スコア達成をオンラインプレイヤーに知らせる
             if ( config.getScoreBroadcast() > 0 ) {
                 if ( ( pc.get( player.getUniqueId() ).getScore() % config.getScoreBroadcast() ) == 0 ) {
-                    Bukkit.broadcastMessage( ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + pc.get( player.getUniqueId() ).getScore() + ChatColor.WHITE + " 点に到達しました" );
+                    Bukkit.broadcastMessage( "<Premises> " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + pc.get( player.getUniqueId() ).getScore() + ChatColor.WHITE + " 点に到達しました" );
                 }
             }
 

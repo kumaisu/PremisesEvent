@@ -161,9 +161,7 @@ public class PlayerControl {
             ic.ItemUpdate( p, null, config.getEventToolName(), Material.getMaterial( config.getTools().get( i ).toString() ) );
         }
 
-        Bukkit.broadcastMessage( ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
-
+        Bukkit.broadcastMessage( "<Premises> " + ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
         return true;
     }
     
