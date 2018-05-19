@@ -13,13 +13,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,6 +35,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -133,7 +139,44 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         player.setPlayerListName( ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
     }
-    
+
+    //指定された場所に花火を打ち上げる関数
+    public static void launchFireWorks( Location loc ) {
+        /*
+	static private FireworkEffect.Type[] types = { FireworkEffect.Type.BALL,
+		FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST,
+		FireworkEffect.Type.CREEPER, FireworkEffect.Type.STAR, };
+        */
+        // 花火を作る
+        Firework firework = loc.getWorld().spawn( loc, Firework.class );
+
+        // 花火の設定情報オブジェクトを取り出す
+        FireworkMeta meta = firework.getFireworkMeta();
+        Builder effect = FireworkEffect.builder();
+
+        // 形状を星型にする
+        effect.with( FireworkEffect.Type.STAR );
+
+        // 基本の色を単色～5色以内でランダムに決める
+        effect.withColor( Color.AQUA );
+
+        // 余韻の色を単色～3色以内でランダムに決める
+        effect.withFade( Color.YELLOW );
+
+        // 爆発後に点滅するかをランダムに決める
+        effect.flicker( true );
+
+        // 爆発後に尾を引くかをランダムに決める
+        effect.trail( true );
+
+        // 打ち上げ高さを1以上4以内でランダムに決める
+        meta.setPower( 1 );
+
+        // 花火の設定情報を花火に設定
+        meta.addEffect( effect.build() );
+        firework.setFireworkMeta( meta );
+    }
+
     @EventHandler
     public void onBlockBreak( BlockBreakEvent event ) {
         Player player = event.getPlayer();
@@ -191,7 +234,16 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             //  ブロードキャスト、一定スコア達成をオンラインプレイヤーに知らせる
             if ( config.getScoreBroadcast() > 0 ) {
                 if ( ( pc.get( player.getUniqueId() ).getScore() % config.getScoreBroadcast() ) == 0 ) {
-                    Bukkit.broadcastMessage( "<Premises> " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + pc.get( player.getUniqueId() ).getScore() + ChatColor.WHITE + " 点に到達しました" );
+                    String SendMessage = "<イベント> " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + pc.get( player.getUniqueId() ).getScore() + ChatColor.WHITE + " 点に到達しました";
+                    Bukkit.broadcastMessage( SendMessage );
+                    launchFireWorks( player.getLocation() );
+                    for( int i = 0; i<config.getBC_Command().size(); i++ ) {
+                        String ExecCommand = config.getBC_Command().get( i ).toString();
+                        ExecCommand = ExecCommand.replace( "%message%", SendMessage );
+                        ExecCommand = ExecCommand.replace( "%player%", player.getDisplayName() );
+                        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + ExecCommand );
+                        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), ExecCommand );
+                    }
                 }
             }
 
@@ -345,6 +397,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                             ic.ShowItemStatus( player );
                             return true;
                         }
+                    case "launch":
+                        launchFireWorks( player.getLocation() );
+                        return true;
                     default:
                         sender.sendMessage( ChatColor.RED + "[Premises] Unknown Command" );
                         return false;

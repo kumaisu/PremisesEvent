@@ -31,6 +31,11 @@ Repair: 0.1
 ScoreNotice: 10000
 ScoreBroadcast: 100000
 
+#   When score set for broadcast, console command execution setting
+BroadcastCommand:
+    - discord broadcast %message%
+    - give %player% BREAD 10
+
 #   Present Tool Item Setting
 EventToolName: §bイベントツール
 Present:

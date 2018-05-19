@@ -27,6 +27,7 @@ public class Config {
     private final Map< String, Integer > GetPoint = new HashMap<>();
     private List< String > stones;
     private List< String > tools;
+    private List< String > bc_command;
     private boolean OPMode;
     private int ScoreNotice;
     private int ScoreBroadcast;
@@ -79,6 +80,7 @@ public class Config {
         Field = config.getBoolean( "Field" );
         ScoreNotice = config.getInt( "ScoreNotice" );
         ScoreBroadcast = config.getInt( "ScoreBroadcast" );
+        bc_command = ( List< String > )config.getList( "BroadcastCommand" );
         RePresent = config.getInt( "RePresent" );
         UpCost = config.getInt( "UpdateCost" );
         Repair = 1 - config.getDouble( "Repair" );
@@ -141,6 +143,11 @@ public class Config {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + Event_X1 + ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + Event_Y1 + ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z1 );
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + Event_X2 + ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + Event_Y2 + ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2 );
         }
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Broadcast Command:" );
+        for( int i = 0; i<bc_command.size(); i++ ) {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ) );
+        }
+
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=======================" );
     }
     
@@ -206,5 +213,9 @@ public class Config {
     
     public int getScoreBroadcast() {
         return ScoreBroadcast;
+    }
+    
+    public List getBC_Command() {
+        return bc_command;
     }
 }
