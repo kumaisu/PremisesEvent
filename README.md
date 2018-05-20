@@ -18,7 +18,7 @@ This plug-in is a tool to support players achievement and event item distributio
 2.ブロックに得点を設定し、スコアリングする機能  
 3.イベント特殊アイテムの配布およびアップデートをサポートする機能  
 4.スコアランキング表示機能  
-5.スコア達成通知機能（同時にコマンド実行も可能） 
+5.スコア達成通知機能（同時にコマンド実行も可能）  
 6.プレイヤーステータス一覧をｃｓｖデータ出力  
   
 **Usage**  

@@ -61,8 +61,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onDisable(){
         Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] Disable processing..." );
         pc.entrySet().forEach( ( entry ) -> {
-            pc.get( entry.getKey() ).save();
-            Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + pc.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score" );
+            if ( pc.get( entry.getKey() ).getEntry() ) {
+                pc.get( entry.getKey() ).save();
+                Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + pc.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score" );
+            }
         } );
     }
     
@@ -232,7 +234,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
 
             //  ブロードキャスト、一定スコア達成をオンラインプレイヤーに知らせる
-            if ( config.getScoreBroadcast() > 0 ) {
+            if ( ( config.getScoreBroadcast() > 0 ) && ( !player.isOp() ) ) {
                 if ( ( pc.get( player.getUniqueId() ).getScore() % config.getScoreBroadcast() ) == 0 ) {
                     String SendMessage = "<イベント> " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + pc.get( player.getUniqueId() ).getScore() + ChatColor.WHITE + " 点に到達しました";
                     Bukkit.broadcastMessage( SendMessage );
