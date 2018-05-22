@@ -24,6 +24,9 @@ commands:
             /<command> csv
             /<command> launch
 permissions:
+    Premises.broadcast:
+        description: Broadcast announce
+        default: true
     Premises.admin:
         description: Command Permission
         default: op

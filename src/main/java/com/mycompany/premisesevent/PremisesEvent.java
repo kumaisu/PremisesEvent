@@ -112,10 +112,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " logged out, Saved the Score" );
 
             pc.get( player.getUniqueId() ).save();
-            pc.remove( player.getUniqueId() );
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.LIGHT_PURPLE + " logged out, not Save" );
         }
+        pc.remove( player.getUniqueId() );
     }
 
     @EventHandler
@@ -222,8 +222,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")"
             );
             */
-            pc.get( player.getUniqueId() ).addScore( config.getPoint( blockName ) );
             pc.get( player.getUniqueId() ).addStoneCount( blockName );
+            pc.get( player.getUniqueId() ).addScore( config.getPoint( blockName ) );
 
             //  デバッグ（または保守）用、一定数到達記録をコンソールログに残す
             //  不具合や他責によるスコアの未記録時の対応ログとして表示
@@ -234,7 +234,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
 
             //  ブロードキャスト、一定スコア達成をオンラインプレイヤーに知らせる
-            if ( ( config.getScoreBroadcast() > 0 ) && ( !player.isOp() ) ) {
+            if ( ( player.hasPermission( "Premises.broadcast" ) ) && ( config.getScoreBroadcast() > 0 ) ) {
                 if ( ( pc.get( player.getUniqueId() ).getScore() % config.getScoreBroadcast() ) == 0 ) {
                     String SendMessage = "<イベント> " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + pc.get( player.getUniqueId() ).getScore() + ChatColor.WHITE + " 点に到達しました";
                     Bukkit.broadcastMessage( SendMessage );
