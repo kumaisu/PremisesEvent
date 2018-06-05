@@ -1,5 +1,5 @@
 name: PremisesEvent
-version: 0.0.1
+version: 0.1
 main: com.mycompany.premisesevent.PremisesEvent
 description: Premises Event Control plugin
 author: Kumaisu

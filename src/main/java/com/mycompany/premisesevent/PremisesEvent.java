@@ -39,6 +39,8 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  *
@@ -46,9 +48,36 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class PremisesEvent extends JavaPlugin implements Listener {
 
+    BukkitTask task = null; //  あとで自分を止めるためのもの
     private Config config;
     private String EventName;
     private final Map<UUID, PlayerControl> pc = new HashMap<>();
+    private boolean WarningFlag = true;
+
+    private class Timer extends BukkitRunnable{
+        int time;//秒数
+        JavaPlugin plugin;//BukkitのAPIにアクセスするためのJavaPlugin
+        
+        public Timer( JavaPlugin plugin ,int i ) {
+            this.time = i;
+            this.plugin = plugin;
+        }
+        
+        @Override
+        public void run() {
+            if( time <= 0 ){
+                //タイムアップなら
+                WarningFlag = true;
+                plugin.getServer().getScheduler().cancelTask( task.getTaskId() ); //自分自身を止める
+            }
+            /*
+            else{
+                plugin.getServer().broadcastMessage("" + time);//残り秒数を全員に表示
+            }
+            */
+            time--; //  1秒減算
+        }
+    }
 
     @Override
     public void onEnable() {
@@ -257,10 +286,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         if ( item.getType() == Material.AIR ) return;
         
-        if ( item.getItemMeta().hasDisplayName() ) {
+        if ( WarningFlag && item.getItemMeta().hasDisplayName() ) {
             if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) {
                 //  if ( ( item.getType().getMaxDurability() * 0.9 ) <= item.getDurability() ) player.sendMessage( ChatColor.RED + "ツールの耐久値がヤバイですよ" );
-                if ( ( item.getType().getMaxDurability() * config.getRepair() ) <= item.getDurability() ) player.sendMessage( ChatColor.RED + "ツールの耐久値がヤバイですよ" );
+                if ( ( item.getType().getMaxDurability() * config.getRepair() ) <= item.getDurability() ) {
+                    player.sendMessage( ChatColor.RED + "ツールの耐久値がヤバイですよ" );
+                    WarningFlag = false;
+                    task = this.getServer().getScheduler().runTaskTimer( this, new Timer( this ,config.CoolCount() ), 0L, config.CoolTick() );
+                }
             }
         }
     }

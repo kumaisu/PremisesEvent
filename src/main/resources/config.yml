@@ -31,6 +31,13 @@ Repair: 0.1
 ScoreNotice: 10000
 ScoreBroadcast: 100000
 
+#   Warning Message Cool Time
+#   Tick 1 = 0.05sec
+#   CoolTick x CoolCount = 1.00 sec( CoolTime )
+#   アイテムクールタイムの設定、Tick割り込み頻度、回数で、トータルのクールタイムを決定する
+CoolTick: 10
+CoolCount: 1
+
 #   When score set for broadcast, console command execution setting
 BroadcastCommand:
     - discord broadcast %message%

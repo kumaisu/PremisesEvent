@@ -218,4 +218,14 @@ public class Config {
     public List getBC_Command() {
         return bc_command;
     }
+
+    //  5tick(0.25秒)ごとにTimerクラスのrunメソッドを実行してね
+    //  Timer 5tick×2回 = 0.5秒です
+    public long CoolTick() {
+        return config.getLong( "CoolTick" );
+    }
+    
+    public int CoolCount() {
+        return config.getInt( "CoolCount" );
+    }
 }
