@@ -208,6 +208,17 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         firework.setFireworkMeta( meta );
     }
 
+    public void ExecOtherCommand( Player player, String Message ) {
+        for( int i = 0; i<config.getBC_Command().size(); i++ ) {
+            String ExecCommand = config.getBC_Command().get( i ).toString();
+            ExecCommand = ExecCommand.replace( "%message%", Message );
+            ExecCommand = ExecCommand.replace( "%player%", player.getDisplayName() );
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + ExecCommand );
+            Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), ExecCommand );
+        }
+        
+    }
+            
     @EventHandler
     public void onBlockBreak( BlockBreakEvent event ) {
         Player player = event.getPlayer();
@@ -268,13 +279,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     String SendMessage = "<イベント> " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + pc.get( player.getUniqueId() ).getScore() + ChatColor.WHITE + " 点に到達しました";
                     Bukkit.broadcastMessage( SendMessage );
                     launchFireWorks( player.getLocation() );
-                    for( int i = 0; i<config.getBC_Command().size(); i++ ) {
-                        String ExecCommand = config.getBC_Command().get( i ).toString();
-                        ExecCommand = ExecCommand.replace( "%message%", SendMessage );
-                        ExecCommand = ExecCommand.replace( "%player%", player.getDisplayName() );
-                        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + ExecCommand );
-                        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), ExecCommand );
-                    }
+                    ExecOtherCommand( player, SendMessage );
                 }
             }
 
@@ -318,6 +323,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     break;
                 case "[P-Join]":
                     pc.get( player.getUniqueId() ).JoinPlayer( player );
+                    ExecOtherCommand( player, player.getDisplayName() + " さんが、イベントに参加しました" );
                     break;
                 case "[P-Status]":
                     if ( pc.get( player.getUniqueId() ).getEntry() ) {
