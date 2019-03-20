@@ -329,7 +329,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     if ( pc.get( player.getUniqueId() ).getEntry() ) {
                         pc.get( player.getUniqueId() ).save();
                         pc.get( player.getUniqueId() ).getStatus( player );
-                    }
+                    } else player.sendMessage( ChatColor.RED + "イベントに参加していません" );
                     break;
                 case "[P-Update]":
                     if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player );
@@ -428,7 +428,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                             pc.get( uuid ).getStatus( player );
                             
                             if ( player.getUniqueId() != uuid ) pc.remove( uuid );
-                        }
+                        } else player.sendMessage( ChatColor.RED + "イベントに参加していません" );
 
                         return true;
                     case "check":
