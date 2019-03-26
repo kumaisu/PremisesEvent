@@ -46,6 +46,7 @@ public class Config {
     private int Event_Y2;
     private int Event_Z1;
     private int Event_Z2;
+    private String JoinMessage;
 
     public Config(Plugin plugin) {
         this.stones = new ArrayList<>();
@@ -120,6 +121,8 @@ public class Config {
             Event_Z1 = Event_Z2;
             Event_Z2 = temp;
         }
+        
+        JoinMessage = config.getString( "JOIN_MESSAGE" );
     }
 
     public void Status() {
@@ -227,5 +230,9 @@ public class Config {
     
     public int CoolCount() {
         return config.getInt( "CoolCount" );
+    }
+    
+    public String GetJoinMessage() {
+        return JoinMessage;
     }
 }

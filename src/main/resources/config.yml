@@ -43,6 +43,9 @@ BroadcastCommand:
     - discord broadcast %message%
     - give %player% BREAD 10
 
+#   Join Message
+JOIN_MESSAGE: "§eイベントルールに則って参加してください [ §ahttps://bit.ly/2Tf7tL8§b ]"
+
 #   Present Tool Item Setting
 EventToolName: §bイベントツール
 Present:

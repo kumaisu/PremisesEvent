@@ -315,21 +315,13 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Sign sign = (Sign) clickedBlock.getState();
             switch ( sign.getLine(0) ) {
                 case "[P-Get]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() ) {
-                        if ( config.getTools().contains( sign.getLine( 1 ) ) ) {
-                            if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( sign.getLine( 1 ) ) );
-                        } else player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
-                    } else player.sendMessage( ChatColor.RED + "イベント参加者のみです" );
+                    GetEventItem( player, sign.getLine( 1 ) );
                     break;
                 case "[P-Join]":
-                    pc.get( player.getUniqueId() ).JoinPlayer( player );
-                    ExecOtherCommand( player, player.getDisplayName() + " さんが、イベントに参加しました" );
+                    PlayerJoin( player );
                     break;
                 case "[P-Status]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() ) {
-                        pc.get( player.getUniqueId() ).save();
-                        pc.get( player.getUniqueId() ).getStatus( player );
-                    } else player.sendMessage( ChatColor.RED + "イベントに参加していません" );
+                    PlayerStatus( player, "" );
                     break;
                 case "[P-Update]":
                     if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player );
@@ -379,6 +371,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 /<command> status [PlayerName]
                 /<command> take
                 */
+
+                String Itemname = "";
+                if ( args.length>1 ) { Itemname = args[1]; }
+
                 switch ( args[0] ) {
                     case "csv":
                         TopList TL = new TopList( this, EventName );
@@ -391,46 +387,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         }
                         return true;
                     case "get":
-                        if ( pc.get( player.getUniqueId() ).getEntry() ) {
-                            if ( ( args.length>1 ) && ( config.getTools().contains( args[1] ) ) ) {
-                                if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( args[1] ) );
-                            } else player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
-                        } else player.sendMessage( ChatColor.RED + "イベント参加者のみです" );
-                        return true;
+                        return GetEventItem( player, Itemname );
                     case "update":
                         if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player );
                         return true;
                     case "join":
-                        return pc.get( player.getUniqueId() ).JoinPlayer( player );
+                        return PlayerJoin( player );
                     case "status":
-                        if ( pc.get( player.getUniqueId() ).getEntry() ) {
-                            UUID uuid;
-
-                            if ( args.length > 1 ) {
-                                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player : " + args[1] );
-
-                                OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( args[1] );
-                                if ( op.hasPlayedBefore() ) {
-                                    uuid = op.getUniqueId();
-                                    pc.put( uuid, new PlayerControl( ( Plugin ) this, config ) );
-                                    pc.get( uuid ).setDisplayName( op.getName() );
-                                    pc.get( uuid ).setUUID( op.getUniqueId() );
-                                    pc.get( uuid ).load();
-                                } else {
-                                    player.sendMessage( ChatColor.RED + "This Player is not joined to server." );
-                                    return false;
-                                }
-                            } else {
-                                uuid = player.getUniqueId();
-                                pc.get( uuid ).save();
-                            }
-                        
-                            pc.get( uuid ).getStatus( player );
-                            
-                            if ( player.getUniqueId() != uuid ) pc.remove( uuid );
-                        } else player.sendMessage( ChatColor.RED + "イベントに参加していません" );
-
-                        return true;
+                        return PlayerStatus( player, Itemname );
                     case "check":
                         //　持っているアイテムのエンチャント状況をステータス表示する
                         if ( player.hasPermission( "Premises.admin" ) ) {
@@ -466,5 +430,51 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         }
         return retStr;
+    }
+
+    public boolean PlayerJoin( Player player ) {
+        ExecOtherCommand( player, player.getDisplayName() + " さんが、イベントに参加しました" );
+        player.sendMessage( config.GetJoinMessage() );
+        return pc.get( player.getUniqueId() ).JoinPlayer( player );
+    }
+    
+    public boolean GetEventItem( Player player, String Item ) {
+        if ( pc.get( player.getUniqueId() ).getEntry() ) {
+            if ( config.getTools().contains( Item ) ) {
+                if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( Item ) );
+            } else player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
+        } else player.sendMessage( ChatColor.RED + "イベント参加者のみです" );
+        return false;
+    }
+
+    public boolean PlayerStatus( Player player, String Other ) {
+        if ( pc.get( player.getUniqueId() ).getEntry() ) {
+            if ( "".equals(Other) ) {
+                pc.get( player.getUniqueId() ).save();
+                pc.get( player.getUniqueId() ).getStatus( player );
+            } else {
+                UUID uuid;
+
+                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player : " + Other );
+
+                OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( Other );
+                if ( op.hasPlayedBefore() ) {
+                    uuid = op.getUniqueId();
+                    pc.put( uuid, new PlayerControl( ( Plugin ) this, config ) );
+                    pc.get( uuid ).setDisplayName( op.getName() );
+                    pc.get( uuid ).setUUID( op.getUniqueId() );
+                    pc.get( uuid ).load();
+                } else {
+                    player.sendMessage( ChatColor.RED + "This Player is not joined to server." );
+                    return false;
+                }
+                pc.get( uuid ).getStatus( player );
+                if ( player.getUniqueId() != uuid ) pc.remove( uuid );
+            }
+            return true;
+        } else {
+            player.sendMessage( ChatColor.RED + "イベントに参加していません" );
+            return false;
+        }
     }
 }
