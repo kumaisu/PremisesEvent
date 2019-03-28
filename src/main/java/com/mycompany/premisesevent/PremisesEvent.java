@@ -216,9 +216,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + ExecCommand );
             Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), ExecCommand );
         }
-        
     }
-            
+
     @EventHandler
     public void onBlockBreak( BlockBreakEvent event ) {
         Player player = event.getPlayer();
@@ -239,7 +238,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         String blockName = getStoneName( block );
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        
         if ( config.ToolBreak() && ( item.getType() != Material.TORCH ) ) {
             //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.YELLOW + "Tool Chek !!" );
             //  トーチかイベントツール意外なら
@@ -290,7 +288,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         player.setPlayerListName( ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
 
         if ( item.getType() == Material.AIR ) return;
-        
+
         if ( WarningFlag && item.getItemMeta().hasDisplayName() ) {
             if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) {
                 //  if ( ( item.getType().getMaxDurability() * 0.9 ) <= item.getDurability() ) player.sendMessage( ChatColor.RED + "ツールの耐久値がヤバイですよ" );
@@ -302,12 +300,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         }
     }
-    
+
     @EventHandler //    看板ブロックを右クリック
     public void onSignClick( PlayerInteractEvent event ) {
-               
+
         if ( event.getAction() != Action.RIGHT_CLICK_BLOCK ) return;
-        
+
         Player player = event.getPlayer();
         Block clickedBlock = event.getClickedBlock();
         Material material = clickedBlock.getType();
@@ -324,7 +322,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     PlayerStatus( player, "" );
                     break;
                 case "[P-Update]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player );
+                    if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player, false );
                     break;
                 case "[P-TOP]":
                     if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).save();
@@ -389,7 +387,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     case "get":
                         return GetEventItem( player, Itemname );
                     case "update":
-                        if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player );
+                        boolean force = ( player.isOP() && args.length>2 && ( args[1].equals( "foorce" ) ); 
+                        if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player, force );
                         return true;
                     case "join":
                         return PlayerJoin( player );
@@ -405,6 +404,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     case "launch":
                         launchFireWorks( player.getLocation() );
                         return true;
+                    case:"give"
+                        if ( args.length == 3 ) { return GiveScore( args[2], args[3] ); }
+                        return false;
                     default:
                         sender.sendMessage( ChatColor.RED + "[Premises] Unknown Command" );
                         return false;
@@ -437,7 +439,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         player.sendMessage( config.GetJoinMessage() );
         return pc.get( player.getUniqueId() ).JoinPlayer( player );
     }
-    
+
     public boolean GetEventItem( Player player, String Item ) {
         if ( pc.get( player.getUniqueId() ).getEntry() ) {
             if ( config.getTools().contains( Item ) ) {
@@ -476,5 +478,20 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             player.sendMessage( ChatColor.RED + "イベントに参加していません" );
             return false;
         }
+    }
+
+    public boolean GiveScore( Player player, String name, int score ) {
+        UUID uuid;
+        OfflinePlayer op = Bukkit.geterver().getOfflinePlayer( name );
+        if ( op.hasPlayedBefore() ) {
+            uuid = op.getUniqueId();
+            pc.put( uuid, new PlayerControl( ( Plugin ) this, config ) );
+            pc.get( uuid ).setDisplayName( op.getName() );
+            pc.get( uuid ).setUUID( op.getUniqueId() );
+            pc.get( uuid ).load();
+            pc.get( uuid ).addScore( score );
+            if ( player.getUniqueId() != uuid ) pc.remove( uuid );
+        } else player.sendMessage( ChatColor.RED + "Player is not joined to server." );
+        return false;
     }
 }

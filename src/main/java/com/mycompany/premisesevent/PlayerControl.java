@@ -179,7 +179,7 @@ public class PlayerControl {
         }
     }
 
-    public void ToolUpdate( Player player ) {
+    public void ToolUpdate( Player player, boolean Force ) {
 
         if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) return;
 
@@ -190,7 +190,7 @@ public class PlayerControl {
             if ( item.getItemMeta().hasDisplayName() ) {
                 if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) {
                     double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );
-                    if ( CheckDurability <= item.getDurability() ) {
+                    if ( ( CheckDurability <= item.getDurability() ) || Force ) {
                         ItemControl ic = new ItemControl( plugin );
                         player.getInventory().setItemInMainHand( null );
                         ic.ItemUpdate( player, item, config.getEventToolName(), null );
