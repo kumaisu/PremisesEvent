@@ -57,12 +57,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     private class Timer extends BukkitRunnable{
         int time;//秒数
         JavaPlugin plugin;//BukkitのAPIにアクセスするためのJavaPlugin
-        
+
         public Timer( JavaPlugin plugin ,int i ) {
             this.time = i;
             this.plugin = plugin;
         }
-        
+
         @Override
         public void run() {
             if( time <= 0 ){
@@ -85,7 +85,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         config = new Config( this );
         EventName = config.getEventName();
     }
-    
+
     @Override
     public void onDisable(){
         Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] Disable processing..." );
@@ -96,17 +96,16 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         } );
     }
-    
 
     @EventHandler
     public void onPlayerJoin( PlayerJoinEvent event ){
         Player p = event.getPlayer();
-        
+
         pc.put( p.getUniqueId(), new PlayerControl( ( Plugin ) this, config ) );
         pc.get( p.getUniqueId() ).setDisplayName( p.getDisplayName() );
         pc.get( p.getUniqueId() ).setUUID( p.getUniqueId() );
         pc.get( p.getUniqueId() ).load();
-        
+
         if ( pc.get( p.getUniqueId() ).getEntry() ) {
             pc.get( p.getUniqueId() ).ScoreBoardEntry( p );
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + p.getDisplayName() + " is participating in the this Event" );
@@ -124,7 +123,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     ic.ItemUpdate( p, null, config.getEventToolName(), Material.getMaterial( config.getTools().get( i ).toString() ) );
                 }
             }
-        
             //  暫定で強制的に再配布フラグを消すため
             //  saveは、ログアウト時1回だけにする方が良いと思ってるんだけど、、検討不足
             //  サーバーダウン時の対応で、onDisableでもセーブする必要あるかな?
@@ -133,7 +131,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + p.getDisplayName() + " has not joined the this Event" );
         }
     }
-    
+
     @EventHandler
     public void onPlayerQuit( PlayerQuitEvent event ) {
         Player player = event.getPlayer();
@@ -480,6 +478,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public boolean GiveScore( Player player, String name, String score ) {
         int scoreNum;
         Player scorePlayer;
+        boolean createStat = false;
+        boolean retStat;
 
         try {
             scoreNum = Integer.parseInt( score );
@@ -503,13 +503,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     pc.put( scorePlayer.getUniqueId(), new PlayerControl( ( Plugin ) this, config ) );
                     pc.get( scorePlayer.getUniqueId() ).setDisplayName( op.getName() );
                     pc.get( scorePlayer.getUniqueId() ).setUUID( op.getUniqueId() );
-                    boolean loadStat = pc.get( scorePlayer.getUniqueId() ).load();
-                    if ( loadStat ) {
-                        pc.get( scorePlayer.getUniqueId() ).addScore( scoreNum );
-                        pc.get( scorePlayer.getUniqueId() ).save();
-                    } else player.sendMessage( ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません" );
-                    pc.remove( scorePlayer.getUniqueId() );
-                    return loadStat;
+                    pc.get( scorePlayer.getUniqueId() ).load();
+                    createStat = true;
                 } else {
                     player.sendMessage( ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はサーバーに存在しません" );
                     return false;
@@ -519,10 +514,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         if ( pc.get( scorePlayer.getUniqueId() ).getEntry() ) {
             pc.get( scorePlayer.getUniqueId() ).addScore( scoreNum );
-            return true;
+            pc.get( scorePlayer.getUniqueId() ).save();
+           retStat = true;
         } else {
             player.sendMessage( ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません" );
-            return false;
+            retStat = false;
         }
+
+        if ( createStat ) pc.remove( scorePlayer.getUniqueId() );
+        return retStat;
     }
 }
