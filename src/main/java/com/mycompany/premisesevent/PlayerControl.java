@@ -181,7 +181,10 @@ public class PlayerControl {
 
     public void ToolUpdate( Player player, boolean Force ) {
 
-        if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) return;
+        if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) {
+            player.sendMessage( ChatColor.RED + "アップデートするアイテムを持ってください" );
+            return;
+        }
 
         int Rep = config.getUpCost();
         if ( getScore() > Rep ) {

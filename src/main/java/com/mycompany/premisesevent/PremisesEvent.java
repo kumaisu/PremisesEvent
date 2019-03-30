@@ -387,7 +387,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     case "get":
                         return GetEventItem( player, Itemname );
                     case "update":
-                        boolean force = ( player.isOP() && args.length>2 && ( args[1].equals( "foorce" ) ); 
+                        boolean force = ( args.length>2 && ( args[2].equals( "foorce" ) ) ); 
                         if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player, force );
                         return true;
                     case "join":
@@ -395,24 +395,21 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     case "status":
                         return PlayerStatus( player, Itemname );
                     case "check":
-                        //　持っているアイテムのエンチャント状況をステータス表示する
-                        if ( player.hasPermission( "Premises.admin" ) ) {
-                            ItemControl ic = new ItemControl( this );
-                            ic.ShowItemStatus( player );
-                            return true;
-                        }
+                        ItemControl ic = new ItemControl( this );
+                        ic.ShowItemStatus( player );
+                        return true;
                     case "launch":
                         launchFireWorks( player.getLocation() );
                         return true;
-                    case:"give"
-                        if ( args.length == 3 ) { return GiveScore( args[2], args[3] ); }
+                    case "give":
+                        if ( args.length == 3 ) { return GiveScore( player, args[2], args[3] ); }
                         return false;
                     default:
                         sender.sendMessage( ChatColor.RED + "[Premises] Unknown Command" );
                         return false;
                 }
             }
-        }
+        } else sender.sendMessage( ChatColor.RED + "Unknown Command or You do not have permission." );
         return false;
     }
 
@@ -480,18 +477,52 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
     }
 
-    public boolean GiveScore( Player player, String name, int score ) {
-        UUID uuid;
-        OfflinePlayer op = Bukkit.geterver().getOfflinePlayer( name );
-        if ( op.hasPlayedBefore() ) {
-            uuid = op.getUniqueId();
-            pc.put( uuid, new PlayerControl( ( Plugin ) this, config ) );
-            pc.get( uuid ).setDisplayName( op.getName() );
-            pc.get( uuid ).setUUID( op.getUniqueId() );
-            pc.get( uuid ).load();
-            pc.get( uuid ).addScore( score );
-            if ( player.getUniqueId() != uuid ) pc.remove( uuid );
-        } else player.sendMessage( ChatColor.RED + "Player is not joined to server." );
-        return false;
+    public boolean GiveScore( Player player, String name, String score ) {
+        int scoreNum;
+        Player scorePlayer;
+
+        try {
+            scoreNum = Integer.parseInt( score );
+        } catch ( NumberFormatException e ) {
+            player.sendMessage( ChatColor.RED + "指定された値が正しくありません" );
+            return false;
+        }
+
+        if ( player.getName().equals( name ) ) {
+            scorePlayer = player;
+        } else {
+            Player checkPlayer = Bukkit.getServer().getPlayer( name );
+            if ( checkPlayer != null ) {
+                //  online
+                scorePlayer = checkPlayer;
+            } else {
+                //  offline
+                OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( name );
+                if ( op.hasPlayedBefore() ) {
+                    scorePlayer = op.getPlayer();
+                    pc.put( scorePlayer.getUniqueId(), new PlayerControl( ( Plugin ) this, config ) );
+                    pc.get( scorePlayer.getUniqueId() ).setDisplayName( op.getName() );
+                    pc.get( scorePlayer.getUniqueId() ).setUUID( op.getUniqueId() );
+                    boolean loadStat = pc.get( scorePlayer.getUniqueId() ).load();
+                    if ( loadStat ) {
+                        pc.get( scorePlayer.getUniqueId() ).addScore( scoreNum );
+                        pc.get( scorePlayer.getUniqueId() ).save();
+                    } else player.sendMessage( ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません" );
+                    pc.remove( scorePlayer.getUniqueId() );
+                    return loadStat;
+                } else {
+                    player.sendMessage( ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はサーバーに存在しません" );
+                    return false;
+                }
+            }
+        }
+
+        if ( pc.get( scorePlayer.getUniqueId() ).getEntry() ) {
+            pc.get( scorePlayer.getUniqueId() ).addScore( scoreNum );
+            return true;
+        } else {
+            player.sendMessage( ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません" );
+            return false;
+        }
     }
 }
