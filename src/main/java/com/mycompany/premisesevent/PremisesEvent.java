@@ -385,7 +385,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     case "get":
                         return GetEventItem( player, Itemname );
                     case "update":
-                        boolean force = ( args.length>2 && ( args[2].equals( "foorce" ) ) ); 
+                        boolean force = ( Itemname.equals( "force" ) );
                         if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player, force );
                         return true;
                     case "join":
