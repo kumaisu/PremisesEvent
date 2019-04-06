@@ -350,62 +350,55 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             return true;
         }
 
-        if ( cmd.getName().equalsIgnoreCase( "pstatus" ) && ( player == null || player.hasPermission( "Premises.admin" ) ) ) {
-            config.Status();
-            return true;
-        }
+        if ( player.hasPermission( "Premises.admin" ) ) {
+            if ( !player.equals( null ) ) {
+                if ( cmd.getName().equalsIgnoreCase( "Premises" ) ) {
+                    if ( args.length > 0 ) {
 
-        if ( player == null ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "コマンドはコンソールから操作できません" );
-            return false;
-        }
+                        String Itemname = "";
+                        if ( args.length>1 ) { Itemname = args[1]; }
 
-        if ( cmd.getName().equalsIgnoreCase( "Premises" ) && player.hasPermission( "Premises.admin" ) ) {
-            if ( args.length > 0 ) {
-                /*
-                /<command> join
-                /<command> status [PlayerName]
-                /<command> take
-                */
-
-                String Itemname = "";
-                if ( args.length>1 ) { Itemname = args[1]; }
-
-                switch ( args[0] ) {
-                    case "csv":
-                        TopList TL = new TopList( this, EventName );
-                        {
-                            try {
-                                TL.ToCSV( config.getStones() );
-                            } catch ( IOException ex ) {
-                                Logger.getLogger( PremisesEvent.class.getName() ).log( Level.SEVERE, null, ex );
-                            }
+                        switch ( args[0] ) {
+                            case "csv":
+                                TopList TL = new TopList( this, EventName );
+                                try {
+                                    TL.ToCSV( config.getStones() );
+                                } catch ( IOException ex ) {
+                                    Logger.getLogger( PremisesEvent.class.getName() ).log( Level.SEVERE, null, ex );
+                                }
+                                return true;
+                            case "get":
+                                return GetEventItem( player, Itemname );
+                            case "update":
+                                boolean force = ( Itemname.equals( "force" ) );
+                                if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player, force );
+                                return true;
+                            case "join":
+                                 return PlayerJoin( player );
+                            case "status":
+                                return PlayerStatus( player, Itemname );
+                            case "check":
+                                ItemControl ic = new ItemControl( this );
+                                ic.ShowItemStatus( player );
+                                return true;
+                            case "launch":
+                                launchFireWorks( player.getLocation() );
+                                return true;
+                            case "give":
+                                if ( args.length == 3 ) { return GiveScore( player, args[2], args[3] ); }
+                                return false;
+                            default:
+                                sender.sendMessage( ChatColor.RED + "[Premises] Unknown Command" );
+                                return false;
                         }
-                        return true;
-                    case "get":
-                        return GetEventItem( player, Itemname );
-                    case "update":
-                        boolean force = ( Itemname.equals( "force" ) );
-                        if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player, force );
-                        return true;
-                    case "join":
-                        return PlayerJoin( player );
-                    case "status":
-                        return PlayerStatus( player, Itemname );
-                    case "check":
-                        ItemControl ic = new ItemControl( this );
-                        ic.ShowItemStatus( player );
-                        return true;
-                    case "launch":
-                        launchFireWorks( player.getLocation() );
-                        return true;
-                    case "give":
-                        if ( args.length == 3 ) { return GiveScore( player, args[2], args[3] ); }
-                        return false;
-                    default:
-                        sender.sendMessage( ChatColor.RED + "[Premises] Unknown Command" );
-                        return false;
+                    }
                 }
+            } else {
+	        if ( cmd.getName().equalsIgnoreCase( "pstatus" ) ) {
+                    config.Status();
+                    return true;
+                }
+                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "コマンドはコンソールから操作できません" );
             }
         } else sender.sendMessage( ChatColor.RED + "Unknown Command or You do not have permission." );
         return false;
