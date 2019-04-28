@@ -407,6 +407,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand( CommandSender sender, Command cmd, String commandLabel, String[] args ) {
         Player player = ( sender instanceof Player ? ( Player ) sender:null );
+        boolean hasPermission = ( ( player == null ) ? true:player.hasPermission( "Premises.admin" ) );
 
         if ( cmd.getName().equalsIgnoreCase( "toplist" ) ) {
 
@@ -422,7 +423,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             return true;
         }
 
-        if ( player.hasPermission( "Premises.admin" ) ) {
+        if ( cmd.getName().equalsIgnoreCase( "pstatus" ) && hasPermission ) {
+            config.Status();
+            return true;
+        }
+
+        if ( hasPermission ) {
             if ( player != null ) {
                 if ( cmd.getName().equalsIgnoreCase( "Premises" ) ) {
                     if ( args.length > 0 ) {
@@ -465,13 +471,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         }
                     }
                 }
-            } else {
-	        if ( cmd.getName().equalsIgnoreCase( "pstatus" ) ) {
-                    config.Status();
-                    return true;
-                }
-                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "コマンドはコンソールから操作できません" );
-            }
+            } else Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "コマンドはコンソールから操作できません" );
         } else sender.sendMessage( ChatColor.RED + "Unknown Command or You do not have permission." );
         return false;
     }
