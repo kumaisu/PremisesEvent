@@ -93,6 +93,7 @@ public class PlayerControl {
 
         if( !UKfile.exists() ) { return false; }
 
+        EntryFlag = UKData.getBoolean( "Entry", true );
         FirstDate = UKData.getString( "Joined" );
         PlayerScore = UKData.getInt( "Score" );
         PresentFlag = UKData.getBoolean( "Present" );
@@ -103,7 +104,7 @@ public class PlayerControl {
                 BlockCount.put( key, UKData.getInt( "Counter." + key ) );
             } );
         }
-        EntryFlag = true;
+
         return true;
     }
     
@@ -115,6 +116,7 @@ public class PlayerControl {
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
 
         UKData.set( "Name", Bukkit.getOfflinePlayer( uuid ).getName() );
+        UKData.set( "Entry", EntryFlag );
         UKData.set( "Joined", FirstDate );
         UKData.set( "Score", PlayerScore );
         UKData.set( "Present", false );
@@ -136,7 +138,7 @@ public class PlayerControl {
     
     public boolean JoinPlayer( Player p ) {
         
-        if ( getEntry() ) {
+        if ( EntryFlag ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
             p.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
             return false;
@@ -149,9 +151,9 @@ public class PlayerControl {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         FirstDate = sdf.format( new Date() );
+        EntryFlag = true;
         save();
         ScoreBoardEntry( p );
-        EntryFlag = true;
         p.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );
 
         ItemControl ic = new ItemControl( plugin );
