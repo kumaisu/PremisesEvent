@@ -23,6 +23,7 @@ commands:
             /<command> check
             /<command> csv
             /<command> launch
+            /<command> give PlayerName Score
 permissions:
     Premises.broadcast:
         description: Broadcast announce
