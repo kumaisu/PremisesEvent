@@ -35,7 +35,7 @@ public class PlayerControl {
 
     private final Plugin plugin;
     private final Config config;
-    
+
     /*
     スコアボードコントロール
     */
@@ -50,7 +50,7 @@ public class PlayerControl {
     */
     private UUID uuid;
     private String DisplayName;
-    private boolean EntryFlag = false;
+    private int EntryFlag = 0;
     private String FirstDate;
     private int PlayerScore;
     private boolean PresentFlag;
@@ -66,22 +66,22 @@ public class PlayerControl {
     public void setUUID( UUID setuuid ) {
         uuid = setuuid;
     }
-    
+
     public void setDisplayName( String name ) {
         DisplayName = name;
     }
-    
+
     public String getDisplayName() {
         return DisplayName;
     }
-    
+
     public void ScoreBoardEntry( Player player ) {
         obj.setDisplayName( "Mining Count" );
         obj.setDisplaySlot( DisplaySlot.SIDEBAR );
         player.setScoreboard( board );
         score = obj.getScore( ChatColor.YELLOW + "Score:" );
     }
-    
+
     /*
      * 設定をロードします
      */
@@ -93,12 +93,12 @@ public class PlayerControl {
 
         if( !UKfile.exists() ) { return false; }
 
-        EntryFlag = UKData.getBoolean( "Entry", true );
+        EntryFlag = UKData.getInt( "Entry", 1 );
         FirstDate = UKData.getString( "Joined" );
         PlayerScore = UKData.getInt( "Score" );
         PresentFlag = UKData.getBoolean( "Present" );
         UpdateFlag = UKData.getBoolean( "Update" );
-        
+
         if ( UKData.contains( "Counter" ) ) {
             UKData.getConfigurationSection( "Counter" ).getKeys( false ).forEach( ( key ) -> {
                 BlockCount.put( key, UKData.getInt( "Counter." + key ) );
@@ -107,7 +107,7 @@ public class PlayerControl {
 
         return true;
     }
-    
+
     public void save() {
         File dataFolder = new File( plugin.getDataFolder() + File.separator + config.getEventName() + File.separator + "users" );
         if( !dataFolder.exists() ) { dataFolder.mkdir(); }
@@ -125,24 +125,38 @@ public class PlayerControl {
         BlockCount.entrySet().forEach( ( entry ) -> {
             UKData.set( "Counter." + entry.getKey(), entry.getValue() );
         } );
-        
+
         try {
             UKData.save( UKfile );
-            EntryFlag = true;
+            EntryFlag = 1;
         }
         catch (IOException e) {
             plugin.getServer().getLogger().log( Level.WARNING, "{0}Could not save UnknownIP File.", ChatColor.RED );
         }
         // player.sendMessage( ChatColor.AQUA + "Data Saved" );
     }
-    
+
     public boolean JoinPlayer( Player p ) {
-        
+        switch ( EntryFlag ) {
+            case 1:
+                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
+                p.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
+                return false;
+            case 2:
+                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Kick registration." );
+                p.sendMessage( ChatColor.RED + "イベントへの参加は拒否されています" );
+                return false;
+            default:
+                break;
+        }
+
+        /*
         if ( EntryFlag ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
             p.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
             return false;
         }
+        */
 
         if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
             p.sendMessage( ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です" );
@@ -151,7 +165,7 @@ public class PlayerControl {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         FirstDate = sdf.format( new Date() );
-        EntryFlag = true;
+        EntryFlag = 1;
         save();
         ScoreBoardEntry( p );
         p.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );
@@ -166,7 +180,7 @@ public class PlayerControl {
         Bukkit.broadcastMessage( "<Premises> " + ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
         return true;
     }
-    
+
     public boolean itemget( Player player, Material Tool ) {
         int Rep = config.getRePresent();
         if ( getScore() > Rep ) {
@@ -213,26 +227,26 @@ public class PlayerControl {
             } else player.sendMessage( ChatColor.YELLOW + "イベント用のツールではありません" );
         } else player.sendMessage( ChatColor.RED + "Scoreが足りないのでアップデートできません" );
     }
-    
-    public boolean getEntry() {
+
+    public int getEntry() {
         return EntryFlag;
     }
-    
+
     public String getJoinDate() {
         return FirstDate;
     }
-    
+
     public int getScore() {
         return PlayerScore;
     }
-    
+
     public void addScore( int amount ) {
         PlayerScore += amount;
 
         // プレイヤーのスコアーを更新し反映します
         score.setScore( PlayerScore );
     }
-    
+
     public int getStoneCount( String StoneName ) {
         int CD;
         try {
@@ -243,7 +257,7 @@ public class PlayerControl {
         }
         return CD;
     }
-    
+
     public void addStoneCount( String StoneName ) {
         int CD = getStoneCount( StoneName );
         CD++;
@@ -252,24 +266,24 @@ public class PlayerControl {
         mines.put( StoneName, obj.getScore( ChatColor.GREEN + StoneName + ":" ) );
         mines.get( StoneName ).setScore( CD );
     }
-    
+
     public void getStatus( Player p ) {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look Status: " + DisplayName );
         p.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
         p.sendMessage( ChatColor.AQUA + "Block mined by: " + DisplayName );
         p.sendMessage( ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore() );
-        
+
         BlockCount.entrySet().forEach( ( entry ) -> {
             p.sendMessage( ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue() );
         } );
 
         p.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
     }
-    
+
     public boolean getPresentFlag() {
         return PresentFlag;
     }
-    
+
     public boolean getUpdateFlag() {
         return UpdateFlag;
     }

@@ -102,7 +102,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onDisable(){
         Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] Disable processing..." );
         pc.entrySet().forEach( ( entry ) -> {
-            if ( pc.get( entry.getKey() ).getEntry() ) {
+            if ( pc.get( entry.getKey() ).getEntry() != 0 ) {
                 pc.get( entry.getKey() ).save();
                 Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + pc.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score" );
             }
@@ -124,7 +124,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         pc.get( p.getUniqueId() ).setUUID( p.getUniqueId() );
         pc.get( p.getUniqueId() ).load();
 
-        if ( pc.get( p.getUniqueId() ).getEntry() ) {
+        if ( pc.get( p.getUniqueId() ).getEntry() == 1 ) {
             pc.get( p.getUniqueId() ).ScoreBoardEntry( p );
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + p.getDisplayName() + " is participating in the this Event" );
 
@@ -157,7 +157,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerQuit( PlayerQuitEvent event ) {
         Player player = event.getPlayer();
-        if ( pc.get( player.getUniqueId() ).getEntry() ) {
+        if ( pc.get( player.getUniqueId() ).getEntry() != 0 ) {
             Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " logged out, Saved the Score" );
 
             pc.get( player.getUniqueId() ).save();
@@ -179,7 +179,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
         if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
-        if ( !pc.get( player.getUniqueId() ).getEntry() ) {
+        if ( pc.get( player.getUniqueId() ).getEntry() != 1 ) {
             if ( !config.FreeBreak() )  event.setCancelled( true );
             return;
         }
@@ -265,6 +265,23 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
         if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
 
+        switch ( pc.get( player.getUniqueId() ).getEntry() ) {
+            case 0:
+                if ( !config.FreeBreak() ) {
+                    player.sendMessage( ChatColor.RED + "イベントに参加してください" );
+                    event.setCancelled( true );
+                }
+                return;
+            case 1:
+                // 参加者なので、スルー
+                break;
+            case 2:
+                player.sendMessage( ChatColor.RED + "イベントエリアの操作はできません" );
+                event.setCancelled( true );
+                return;
+        }
+
+        /*
         if ( !pc.get( player.getUniqueId() ).getEntry() ) {
             if ( !config.FreeBreak() ) {
                 player.sendMessage( ChatColor.RED + "イベントに参加してください" );
@@ -272,6 +289,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
             return;
         }
+        */
 
         Block block = event.getBlock();
         Material material = block.getType();
@@ -366,10 +384,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     PlayerStatus( player, "" );
                     break;
                 case "[P-Update]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player, false );
+                    if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).ToolUpdate( player, false );
                     break;
                 case "[P-TOP]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).save();
+                    if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).save();
                     TopList TL = new TopList( this, EventName );
                     TL.Top( player );
                     break;
@@ -392,10 +410,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         if ( cmd.getName().equalsIgnoreCase( "toplist" ) ) {
 
-            if ( player != null && pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).save();
+            if ( player != null && pc.get( player.getUniqueId() ).getEntry() != 0 ) pc.get( player.getUniqueId() ).save();
 
-            Bukkit.getServer().getOnlinePlayers().stream().filter( ( onPlayer ) -> ( pc.get( onPlayer.getUniqueId() ).getEntry() ) ).forEachOrdered( ( onPlayer ) -> {
-                Bukkit.getServer().getConsoleSender().sendMessage( onPlayer.getDisplayName() + "is Online Event[" + ( pc.get( onPlayer.getUniqueId() ).getEntry() ? "true":"false" ) + "]" );
+            Bukkit.getServer().getOnlinePlayers().stream().filter( ( onPlayer ) -> ( pc.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ).forEachOrdered( ( onPlayer ) -> {
+                Bukkit.getServer().getConsoleSender().sendMessage( onPlayer.getDisplayName() + "is Online Event[" + ( ( pc.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ? "true":"false" ) + "]" );
                 pc.get( onPlayer.getUniqueId() ).save();
             } );
 
@@ -425,7 +443,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                                 return GetEventItem( player, Itemname );
                             case "update":
                                 boolean force = ( Itemname.equals( "force" ) );
-                                if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).ToolUpdate( player, force );
+                                if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).ToolUpdate( player, force );
                                 return true;
                             case "join":
                                  return PlayerJoin( player );
@@ -502,9 +520,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      * @return 
      */
     public boolean GetEventItem( Player player, String Item ) {
-        if ( pc.get( player.getUniqueId() ).getEntry() ) {
+        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
             if ( config.getTools().contains( Item ) ) {
-                if ( pc.get( player.getUniqueId() ).getEntry() ) pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( Item ) );
+                pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( Item ) );
             } else player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
         } else player.sendMessage( ChatColor.RED + "イベント参加者のみです" );
         return false;
@@ -517,7 +535,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      * @return 
      */
     public boolean PlayerStatus( Player player, String Other ) {
-        if ( pc.get( player.getUniqueId() ).getEntry() ) {
+        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
             if ( "".equals(Other) ) {
                 pc.get( player.getUniqueId() ).save();
                 pc.get( player.getUniqueId() ).getStatus( player );
@@ -591,10 +609,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         }
 
-        if ( pc.get( scorePlayer.getUniqueId() ).getEntry() ) {
+        if ( pc.get( scorePlayer.getUniqueId() ).getEntry() == 1 ) {
             pc.get( scorePlayer.getUniqueId() ).addScore( scoreNum );
             pc.get( scorePlayer.getUniqueId() ).save();
-           retStat = true;
+            retStat = true;
         } else {
             player.sendMessage( ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません" );
             retStat = false;
