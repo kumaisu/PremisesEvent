@@ -57,20 +57,37 @@ public class PlayerControl {
     private boolean UpdateFlag;
     private final Map<String,Integer> BlockCount = new HashMap<>();
 
+    /**
+     * 
+     * @param plugin
+     * @param config 
+     */
     public PlayerControl( Plugin plugin, Config config ) {
         this.plugin = plugin;
         this.PlayerScore = 0;
         this.config = config;
     }
 
+    /**
+     * 
+     * @param setuuid 
+     */
     public void setUUID( UUID setuuid ) {
         uuid = setuuid;
     }
 
+    /**
+     * 
+     * @param name 
+     */
     public void setDisplayName( String name ) {
         DisplayName = name;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public String getDisplayName() {
         return DisplayName;
     }
@@ -82,8 +99,10 @@ public class PlayerControl {
         score = obj.getScore( ChatColor.YELLOW + "Score:" );
     }
 
-    /*
+    /**
      * 設定をロードします
+     * 
+     * @return 
      */
     public boolean load() {
         // 設定ファイルを保存
@@ -108,6 +127,9 @@ public class PlayerControl {
         return true;
     }
 
+    /**
+     * 
+     */
     public void save() {
         File dataFolder = new File( plugin.getDataFolder() + File.separator + config.getEventName() + File.separator + "users" );
         if( !dataFolder.exists() ) { dataFolder.mkdir(); }
@@ -136,6 +158,11 @@ public class PlayerControl {
         // player.sendMessage( ChatColor.AQUA + "Data Saved" );
     }
 
+    /**
+     * 
+     * @param p
+     * @return 
+     */
     public boolean JoinPlayer( Player p ) {
         switch ( EntryFlag ) {
             case 1:
@@ -228,18 +255,34 @@ public class PlayerControl {
         } else player.sendMessage( ChatColor.RED + "Scoreが足りないのでアップデートできません" );
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getEntry() {
         return EntryFlag;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public String getJoinDate() {
         return FirstDate;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getScore() {
         return PlayerScore;
     }
 
+    /**
+     * 
+     * @param amount 
+     */
     public void addScore( int amount ) {
         PlayerScore += amount;
 
@@ -247,6 +290,11 @@ public class PlayerControl {
         score.setScore( PlayerScore );
     }
 
+    /**
+     * 
+     * @param StoneName
+     * @return 
+     */
     public int getStoneCount( String StoneName ) {
         int CD;
         try {
@@ -258,6 +306,10 @@ public class PlayerControl {
         return CD;
     }
 
+    /**
+     * 
+     * @param StoneName 
+     */
     public void addStoneCount( String StoneName ) {
         int CD = getStoneCount( StoneName );
         CD++;
@@ -267,6 +319,10 @@ public class PlayerControl {
         mines.get( StoneName ).setScore( CD );
     }
 
+    /**
+     * 
+     * @param p 
+     */
     public void getStatus( Player p ) {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look Status: " + DisplayName );
         p.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
@@ -280,10 +336,18 @@ public class PlayerControl {
         p.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
     }
 
+    /**
+     * 
+     * @return 
+     */
     public boolean getPresentFlag() {
         return PresentFlag;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public boolean getUpdateFlag() {
         return UpdateFlag;
     }

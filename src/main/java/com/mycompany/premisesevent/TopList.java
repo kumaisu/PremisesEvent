@@ -33,11 +33,21 @@ public class TopList {
     private final Plugin plugin;
     private final String EventName;
 
+    /**
+     * 
+     * @param plugin
+     * @param EN 
+     */
     public TopList( Plugin plugin, String EN ) {
         this.plugin = plugin;
         EventName = EN;
     }
 
+    /**
+     * 
+     * @param fileName
+     * @return 
+     */
     public static String getPreffix( String fileName ) {
 
         if ( fileName == null ) return null;
@@ -49,6 +59,11 @@ public class TopList {
         return fileName;
     }
 
+    /**
+     * 
+     * @param filename
+     * @return 
+     */
     public int getScore( String filename ) {
         File getFile = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator + filename );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( getFile );
@@ -58,6 +73,12 @@ public class TopList {
         return UKData.getInt( "Score" );
     }
 
+    /**
+     * 
+     * @param filename
+     * @param StoneName
+     * @return 
+     */
     public int getCount( String filename, String StoneName ) {
         File getFile = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator + filename );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( getFile );
@@ -67,6 +88,11 @@ public class TopList {
         return UKData.getInt( "Counter." + StoneName );
     }
 
+    /**
+     * 
+     * @param p
+     * @param Msg 
+     */
     public void Prt( Player p ,String Msg ) {
         if ( p == null ) {
             Bukkit.getServer().getConsoleSender().sendMessage( Msg );
@@ -74,7 +100,11 @@ public class TopList {
             p.sendMessage( Msg );
         }
     }
-    
+
+    /**
+     * 
+     * @param player 
+     */
     public void Top( Player player ) {
         String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
         Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング" );
@@ -112,7 +142,12 @@ public class TopList {
             
         Prt( player, ChatColor.GREEN + "============================" );
     }
-    
+
+    /**
+     * 
+     * @param stone
+     * @throws IOException 
+     */
     public void ToCSV( List<String>stone ) throws IOException {
         try {
             File cvsFile = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "data.csv" );

@@ -113,6 +113,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      * プレイヤーのログイン時処理、参加者であれば、スコアをメモリにロードする
      * スコアファイルにプレゼントフラグがある場合は適宜プレゼント処理を行う
      * ※今の所スコアファイルのプレゼントフラグは直接編集でのみ変更可能
+     * 
      * @param event 
      */
     @EventHandler
@@ -152,6 +153,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * プレイヤーのログアウト時処理、参加者であればメモリのスコアをスコアファイルに保存する
+     * 
      * @param event 
      */
     @EventHandler
@@ -172,6 +174,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      * ポイントブロックを置いた場合は、スコアからポイントをマイナスする
      * ポイントブロックで無い場合は何もしない
      * ※自然生成か設置かを判断するための試作をしているが昨日していない
+     * 
      * @param event 
      */
     @EventHandler
@@ -201,6 +204,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      *  指定された場所に花火を打ち上げる関数
+     * 
      * @param loc 
      */
     public static void launchFireWorks( Location loc ) {
@@ -241,6 +245,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * Config.ymlで指定されたコンソールコマンドを実行する
+     * 
      * @param player
      * @param Message 
      */
@@ -256,6 +261,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * ブロックが破壊された時の処理
+     * 
      * @param event 
      */
     @EventHandler
@@ -361,6 +367,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * 看板ブロックを右クリック
+     * 
      * @param event 
      */
     @EventHandler
@@ -398,6 +405,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * コマンドの入力に対する処理
+     * 
      * @param sender
      * @param cmd
      * @param commandLabel
@@ -481,6 +489,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      * GRANITE：花崗岩
      * DIORITE：閃緑岩
      * ANDESITE：安山岩
+     * 
      * @param b
      * @return 
      */
@@ -504,6 +513,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * プレイヤーがイベントに参加した時の処理
+     * 
      * @param player
      * @return 
      */
@@ -515,6 +525,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * イベント参加者がイベントアイテムを受け取る時の処理
+     * 
      * @param player
      * @param Item
      * @return 
@@ -530,6 +541,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * イベント参加者のステータス表示する処理
+     * 
      * @param player
      * @param Other
      * @return 
@@ -567,6 +579,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * 参加者のスコアーを操作する処理
+     * 
      * @param player
      * @param name
      * @param score

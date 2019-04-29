@@ -48,6 +48,10 @@ public class Config {
     private int Event_Z2;
     private String JoinMessage;
 
+    /**
+     * 
+     * @param plugin 
+     */
     public Config(Plugin plugin) {
         this.stones = new ArrayList<>();
         this.plugin = plugin;
@@ -55,8 +59,9 @@ public class Config {
         load();
     }
     
-    /*
+    /**
      * 設定をロードします
+     * 
      */
     public void load() {
         // 設定ファイルを保存
@@ -125,6 +130,9 @@ public class Config {
         JoinMessage = config.getString( "JOIN_MESSAGE" );
     }
 
+    /**
+     * 
+     */
     public void Status() {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=== Premises Status ===" );
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "EventName : " + ChatColor.YELLOW + EventName );
@@ -153,85 +161,163 @@ public class Config {
 
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=======================" );
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public String getEventName() {
         return EventName;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public List getStones() {
         return stones;
     }
-    
+
+    /**
+     * 
+     * @param sd
+     * @return 
+     */
     public int getPoint( String sd ) {
         if ( stones.contains( sd ) ) {
             return GetPoint.get( sd );
         }
         return 0;
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public String getEventToolName() {
         return EventToolName;
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public int getRePresent() {
         return RePresent;
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public int getUpCost() {
         return UpCost;
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public double getRepair() {
         return Repair;
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public boolean GetField() {
         return Field;
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public boolean CreativeCount() {
         return OPMode;
     }
 
+    /**
+     * 
+     * @param loc
+     * @return 
+     */
     public boolean CheckArea( Location loc ) {
         if ( !loc.getWorld().getName().equals( Event_World ) ) return false;
         return !( ( loc.getBlockX()<Event_X1 || loc.getBlockX()>Event_X2 ) || ( loc.getBlockY()<Event_Y1 || loc.getBlockY()>Event_Y2 ) || ( loc.getBlockZ()<Event_Z1 || loc.getBlockZ()>Event_Z2 ) );
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public boolean FreeBreak() {
         return FreeBreak;
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public boolean ToolBreak() {
         return ToolBreak;
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public List getTools() {
         return tools;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getScoreNotice() {
         return ScoreNotice;
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public int getScoreBroadcast() {
         return ScoreBroadcast;
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public List getBC_Command() {
         return bc_command;
     }
 
-    //  5tick(0.25秒)ごとにTimerクラスのrunメソッドを実行してね
-    //  Timer 5tick×2回 = 0.5秒です
+    /**
+     * 5tick(0.25秒)ごとにTimerクラスのrunメソッドを実行してね
+     * Timer 5tick×2回 = 0.5秒です
+     * 
+     * @return 
+     */
     public long CoolTick() {
         return config.getLong( "CoolTick" );
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public int CoolCount() {
         return config.getInt( "CoolCount" );
     }
-    
+
+    /**
+     * 
+     * @return 
+     */
     public String GetJoinMessage() {
         return JoinMessage;
     }
