@@ -34,9 +34,10 @@ public class TopList {
     private final String EventName;
 
     /**
-     * 
+     * スコアーランキングリスト
+     *
      * @param plugin
-     * @param EN 
+     * @param EN
      */
     public TopList( Plugin plugin, String EN ) {
         this.plugin = plugin;
@@ -44,9 +45,10 @@ public class TopList {
     }
 
     /**
-     * 
-     * @param fileName
-     * @return 
+     * ファイルネームからUUIDを取り出す
+     *
+     * @param   fileName
+     * @return  UUID
      */
     public static String getPreffix( String fileName ) {
 
@@ -60,9 +62,10 @@ public class TopList {
     }
 
     /**
-     * 
-     * @param filename
-     * @return 
+     * ファイル内のトータルスコアを取り出す
+     *
+     * @param   filename
+     * @return  Total Score
      */
     public int getScore( String filename ) {
         File getFile = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator + filename );
@@ -74,10 +77,11 @@ public class TopList {
     }
 
     /**
-     * 
-     * @param filename
-     * @param StoneName
-     * @return 
+     * 掘削ブロック別のカウント取得
+     *
+     * @param   filename
+     * @param   StoneName
+     * @return  Count
      */
     public int getCount( String filename, String StoneName ) {
         File getFile = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator + filename );
@@ -89,9 +93,10 @@ public class TopList {
     }
 
     /**
-     * 
+     * 表示自動切り替え、PlayerがNullならばコンソールとなる
+     *
      * @param p
-     * @param Msg 
+     * @param Msg
      */
     public void Prt( Player p ,String Msg ) {
         if ( p == null ) {
@@ -102,7 +107,8 @@ public class TopList {
     }
 
     /**
-     * 
+     * ランキング表示本体
+     *
      * @param player 
      */
     public void Top( Player player ) {
@@ -144,7 +150,8 @@ public class TopList {
     }
 
     /**
-     * 
+     * CSV形式でファイルに出力する
+     *
      * @param stone
      * @throws IOException 
      */

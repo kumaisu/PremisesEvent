@@ -50,6 +50,7 @@ public class Config {
 
     /**
      * 
+     *
      * @param plugin 
      */
     public Config(Plugin plugin) {
@@ -61,7 +62,7 @@ public class Config {
     
     /**
      * 設定をロードします
-     * 
+     *
      */
     public void load() {
         // 設定ファイルを保存
@@ -164,6 +165,7 @@ public class Config {
 
     /**
      * 
+     *
      * @return 
      */
     public String getEventName() {
@@ -172,6 +174,7 @@ public class Config {
 
     /**
      * 
+     *
      * @return 
      */
     public List getStones() {
@@ -180,6 +183,7 @@ public class Config {
 
     /**
      * 
+     *
      * @param sd
      * @return 
      */
@@ -192,6 +196,7 @@ public class Config {
 
     /**
      * 
+     *
      * @return 
      */
     public String getEventToolName() {
@@ -200,6 +205,7 @@ public class Config {
 
     /**
      * 
+     *
      * @return 
      */
     public int getRePresent() {
@@ -208,6 +214,7 @@ public class Config {
 
     /**
      * 
+     *
      * @return 
      */
     public int getUpCost() {
@@ -216,6 +223,7 @@ public class Config {
 
     /**
      * 
+     *
      * @return 
      */
     public double getRepair() {
@@ -224,6 +232,7 @@ public class Config {
 
     /**
      * 
+     *
      * @return 
      */
     public boolean GetField() {
@@ -232,6 +241,7 @@ public class Config {
 
     /**
      * 
+     *
      * @return 
      */
     public boolean CreativeCount() {
@@ -240,6 +250,7 @@ public class Config {
 
     /**
      * 
+     *
      * @param loc
      * @return 
      */
@@ -250,6 +261,7 @@ public class Config {
 
     /**
      * 
+     *
      * @return 
      */
     public boolean FreeBreak() {
@@ -258,6 +270,7 @@ public class Config {
 
     /**
      * 
+     *
      * @return 
      */
     public boolean ToolBreak() {
@@ -266,6 +279,7 @@ public class Config {
 
     /**
      * 
+     *
      * @return 
      */
     public List getTools() {
@@ -273,7 +287,8 @@ public class Config {
     }
 
     /**
-     * 
+     * プレイヤーに対してのスコアーアナウンスの点数
+     *
      * @return 
      */
     public int getScoreNotice() {
@@ -281,7 +296,8 @@ public class Config {
     }
 
     /**
-     * 
+     * スコアーアナウンスを何点で行うか
+     *
      * @return 
      */
     public int getScoreBroadcast() {
@@ -289,7 +305,9 @@ public class Config {
     }
 
     /**
-     * 
+     * ブロードキャスト用コマンド
+     * Discordなどに独自でメッセージを送信するときに利用
+     *
      * @return 
      */
     public List getBC_Command() {
@@ -298,8 +316,8 @@ public class Config {
 
     /**
      * 5tick(0.25秒)ごとにTimerクラスのrunメソッドを実行してね
-     * Timer 5tick×2回 = 0.5秒です
-     * 
+     * Timer 5tick×4回 = 1秒です
+     *
      * @return 
      */
     public long CoolTick() {
@@ -307,7 +325,8 @@ public class Config {
     }
 
     /**
-     * 
+     * クールタイムの利用回数
+     *
      * @return 
      */
     public int CoolCount() {
@@ -315,7 +334,8 @@ public class Config {
     }
 
     /**
-     * 
+     * 参加時に表示されるメッセージ
+     *
      * @return 
      */
     public String GetJoinMessage() {
