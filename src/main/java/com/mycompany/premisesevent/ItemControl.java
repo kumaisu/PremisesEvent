@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 /**
+ * アイテムコントロールライブラリ
  *
  * @author sugichan
  */
@@ -25,10 +26,20 @@ public class ItemControl {
 
     private final Plugin plugin;
 
+    /**
+     * アイテムコントロール初期化
+     *
+     * @Plugin plugin
+     */
     public ItemControl( Plugin plugin ) {
         this.plugin = plugin;
     }
 
+    /**
+     * アイテムの生成とプレゼント処理
+     *
+     * @Player player
+     */
     public void ItemPresent( Player player ) {
 
         ItemStack is = new ItemStack( Material.CHAINMAIL_BOOTS, 1 );    // ChainMail Boots
@@ -38,7 +49,7 @@ public class ItemControl {
         is.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, 0 );       // Infinity
 
         List<String> lores = new ArrayList();
-        
+
         lores.add( "§7落下耐性 Ⅴ" );
         lores.add( "§7火炎耐性 Ⅴ" );
         lores.add( "§7耐久力 Ⅲ" );
@@ -54,7 +65,15 @@ public class ItemControl {
         player.sendMessage( ChatColor.GREEN + "イベント用装備をプレゼントしました" );
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "Successfully gifted present tool." );
     }
-    
+
+    /**
+     * イベントツールアップデート処理
+     *
+     * @Player player
+     * @ItemStack itemstack
+     * @String ToolName
+     * @Material tool
+     */
     public void ItemUpdate( Player player, ItemStack itemstack, String ToolName, Material tool ) {
         List<String> lores = new ArrayList();
 
@@ -75,7 +94,7 @@ public class ItemControl {
                 is.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, 0 );       // Infinity
                 lores.add( "§7効率強化 Ⅵ" );
             }
-        
+
             lores.add( "§d整地イベント参加賞" );
 
             ItemMeta im = is.getItemMeta();             //  ItemStackから、ItemMetaを取得
@@ -104,7 +123,7 @@ public class ItemControl {
             } else {
                 ench++;
             }
-            
+
             itemstack.addUnsafeEnchantment( Enchantment.DIG_SPEED, digs );
             itemstack.addUnsafeEnchantment( Enchantment.LURE, digs );
             itemstack.addUnsafeEnchantment( Enchantment.DURABILITY, ench );
@@ -128,7 +147,12 @@ public class ItemControl {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + player.getDisplayName() + ChatColor.GOLD + " Tool Update !! [効率強化" + digs + " 耐久力" + ench + "]"  );
         }
     }
-    
+
+    /**
+     * 所持アイテムのステータス表示
+     *
+     * @Player player
+     */
     public void ShowItemStatus( Player player ) {
             ItemStack PlayerItem = player.getInventory().getItemInMainHand();
             player.sendMessage( ChatColor.GREEN + "Detect Enchant..." );
