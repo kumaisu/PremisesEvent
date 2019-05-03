@@ -58,9 +58,10 @@ public class PlayerControl {
     private final Map<String,Integer> BlockCount = new HashMap<>();
 
     /**
-     * 
+     * プレイヤーコントロールライブラリ
+     *
      * @param plugin
-     * @param config 
+     * @param config
      */
     public PlayerControl( Plugin plugin, Config config ) {
         this.plugin = plugin;
@@ -69,29 +70,36 @@ public class PlayerControl {
     }
 
     /**
-     * 
-     * @param setuuid 
+     * UUID セット
+     *
+     * @param setuuid
      */
     public void setUUID( UUID setuuid ) {
         uuid = setuuid;
     }
 
     /**
-     * 
-     * @param name 
+     * プレイヤー名セット
+     *
+     * @param name
      */
     public void setDisplayName( String name ) {
         DisplayName = name;
     }
 
     /**
-     * 
-     * @return 
+     * プレイヤー名取得
+     *
+     * @return
      */
     public String getDisplayName() {
         return DisplayName;
     }
 
+    /**
+     * スコアボードへの表示登録
+     *
+     */
     public void ScoreBoardEntry( Player player ) {
         obj.setDisplayName( "Mining Count" );
         obj.setDisplaySlot( DisplaySlot.SIDEBAR );
@@ -100,9 +108,9 @@ public class PlayerControl {
     }
 
     /**
-     * 設定をロードします
-     * 
-     * @return 
+     * 参加プレイヤーの情報をロードします
+     *
+     * @return
      */
     public boolean load() {
         // 設定ファイルを保存
@@ -128,7 +136,8 @@ public class PlayerControl {
     }
 
     /**
-     * 
+     * 参加プレイヤーの情報を保存します
+     *
      */
     public void save() {
         File dataFolder = new File( plugin.getDataFolder() + File.separator + config.getEventName() + File.separator + "users" );
@@ -159,9 +168,10 @@ public class PlayerControl {
     }
 
     /**
-     * 
+     * プレイヤーの参加処理をします
+     *
      * @param p
-     * @return 
+     * @return
      */
     public boolean JoinPlayer( Player p ) {
         switch ( EntryFlag ) {
@@ -208,6 +218,13 @@ public class PlayerControl {
         return true;
     }
 
+    /**
+     * イベントツールの再取得処理
+     *
+     * @Player player
+     * @Material Tool
+     * @return
+     */
     public boolean itemget( Player player, Material Tool ) {
         int Rep = config.getRePresent();
         if ( getScore() > Rep ) {
@@ -222,6 +239,13 @@ public class PlayerControl {
         }
     }
 
+    /**
+     * イベントツールのアップデート処理
+     *
+     * @Player player
+     * @boolean Force
+     * @return
+     */
     public void ToolUpdate( Player player, boolean Force ) {
 
         if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) {
@@ -256,32 +280,36 @@ public class PlayerControl {
     }
 
     /**
-     * 
-     * @return 
+     * プレイヤーの参加状態を取得します
+     *
+     * @return
      */
     public int getEntry() {
         return EntryFlag;
     }
 
     /**
-     * 
-     * @return 
+     * プレイヤーの参加した日を取得します
+     *
+     * @return
      */
     public String getJoinDate() {
         return FirstDate;
     }
 
     /**
-     * 
-     * @return 
+     * プレイヤーのトータルスコアを取得します
+     *
+     * @return
      */
     public int getScore() {
         return PlayerScore;
     }
 
     /**
-     * 
-     * @param amount 
+     * プレイヤーに特定スコアを付与または剥奪します
+     *
+     * @param amount
      */
     public void addScore( int amount ) {
         PlayerScore += amount;
@@ -291,9 +319,10 @@ public class PlayerControl {
     }
 
     /**
-     * 
+     * 指定ブロックの掘削数を取得します
+     *
      * @param StoneName
-     * @return 
+     * @return
      */
     public int getStoneCount( String StoneName ) {
         int CD;
@@ -307,8 +336,9 @@ public class PlayerControl {
     }
 
     /**
-     * 
-     * @param StoneName 
+     * 指定ブロックの掘削数を加算します
+     *
+     * @param StoneName
      */
     public void addStoneCount( String StoneName ) {
         int CD = getStoneCount( StoneName );
@@ -320,8 +350,9 @@ public class PlayerControl {
     }
 
     /**
-     * 
-     * @param p 
+     * 参加プレイヤーのスコア状況を表示します
+     *
+     * @param p
      */
     public void getStatus( Player p ) {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look Status: " + DisplayName );
@@ -337,16 +368,18 @@ public class PlayerControl {
     }
 
     /**
-     * 
-     * @return 
+     * イベント装備の再プレゼントフラグを取得します
+     *
+     * @return
      */
     public boolean getPresentFlag() {
         return PresentFlag;
     }
 
     /**
-     * 
-     * @return 
+     * イベントツールの再プレゼントフラグを取得します
+     *
+     * @return
      */
     public boolean getUpdateFlag() {
         return UpdateFlag;

@@ -57,7 +57,7 @@ public class TopList {
         int point = fileName.lastIndexOf( "." );
         if ( point != -1 ) {
             return fileName.substring( 0, point );
-        } 
+        }
         return fileName;
     }
 
@@ -109,7 +109,7 @@ public class TopList {
     /**
      * ランキング表示本体
      *
-     * @param player 
+     * @param player
      */
     public void Top( Player player ) {
         String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
@@ -145,7 +145,7 @@ public class TopList {
                 );
             if ( ( i == 10 ) && lineflag ) Prt( player, ChatColor.GREEN + "============================" );
         }
-            
+
         Prt( player, ChatColor.GREEN + "============================" );
     }
 
@@ -153,7 +153,7 @@ public class TopList {
      * CSV形式でファイルに出力する
      *
      * @param stone
-     * @throws IOException 
+     * @throws IOException
      */
     public void ToCSV( List<String>stone ) throws IOException {
         try {
@@ -164,11 +164,11 @@ public class TopList {
                 String Header = "UserName,Score";
                 Header = stone.stream().map( ( s ) -> "," + s ).reduce( Header, String::concat );
                 pw.println( Header );
-                
+
                 File folder;
                 folder = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator );
                 File files[] = folder.listFiles();
-                
+
                 for( File file : files ) {
                     String DataStr = Bukkit.getOfflinePlayer( UUID.fromString( getPreffix( file.getName() ) ) ).getName() + "," + getScore( file.getName() );
                     DataStr = stone.stream().map( ( s ) -> "," + getCount( file.getName(), s )).reduce( DataStr, String::concat );
