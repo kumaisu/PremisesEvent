@@ -137,39 +137,6 @@ public class Config {
      */
     public void Status() {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=== Premises Status ===" );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "EventName : " + ChatColor.YELLOW + EventName );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "RePresent : " + ChatColor.YELLOW + RePresent );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "UpdateCost: " + ChatColor.YELLOW + UpCost );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Repair    : " + ChatColor.YELLOW + Repair );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "FreeBreak : " + ChatColor.YELLOW + ( FreeBreak ? "TRUE":"FALSE" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ToolBreak : " + ChatColor.YELLOW + ( ToolBreak ? "TRUE":"FALSE" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Creative  : " + ChatColor.YELLOW + ( OPMode ? "TRUE":"FALSE" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ToolName  : " + EventToolName );
-
-        for( int i = 0; i<tools.size(); i++ ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ) );
-        }
-
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Field     : " + ChatColor.YELLOW + ( Field ? "TRUE":"FALSE" ) );
-        if ( Field ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + Event_X1 + ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + Event_Y1 + ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z1 );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + Event_X2 + ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + Event_Y2 + ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2 );
-        }
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Broadcast Command:" );
-        for( int i = 0; i<bc_command.size(); i++ ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ) );
-        }
-
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=======================" );
-    }
-
-    /**
-     * 設定内容を表示する(日本語坂)
-     *
-     */
-    public void StatusJ() {
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=== Premises Status ===" );
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "イベント名           : " + ChatColor.YELLOW + EventName );
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ツール再取得コスト   : " + ChatColor.YELLOW + RePresent );
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ツール更新コスト     : " + ChatColor.YELLOW + UpCost );
@@ -178,12 +145,23 @@ public class Config {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "一般ツールでの掘削   : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ) );
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Creativeでのカウント : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ) );
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "イベントツール名     : " + EventToolName );
+        /*
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "EventName : " + ChatColor.YELLOW + EventName );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "RePresent : " + ChatColor.YELLOW + RePresent );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "UpdateCost: " + ChatColor.YELLOW + UpCost );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Repair    : " + ChatColor.YELLOW + Repair );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "FreeBreak : " + ChatColor.YELLOW + ( FreeBreak ? "TRUE":"FALSE" ) );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ToolBreak : " + ChatColor.YELLOW + ( ToolBreak ? "TRUE":"FALSE" ) );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Creative  : " + ChatColor.YELLOW + ( OPMode ? "TRUE":"FALSE" ) );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ToolName  : " + EventToolName );
+        */
 
         for( int i = 0; i<tools.size(); i++ ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ) );
         }
 
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ) );
+        //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Field     : " + ChatColor.YELLOW + ( Field ? "TRUE":"FALSE" ) );
         if ( Field ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World );
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + Event_X1 + ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + Event_Y1 + ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z1 );

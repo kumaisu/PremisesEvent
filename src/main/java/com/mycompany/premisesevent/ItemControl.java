@@ -29,7 +29,7 @@ public class ItemControl {
     /**
      * アイテムコントロール初期化
      *
-     * @Plugin plugin
+     * @param plugin
      */
     public ItemControl( Plugin plugin ) {
         this.plugin = plugin;
@@ -38,7 +38,7 @@ public class ItemControl {
     /**
      * アイテムの生成とプレゼント処理
      *
-     * @Player player
+     * @param player
      */
     public void ItemPresent( Player player ) {
 
@@ -69,10 +69,10 @@ public class ItemControl {
     /**
      * イベントツールアップデート処理
      *
-     * @Player player
-     * @ItemStack itemstack
-     * @String ToolName
-     * @Material tool
+     * @param player
+     * @param itemstack
+     * @param ToolName
+     * @param tool
      */
     public void ItemUpdate( Player player, ItemStack itemstack, String ToolName, Material tool ) {
         List<String> lores = new ArrayList();
@@ -151,7 +151,7 @@ public class ItemControl {
     /**
      * 所持アイテムのステータス表示
      *
-     * @Player player
+     * @param player
      */
     public void ShowItemStatus( Player player ) {
             ItemStack PlayerItem = player.getInventory().getItemInMainHand();

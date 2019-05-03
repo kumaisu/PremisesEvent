@@ -432,7 +432,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
 
         if ( cmd.getName().equalsIgnoreCase( "pstatus" ) && hasPermission ) {
-            config.StatusJ();
+            config.Status();
             return true;
         }
 

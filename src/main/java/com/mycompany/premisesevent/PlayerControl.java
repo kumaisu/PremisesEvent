@@ -221,8 +221,8 @@ public class PlayerControl {
     /**
      * イベントツールの再取得処理
      *
-     * @Player player
-     * @Material Tool
+     * @param player
+     * @param Tool
      * @return
      */
     public boolean itemget( Player player, Material Tool ) {
@@ -242,9 +242,8 @@ public class PlayerControl {
     /**
      * イベントツールのアップデート処理
      *
-     * @Player player
-     * @boolean Force
-     * @return
+     * @param player
+     * @param Force
      */
     public void ToolUpdate( Player player, boolean Force ) {
 
