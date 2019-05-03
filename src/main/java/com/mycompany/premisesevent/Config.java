@@ -49,9 +49,9 @@ public class Config {
     private String JoinMessage;
 
     /**
-     * 
+     * 設定読み込みライブラリ
      *
-     * @param plugin 
+     * @param plugin
      */
     public Config(Plugin plugin) {
         this.stones = new ArrayList<>();
@@ -59,7 +59,7 @@ public class Config {
         plugin.getLogger().info( "Config Loading now..." );
         load();
     }
-    
+
     /**
      * 設定をロードします
      *
@@ -72,7 +72,7 @@ public class Config {
             plugin.reloadConfig();
         }
         config = plugin.getConfig();
-        
+
         stones = new ArrayList<>();
         List< String > getstr = ( List< String > ) config.getList( "PointStone" );
         for( int i = 0; i<getstr.size(); i++ ) {
@@ -95,7 +95,7 @@ public class Config {
         EventToolName = config.getString( "EventToolName" );
         FreeBreak = config.getBoolean( "FreeBreak" );
         ToolBreak = config.getBoolean( "ToolBreak" );
-        
+
         Event_World = config.getString( "World" );
 
         String pos = config.getString( "AreaPos1" );
@@ -127,12 +127,13 @@ public class Config {
             Event_Z1 = Event_Z2;
             Event_Z2 = temp;
         }
-        
+
         JoinMessage = config.getString( "JOIN_MESSAGE" );
     }
 
     /**
-     * 
+     * 設定内容を表示する
+     *
      */
     public void Status() {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=== Premises Status ===" );
@@ -144,7 +145,7 @@ public class Config {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ToolBreak : " + ChatColor.YELLOW + ( ToolBreak ? "TRUE":"FALSE" ) );
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Creative  : " + ChatColor.YELLOW + ( OPMode ? "TRUE":"FALSE" ) );
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ToolName  : " + EventToolName );
-        
+
         for( int i = 0; i<tools.size(); i++ ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ) );
         }
@@ -164,7 +165,40 @@ public class Config {
     }
 
     /**
-     * 
+     * 設定内容を表示する(日本語坂)
+     *
+     */
+    public void StatusJ() {
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=== Premises Status ===" );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "イベント名           : " + ChatColor.YELLOW + EventName );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ツール再取得コスト   : " + ChatColor.YELLOW + RePresent );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ツール更新コスト     : " + ChatColor.YELLOW + UpCost );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "耐久度警告値         : " + ChatColor.YELLOW + Repair );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "参加者以外の掘削     : " + ChatColor.YELLOW + ( FreeBreak ? "許可":"不可" ) );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "一般ツールでの掘削   : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ) );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Creativeでのカウント : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ) );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "イベントツール名     : " + EventToolName );
+
+        for( int i = 0; i<tools.size(); i++ ) {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ) );
+        }
+
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ) );
+        if ( Field ) {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World );
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + Event_X1 + ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + Event_Y1 + ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z1 );
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + Event_X2 + ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + Event_Y2 + ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2 );
+        }
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Broadcast Command:" );
+        for( int i = 0; i<bc_command.size(); i++ ) {
+            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ) );
+        }
+
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=======================" );
+    }
+
+    /**
+     * 実行されているイベント名取得
      *
      * @return 
      */
@@ -173,7 +207,7 @@ public class Config {
     }
 
     /**
-     * 
+     * カウントされている石情報取得
      *
      * @return 
      */
@@ -182,7 +216,7 @@ public class Config {
     }
 
     /**
-     * 
+     * 石に設定されているポイントを取得
      *
      * @param sd
      * @return 
@@ -195,7 +229,7 @@ public class Config {
     }
 
     /**
-     * 
+     * イベントで配布されているツール名称取得
      *
      * @return 
      */
@@ -204,7 +238,7 @@ public class Config {
     }
 
     /**
-     * 
+     * ツール再取得の時に必要なスコア
      *
      * @return 
      */
@@ -213,7 +247,7 @@ public class Config {
     }
 
     /**
-     * 
+     * ツールのアップデートに必要なスコア
      *
      * @return 
      */
@@ -222,7 +256,8 @@ public class Config {
     }
 
     /**
-     * 
+     * ツールの耐久度警告を行うタイミング
+     * 0.1 = 耐久度残り10%
      *
      * @return 
      */
@@ -231,7 +266,8 @@ public class Config {
     }
 
     /**
-     * 
+     * 掘削エリア指定
+     * True:あり False:なし
      *
      * @return 
      */
@@ -240,7 +276,8 @@ public class Config {
     }
 
     /**
-     * 
+     * CreativeMode時のスコアカウント
+     * True:する False:しない
      *
      * @return 
      */
@@ -249,7 +286,7 @@ public class Config {
     }
 
     /**
-     * 
+     * 指定範囲内かの判定
      *
      * @param loc
      * @return 
@@ -260,7 +297,8 @@ public class Config {
     }
 
     /**
-     * 
+     * 一般掘削の許可フラグ
+     * True:全プレイヤー False:参加者のみ
      *
      * @return 
      */
@@ -269,7 +307,8 @@ public class Config {
     }
 
     /**
-     * 
+     * 指定ツールでの掘削可否
+     * True:指定ツールのみ False:すべてOK
      *
      * @return 
      */
@@ -278,7 +317,7 @@ public class Config {
     }
 
     /**
-     * 
+     * イベントツールの種類
      *
      * @return 
      */
