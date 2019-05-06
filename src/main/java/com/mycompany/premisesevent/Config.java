@@ -137,14 +137,14 @@ public class Config {
      */
     public void Status() {
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=== Premises Status ===" );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "イベント名           : " + ChatColor.YELLOW + EventName );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ツール再取得コスト   : " + ChatColor.YELLOW + RePresent );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ツール更新コスト     : " + ChatColor.YELLOW + UpCost );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "耐久度警告値         : " + ChatColor.YELLOW + Repair );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "参加者以外の掘削     : " + ChatColor.YELLOW + ( FreeBreak ? "許可":"不可" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "一般ツールでの掘削   : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Creativeでのカウント : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "イベントツール名     : " + EventToolName );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( FreeBreak ? "許可":"不可" ) );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ) );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ) );
+        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "イベントツール名 : " + EventToolName );
         /*
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "EventName : " + ChatColor.YELLOW + EventName );
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "RePresent : " + ChatColor.YELLOW + RePresent );
@@ -164,8 +164,14 @@ public class Config {
         //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Field     : " + ChatColor.YELLOW + ( Field ? "TRUE":"FALSE" ) );
         if ( Field ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + Event_X1 + ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + Event_Y1 + ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z1 );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + Event_X2 + ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + Event_Y2 + ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2 );
+            Bukkit.getServer().getConsoleSender().sendMessage(
+                ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + String.format( "%-7d", Event_X1 ) +
+                ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d",Event_Y1 ) +
+                ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z1 );
+            Bukkit.getServer().getConsoleSender().sendMessage(
+                ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + String.format( "%-7d", Event_X2 ) +
+                ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d", Event_Y2 ) +
+                ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2 );
         }
         Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Broadcast Command:" );
         for( int i = 0; i<bc_command.size(); i++ ) {
@@ -178,7 +184,7 @@ public class Config {
     /**
      * 実行されているイベント名取得
      *
-     * @return 
+     * @return
      */
     public String getEventName() {
         return EventName;
@@ -187,7 +193,7 @@ public class Config {
     /**
      * カウントされている石情報取得
      *
-     * @return 
+     * @return
      */
     public List getStones() {
         return stones;
@@ -196,8 +202,8 @@ public class Config {
     /**
      * 石に設定されているポイントを取得
      *
-     * @param sd
-     * @return 
+     * @param sd    判定する石の名称（コードではない）
+     * @return
      */
     public int getPoint( String sd ) {
         if ( stones.contains( sd ) ) {
@@ -209,7 +215,7 @@ public class Config {
     /**
      * イベントで配布されているツール名称取得
      *
-     * @return 
+     * @return
      */
     public String getEventToolName() {
         return EventToolName;
@@ -218,7 +224,7 @@ public class Config {
     /**
      * ツール再取得の時に必要なスコア
      *
-     * @return 
+     * @return
      */
     public int getRePresent() {
         return RePresent;
@@ -227,7 +233,7 @@ public class Config {
     /**
      * ツールのアップデートに必要なスコア
      *
-     * @return 
+     * @return
      */
     public int getUpCost() {
         return UpCost;
@@ -237,7 +243,7 @@ public class Config {
      * ツールの耐久度警告を行うタイミング
      * 0.1 = 耐久度残り10%
      *
-     * @return 
+     * @return
      */
     public double getRepair() {
         return Repair;
@@ -247,7 +253,7 @@ public class Config {
      * 掘削エリア指定
      * True:あり False:なし
      *
-     * @return 
+     * @return
      */
     public boolean GetField() {
         return Field;
@@ -257,7 +263,7 @@ public class Config {
      * CreativeMode時のスコアカウント
      * True:する False:しない
      *
-     * @return 
+     * @return
      */
     public boolean CreativeCount() {
         return OPMode;
@@ -266,8 +272,8 @@ public class Config {
     /**
      * 指定範囲内かの判定
      *
-     * @param loc
-     * @return 
+     * @param loc   現在位置
+     * @return
      */
     public boolean CheckArea( Location loc ) {
         if ( !loc.getWorld().getName().equals( Event_World ) ) return false;
@@ -278,7 +284,7 @@ public class Config {
      * 一般掘削の許可フラグ
      * True:全プレイヤー False:参加者のみ
      *
-     * @return 
+     * @return
      */
     public boolean FreeBreak() {
         return FreeBreak;
@@ -288,7 +294,7 @@ public class Config {
      * 指定ツールでの掘削可否
      * True:指定ツールのみ False:すべてOK
      *
-     * @return 
+     * @return
      */
     public boolean ToolBreak() {
         return ToolBreak;
@@ -297,7 +303,7 @@ public class Config {
     /**
      * イベントツールの種類
      *
-     * @return 
+     * @return
      */
     public List getTools() {
         return tools;
@@ -306,7 +312,7 @@ public class Config {
     /**
      * プレイヤーに対してのスコアーアナウンスの点数
      *
-     * @return 
+     * @return
      */
     public int getScoreNotice() {
         return ScoreNotice;
@@ -315,7 +321,7 @@ public class Config {
     /**
      * スコアーアナウンスを何点で行うか
      *
-     * @return 
+     * @return
      */
     public int getScoreBroadcast() {
         return ScoreBroadcast;
@@ -325,7 +331,7 @@ public class Config {
      * ブロードキャスト用コマンド
      * Discordなどに独自でメッセージを送信するときに利用
      *
-     * @return 
+     * @return
      */
     public List getBC_Command() {
         return bc_command;
@@ -335,7 +341,7 @@ public class Config {
      * 5tick(0.25秒)ごとにTimerクラスのrunメソッドを実行してね
      * Timer 5tick×4回 = 1秒です
      *
-     * @return 
+     * @return
      */
     public long CoolTick() {
         return config.getLong( "CoolTick" );
@@ -344,7 +350,7 @@ public class Config {
     /**
      * クールタイムの利用回数
      *
-     * @return 
+     * @return
      */
     public int CoolCount() {
         return config.getInt( "CoolCount" );
@@ -353,7 +359,7 @@ public class Config {
     /**
      * 参加時に表示されるメッセージ
      *
-     * @return 
+     * @return
      */
     public String GetJoinMessage() {
         return JoinMessage;

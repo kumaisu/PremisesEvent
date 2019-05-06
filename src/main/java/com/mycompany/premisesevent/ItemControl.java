@@ -69,10 +69,10 @@ public class ItemControl {
     /**
      * イベントツールアップデート処理
      *
-     * @param player
-     * @param itemstack
-     * @param ToolName
-     * @param tool
+     * @param player        操作プレイヤー情報
+     * @param itemstack     持っているアイテムの情報(nullの場合、新規となる)
+     * @param ToolName      イベントツール判定用文字列
+     * @param tool          新規時のアイテム基本情報
      */
     public void ItemUpdate( Player player, ItemStack itemstack, String ToolName, Material tool ) {
         List<String> lores = new ArrayList();
@@ -81,14 +81,14 @@ public class ItemControl {
             //  ItemStack is = new ItemStack( Material.IRON_PICKAXE, 1);
             ItemStack is = new ItemStack( tool, 1 );
             if ( player.isOp() ) {
-                is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 10 );           // Efficiency 
+                is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 10 );           // Efficiency
                 is.addUnsafeEnchantment( Enchantment.LURE, 10 );                // Lure
                 is.addUnsafeEnchantment( Enchantment.DURABILITY, 10 );          // Unbreaking
                 is.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, 10 );      // Infinity
                 lores.add( "§7効率強化 Ⅹ" );
                 lores.add( "§7耐久力 Ⅹ" );
             } else {
-                is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 6 );            // Efficiency 
+                is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 6 );            // Efficiency
                 is.addUnsafeEnchantment( Enchantment.LURE, 6 );                 // Lure
                 is.addUnsafeEnchantment( Enchantment.DURABILITY, 0 );           // Unbreaking
                 is.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, 0 );       // Infinity

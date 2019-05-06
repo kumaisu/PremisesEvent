@@ -113,8 +113,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      * プレイヤーのログイン時処理、参加者であれば、スコアをメモリにロードする
      * スコアファイルにプレゼントフラグがある場合は適宜プレゼント処理を行う
      * ※今の所スコアファイルのプレゼントフラグは直接編集でのみ変更可能
-     * 
-     * @param event 
+     *
+     * @param event
      */
     @EventHandler
     public void onPlayerJoin( PlayerJoinEvent event ){
@@ -153,8 +153,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * プレイヤーのログアウト時処理、参加者であればメモリのスコアをスコアファイルに保存する
-     * 
-     * @param event 
+     *
+     * @param event
      */
     @EventHandler
     public void onPlayerQuit( PlayerQuitEvent event ) {
@@ -174,8 +174,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      * ポイントブロックを置いた場合は、スコアからポイントをマイナスする
      * ポイントブロックで無い場合は何もしない
      * ※自然生成か設置かを判断するための試作をしているが昨日していない
-     * 
-     * @param event 
+     *
+     * @param event
      */
     @EventHandler
     public void onBlockPlace( BlockPlaceEvent event ) {
@@ -204,8 +204,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      *  指定された場所に花火を打ち上げる関数
-     * 
-     * @param loc 
+     *
+     * @param loc
      */
     public static void launchFireWorks( Location loc ) {
         /*
@@ -245,9 +245,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * Config.ymlで指定されたコンソールコマンドを実行する
-     * 
+     *
      * @param player
-     * @param Message 
+     * @param Message
      */
     public void ExecOtherCommand( Player player, String Message ) {
         for( int i = 0; i<config.getBC_Command().size(); i++ ) {
@@ -261,8 +261,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * ブロックが破壊された時の処理
-     * 
-     * @param event 
+     *
+     * @param event
      */
     @EventHandler
     public void onBlockBreak( BlockBreakEvent event ) {
@@ -308,7 +308,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             if (
                     ( item.getType() == Material.AIR ) ||
                     ( !item.getItemMeta().hasDisplayName() ) ||
-                    ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) 
+                    ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) )
                ) {
                 player.sendMessage( ChatColor.RED + "指定ツールで行ってください" );
                 event.setCancelled( true );
@@ -367,8 +367,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * 看板ブロックを右クリック
-     * 
-     * @param event 
+     *
+     * @param event
      */
     @EventHandler
     public void onSignClick( PlayerInteractEvent event ) {
@@ -405,12 +405,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * コマンドの入力に対する処理
-     * 
+     *
      * @param sender
      * @param cmd
      * @param commandLabel
      * @param args
-     * @return 
+     * @return
      */
     @Override
     public boolean onCommand( CommandSender sender, Command cmd, String commandLabel, String[] args ) {
@@ -472,10 +472,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                                 return true;
                             case "give":
                                 if ( args.length == 3 ) { return GiveScore( player, args[2], args[3] ); }
-                                return false;
+                                return true;
                             default:
                                 sender.sendMessage( ChatColor.RED + "[Premises] Unknown Command" );
-                                return false;
                         }
                     }
                 }
@@ -489,9 +488,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      * GRANITE：花崗岩
      * DIORITE：閃緑岩
      * ANDESITE：安山岩
-     * 
+     *
      * @param b
-     * @return 
+     * @return
      */
     public String getStoneName( Block b ) {
         String retStr = b.getType().toString();
@@ -513,9 +512,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * プレイヤーがイベントに参加した時の処理
-     * 
+     *
      * @param player
-     * @return 
+     * @return
      */
     public boolean PlayerJoin( Player player ) {
         ExecOtherCommand( player, player.getDisplayName() + " さんが、イベントに参加しました" );
@@ -525,10 +524,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * イベント参加者がイベントアイテムを受け取る時の処理
-     * 
+     *
      * @param player
      * @param Item
-     * @return 
+     * @return
      */
     public boolean GetEventItem( Player player, String Item ) {
         if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
@@ -541,10 +540,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * イベント参加者のステータス表示する処理
-     * 
+     *
      * @param player
      * @param Other
-     * @return 
+     * @return
      */
     public boolean PlayerStatus( Player player, String Other ) {
         if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
@@ -579,11 +578,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     /**
      * 参加者のスコアーを操作する処理
-     * 
+     *
      * @param player
      * @param name
      * @param score
-     * @return 
+     * @return
      */
     public boolean GiveScore( Player player, String name, String score ) {
         int scoreNum;
