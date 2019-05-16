@@ -24,6 +24,7 @@ commands:
             /<command> csv
             /<command> launch
             /<command> give PlayerName Score
+            /<command> Console [max/full/normal/none]
 permissions:
     Premises.broadcast:
         description: Broadcast announce

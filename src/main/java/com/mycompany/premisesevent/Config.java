@@ -132,6 +132,9 @@ public class Config {
         JoinMessage = config.getString( "JOIN_MESSAGE" );
 
         switch ( config.getString( "Debug" ) ) {
+            case "max":
+                DebugFlag = 3;
+                break;
             case "full":
                 DebugFlag = 2;
                 break;

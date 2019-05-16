@@ -448,6 +448,29 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                             case "give":
                                 if ( args.length == 3 ) { return GiveScore( player, args[2], args[3] ); }
                                 return true;
+                            case "Console":
+                                switch ( Itemname ) {
+                                    case "max":
+                                        config.setDebug( 3 );
+                                        break;
+                                    case "full":
+                                        config.setDebug( 2 );
+                                        break;
+                                    case "normal":
+                                        config.setDebug( 1 );
+                                        break;
+                                    case "none":
+                                        config.setDebug( 0 );
+                                        break;
+                                    default:
+                                        Utility.Prt( player, "usage: PremisesEvent Console [full/normal/none]", ( player == null ) );
+                                }
+                                Utility.Prt( player, 
+                                    ChatColor.GREEN + "System Debug Mode is [ " +
+                                    ChatColor.RED + config.DBString( config.getDebug() ) +
+                                    ChatColor.GREEN + " ]", ( player == null )
+                                );
+                                break;
                             default:
                                 Utility.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + args[0] + "]", config.DBFlag( 2 ) );
                         }
