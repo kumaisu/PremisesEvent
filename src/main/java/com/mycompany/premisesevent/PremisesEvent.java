@@ -517,8 +517,23 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      * @return
      */
     public boolean PlayerJoin( Player player ) {
-        ExecOtherCommand( player, player.getDisplayName() + " さんが、イベントに参加しました" );
-        player.sendMessage( config.GetJoinMessage() );
+        switch ( pc.get( player.getUniqueId() ).getEntry() ) {
+            case 1:
+                player.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
+                ExecOtherCommand( player, player.getDisplayName() + " さんは、既にイベントに参加しています" );
+                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
+                return false;
+            case 2:
+                player.sendMessage( ChatColor.RED + "イベントへの参加は拒否されています" );
+                //  ExecOtherCommand( player, player.getDisplayName() + " さんは、イベントに参加できませんでした" );
+                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Kick registration." );
+                return false;
+            default:
+                player.sendMessage( config.GetJoinMessage() );
+                ExecOtherCommand( player, player.getDisplayName() + " さんが、イベントに参加しました" );
+                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + "Registration success." );
+                break;
+        }
         return pc.get( player.getUniqueId() ).JoinPlayer( player );
     }
 

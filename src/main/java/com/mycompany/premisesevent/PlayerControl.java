@@ -99,6 +99,7 @@ public class PlayerControl {
     /**
      * スコアボードへの表示登録
      *
+     * @param player
      */
     public void ScoreBoardEntry( Player player ) {
         obj.setDisplayName( "Mining Count" );
@@ -174,19 +175,6 @@ public class PlayerControl {
      * @return
      */
     public boolean JoinPlayer( Player p ) {
-        switch ( EntryFlag ) {
-            case 1:
-                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
-                p.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
-                return false;
-            case 2:
-                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Kick registration." );
-                p.sendMessage( ChatColor.RED + "イベントへの参加は拒否されています" );
-                return false;
-            default:
-                break;
-        }
-
         /*
         if ( EntryFlag ) {
             Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
