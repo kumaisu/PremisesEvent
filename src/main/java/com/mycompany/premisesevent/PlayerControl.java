@@ -184,7 +184,7 @@ public class PlayerControl {
         */
 
         if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
-            p.sendMessage( ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です" );
+            Utility.Prt( p, ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です", config.DBFlag( 1 ) );
             return false;
         }
 
@@ -193,7 +193,7 @@ public class PlayerControl {
         EntryFlag = 1;
         save();
         ScoreBoardEntry( p );
-        p.sendMessage( ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate );
+        Utility.Prt( p, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, config.DBFlag( 1 ) );
 
         ItemControl ic = new ItemControl( plugin );
         ic.ItemPresent( p );
@@ -219,10 +219,10 @@ public class PlayerControl {
             ItemControl ic = new ItemControl( plugin );
             ic.ItemUpdate( player, null, config.getEventToolName(), Tool );
             addScore( -Rep );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Tool.name() + " update tools !!" );
+            Utility.Prt( null, ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Tool.name() + " update tools !!", config.DBFlag( 1 ) );
             return true;
         } else {
-            player.sendMessage( ChatColor.RED + "Scoreが足りないので配布できません" );
+            Utility.Prt( player, ChatColor.RED + "Scoreが足りないので配布できません", config.DBFlag( 1 ) );
             return false;
         }
     }
@@ -236,7 +236,7 @@ public class PlayerControl {
     public void ToolUpdate( Player player, boolean Force ) {
 
         if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) {
-            player.sendMessage( ChatColor.RED + "アップデートするアイテムを持ってください" );
+            Utility.Prt( player, ChatColor.RED + "アップデートするアイテムを持ってください", config.DBFlag( 2 ) );
             return;
         }
 
@@ -253,17 +253,18 @@ public class PlayerControl {
                         ic.ItemUpdate( player, item, config.getEventToolName(), null );
                         addScore( -Rep );
                     } else {
-                        player.sendMessage(
+                        Utility.Prt( player,
                             ChatColor.YELLOW + "ツール耐久値は " +
                             ChatColor.WHITE + ( item.getType().getMaxDurability() - item.getDurability() ) +
                             ChatColor.YELLOW + " なので " +
                             ChatColor.WHITE + ( (int) ( item.getType().getMaxDurability() - CheckDurability ) ) +
-                            ChatColor.YELLOW + " 以下にしてね"
+                            ChatColor.YELLOW + " 以下にしてね",
+                            config.DBFlag( 2 )
                         );
                     }
-                } else player.sendMessage( ChatColor.YELLOW + "ツール名が違います" );
-            } else player.sendMessage( ChatColor.YELLOW + "イベント用のツールではありません" );
-        } else player.sendMessage( ChatColor.RED + "Scoreが足りないのでアップデートできません" );
+                } else Utility.Prt( player, ChatColor.YELLOW + "ツール名が違います", config.DBFlag( 2 ) );
+            } else Utility.Prt( player, ChatColor.YELLOW + "イベント用のツールではありません", config.DBFlag( 2 ) );
+        } else Utility.Prt( player, ChatColor.RED + "Scoreが足りないのでアップデートできません", config.DBFlag( 2 ) );
     }
 
     /**
@@ -342,16 +343,16 @@ public class PlayerControl {
      * @param p
      */
     public void getStatus( Player p ) {
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look Status: " + DisplayName );
-        p.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
-        p.sendMessage( ChatColor.AQUA + "Block mined by: " + DisplayName );
-        p.sendMessage( ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore() );
+        Utility.Prt( null, ChatColor.RED + "Look Status: " + DisplayName, config.DBFlag( 1 ) );
+        Utility.Prt( p, ChatColor.GREEN + "--------------------------------------------------", config.DBFlag( 2 ) );
+        Utility.Prt( p, ChatColor.AQUA + "Block mined by: " + DisplayName, config.DBFlag( 2 ) );
+        Utility.Prt( p, ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore(), config.DBFlag( 2 ) );
 
         BlockCount.entrySet().forEach( ( entry ) -> {
-            p.sendMessage( ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue() );
+            Utility.Prt( p, ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue(), config.DBFlag( 2 ) );
         } );
 
-        p.sendMessage( ChatColor.GREEN + "--------------------------------------------------" );
+        Utility.Prt( p, ChatColor.GREEN + "--------------------------------------------------", config.DBFlag( 2 ) );
     }
 
     /**

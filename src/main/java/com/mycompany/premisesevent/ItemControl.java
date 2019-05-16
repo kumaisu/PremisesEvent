@@ -7,7 +7,6 @@ package com.mycompany.premisesevent;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -62,8 +61,7 @@ public class ItemControl {
         is.setItemMeta( im );                       //元のItemStackに、変更したItemMetaを設定
 
         player.getInventory().addItem( is );
-        player.sendMessage( ChatColor.GREEN + "イベント用装備をプレゼントしました" );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "Successfully gifted present tool." );
+        Utility.Prt( player, ChatColor.GREEN + "イベント用装備をプレゼントしました", true );
     }
 
     /**
@@ -78,7 +76,6 @@ public class ItemControl {
         List<String> lores = new ArrayList();
 
         if ( itemstack == null ) {
-            //  ItemStack is = new ItemStack( Material.IRON_PICKAXE, 1);
             ItemStack is = new ItemStack( tool, 1 );
             if ( player.isOp() ) {
                 is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 10 );           // Efficiency
@@ -104,8 +101,7 @@ public class ItemControl {
             is.setItemMeta( im );                       //  元のItemStackに、変更したItemMetaを設定
 
             player.getInventory().addItem( is );
-            player.sendMessage( ChatColor.GREEN + "イベント用ツールをプレゼントしました" );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "Successfully gifted update tool." );
+            Utility.Prt( player, ChatColor.GREEN + "イベント用ツールをプレゼントしました", true );
         } else {
             String[] stringArray = { "", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "ⅩⅠ" };
             String UpdateMessage;
@@ -144,7 +140,7 @@ public class ItemControl {
 
             player.getInventory().addItem( itemstack );
             player.sendMessage( ChatColor.AQUA + "イベント用ツールを[" + UpdateMessage + ChatColor.AQUA + "]にアップデートしました" );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + player.getDisplayName() + ChatColor.GOLD + " Tool Update !! [効率強化" + digs + " 耐久力" + ench + "]"  );
+            Utility.Prt( null, ChatColor.AQUA + player.getDisplayName() + ChatColor.GOLD + " Tool Update !! [効率強化" + digs + " 耐久力" + ench + "]", true );
         }
     }
 

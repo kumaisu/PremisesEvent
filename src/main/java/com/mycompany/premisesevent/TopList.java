@@ -93,28 +93,15 @@ public class TopList {
     }
 
     /**
-     * 表示自動切り替え、PlayerがNullならばコンソールとなる
-     *
-     * @param p
-     * @param Msg
-     */
-    public void Prt( Player p ,String Msg ) {
-        if ( p == null ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( Msg );
-        } else {
-            p.sendMessage( Msg );
-        }
-    }
-
-    /**
      * ランキング表示本体
      *
      * @param player
      */
-    public void Top( Player player ) {
+    public void Top( Player player, boolean debugFlag ) {
+        boolean debugPrint = ( ( player == null ) || debugFlag );
         String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
-        Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング" );
-        Prt( player, ChatColor.GREEN + "============================" );
+        Utility.Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング", debugPrint );
+        Utility.Prt( player, ChatColor.GREEN + "============================", debugPrint );
 
         Map<String, Integer> rank = new HashMap<>();
         File folder;
@@ -137,16 +124,17 @@ public class TopList {
             i++;
             if ( entry.getKey().equals( PlayerName ) ) lineflag = false;
             if ( ( i<11 ) || entry.getKey().equals( PlayerName ) || ( player == null ) )
-                Prt( player, 
+                Utility.Prt( player, 
                     ChatColor.WHITE + String.format( "%2d", i ) + " : " +
                     ( entry.getKey().equals( PlayerName ) ? ChatColor.AQUA:ChatColor.GRAY ) +
                     String.format( "%-15s", entry.getKey() ) + ChatColor.YELLOW +
-                    String.format( "%8d", entry.getValue() )
+                    String.format( "%8d", entry.getValue() ),
+                    debugFlag
                 );
-            if ( ( i == 10 ) && lineflag ) Prt( player, ChatColor.GREEN + "============================" );
+            if ( ( i == 10 ) && lineflag ) Utility.Prt( player, ChatColor.GREEN + "============================", debugPrint );
         }
 
-        Prt( player, ChatColor.GREEN + "============================" );
+        Utility.Prt( player, ChatColor.GREEN + "============================",debugPrint );
     }
 
     /**

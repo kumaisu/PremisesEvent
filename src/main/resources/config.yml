@@ -1,3 +1,8 @@
+#   Premises Event Configuration File
+
+#   Debug ( full / Default:normal / none )
+Debug: normal
+
 #   Whether to perform a field check
 #   If it is false, it will be the entire server
 EventName: EventName

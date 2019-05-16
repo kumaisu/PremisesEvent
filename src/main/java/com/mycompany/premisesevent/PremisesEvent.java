@@ -100,11 +100,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      */
     @Override
     public void onDisable(){
-        Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] Disable processing..." );
+        Utility.Prt( null, "[Premises] Disable processing...", true );
         pc.entrySet().forEach( ( entry ) -> {
             if ( pc.get( entry.getKey() ).getEntry() != 0 ) {
                 pc.get( entry.getKey() ).save();
-                Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + pc.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score" );
+                Utility.Prt( null, "[Premises] " + ChatColor.AQUA + pc.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score", true );
             }
         } );
     }
@@ -127,27 +127,21 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         if ( pc.get( p.getUniqueId() ).getEntry() == 1 ) {
             pc.get( p.getUniqueId() ).ScoreBoardEntry( p );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + p.getDisplayName() + " is participating in the this Event" );
+            Utility.Prt( null, ChatColor.AQUA + p.getDisplayName() + " is participating in the this Event", true );
 
             ItemControl ic = new ItemControl( this );
             if ( pc.get( p.getUniqueId() ).getPresentFlag() ) {
-                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.YELLOW + p.getDisplayName() + " for RePresent Amor" );
-                p.sendMessage( ChatColor.YELLOW + "イベント装備の再配布" );
+                Utility.Prt( p, ChatColor.YELLOW + "イベント装備の再配布", config.DBFlag( 1 ) );
                 ic.ItemPresent( p );
             }
             if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
-                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.YELLOW + p.getDisplayName() + " for RePresent Tool" );
-                p.sendMessage( ChatColor.YELLOW + "イベントツールの再配布" );
+                Utility.Prt( p, ChatColor.YELLOW + "イベントツールの再配布", config.DBFlag( 1 ) );
                 for( int i = 0; i<config.getTools().size(); i++ ) {
                     ic.ItemUpdate( p, null, config.getEventToolName(), Material.getMaterial( config.getTools().get( i ).toString() ) );
                 }
             }
-            //  暫定で強制的に再配布フラグを消すため
-            //  saveは、ログアウト時1回だけにする方が良いと思ってるんだけど、、検討不足
-            //  サーバーダウン時の対応で、onDisableでもセーブする必要あるかな?
-            //  pc.get( p.getUniqueId() ).save();
         } else {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + p.getDisplayName() + " has not joined the this Event" );
+            Utility.Prt( null, ChatColor.RED + p.getDisplayName() + " has not joined the this Event", true );
         }
     }
 
@@ -160,11 +154,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onPlayerQuit( PlayerQuitEvent event ) {
         Player player = event.getPlayer();
         if ( pc.get( player.getUniqueId() ).getEntry() != 0 ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " logged out, Saved the Score" );
+            Utility.Prt( null, "[Premises] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " logged out, Saved the Score", true );
 
             pc.get( player.getUniqueId() ).save();
         } else {
-            Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.LIGHT_PURPLE + " logged out, not Save" );
+            Utility.Prt( null, "[Premises] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.LIGHT_PURPLE + " logged out, not Save", true );
         }
         pc.remove( player.getUniqueId() );
     }
@@ -193,10 +187,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
 
         if ( config.getStones().contains( blockName ) ) {
-            //  Bukkit.getServer().getConsoleSender().sendMessage( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ) );
+            Utility.Prt( null, player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), config.DBFlag( 2 ) );
             pc.get( player.getUniqueId() ).addScore( - config.getPoint( blockName ) );
-        //  } else {
-            //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This block is not a target" );
+        } else {
+            Utility.Prt( null, ChatColor.LIGHT_PURPLE + "This block is not a target", config.DBFlag( 2 ) );
         }
 
         player.setPlayerListName( ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
@@ -254,7 +248,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             String ExecCommand = config.getBC_Command().get( i ).toString();
             ExecCommand = ExecCommand.replace( "%message%", Message );
             ExecCommand = ExecCommand.replace( "%player%", player.getDisplayName() );
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + ExecCommand );
+            Utility.Prt( null, ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + ExecCommand, config.DBFlag( 1 ) );
             Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), ExecCommand );
         }
     }
@@ -274,7 +268,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         switch ( pc.get( player.getUniqueId() ).getEntry() ) {
             case 0:
                 if ( !config.FreeBreak() ) {
-                    player.sendMessage( ChatColor.RED + "イベントに参加してください" );
+                    Utility.Prt( player, ChatColor.RED + "イベントに参加してください", config.DBFlag( 1 ) );
                     event.setCancelled( true );
                 }
                 return;
@@ -282,20 +276,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 // 参加者なので、スルー
                 break;
             case 2:
-                player.sendMessage( ChatColor.RED + "イベントエリアの操作はできません" );
+                Utility.Prt( player, ChatColor.RED + "イベントエリアの操作はできません", config.DBFlag( 1 ) );
                 event.setCancelled( true );
                 return;
         }
-
-        /*
-        if ( !pc.get( player.getUniqueId() ).getEntry() ) {
-            if ( !config.FreeBreak() ) {
-                player.sendMessage( ChatColor.RED + "イベントに参加してください" );
-                event.setCancelled( true );
-            }
-            return;
-        }
-        */
 
         Block block = event.getBlock();
         Material material = block.getType();
@@ -303,8 +287,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         ItemStack item = player.getInventory().getItemInMainHand();
 
         if ( config.ToolBreak() && ( item.getType() != Material.TORCH ) ) {
-            //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.YELLOW + "Tool Chek !!" );
-            //  トーチかイベントツール意外なら
             if (
                     ( item.getType() == Material.AIR ) ||
                     ( !item.getItemMeta().hasDisplayName() ) ||
@@ -317,13 +299,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
 
         if ( config.getStones().contains( blockName ) ) {
-            /* これを表示すると、サーバーコンソールがこのログで埋まってしまうので注意
-            Bukkit.getServer().getConsoleSender().sendMessage(
-                player.getDisplayName() + " get " + blockName +
-                " Point: " + config.getPoint( blockName ) +
-                ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")"
-            );
-            */
+            Utility.Prt( null, player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")", config.DBFlag( 2 ) );
             pc.get( player.getUniqueId() ).addStoneCount( blockName );
             pc.get( player.getUniqueId() ).addScore( config.getPoint( blockName ) );
 
@@ -331,7 +307,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             //  不具合や他責によるスコアの未記録時の対応ログとして表示
             if ( config.getScoreNotice() > 0 ) {
                 if ( ( pc.get( player.getUniqueId() ).getScore() % config.getScoreNotice() ) == 0 ) {
-                    Bukkit.getServer().getConsoleSender().sendMessage( "[Premises] " + player.getDisplayName() + " reached " + pc.get( player.getUniqueId() ).getScore() + " points." );
+                    Utility.Prt( null, "[Premises] " + player.getDisplayName() + " reached " + pc.get( player.getUniqueId() ).getScore() + " points.", config.DBFlag( 1 ) );
                 }
             }
 
@@ -346,7 +322,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
 
         } else {
-            if ( player.isOp() ) Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.LIGHT_PURPLE + "This [" + ChatColor.GOLD + block.getType().toString() + ChatColor.LIGHT_PURPLE + "] is not a target" );
+            if ( player.isOp() ) Utility.Prt( null, ChatColor.LIGHT_PURPLE + "This [" + ChatColor.GOLD + block.getType().toString() + ChatColor.LIGHT_PURPLE + "] is not a target", config.DBFlag( 1 ) );
         }
 
         player.setPlayerListName( ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
@@ -355,9 +331,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         if ( WarningFlag && item.getItemMeta().hasDisplayName() ) {
             if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) {
-                //  if ( ( item.getType().getMaxDurability() * 0.9 ) <= item.getDurability() ) player.sendMessage( ChatColor.RED + "ツールの耐久値がヤバイですよ" );
                 if ( ( item.getType().getMaxDurability() * config.getRepair() ) <= item.getDurability() ) {
-                    player.sendMessage( ChatColor.RED + "ツールの耐久値がヤバイですよ" );
+                    Utility.Prt( player, ChatColor.RED + "ツールの耐久値がヤバイですよ", config.DBFlag( 2 ) );
                     WarningFlag = false;
                     task = this.getServer().getScheduler().runTaskTimer( this, new Timer( this ,config.CoolCount() ), 0L, config.CoolTick() );
                 }
@@ -396,7 +371,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 case "[P-TOP]":
                     if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).save();
                     TopList TL = new TopList( this, EventName );
-                    TL.Top( player );
+                    TL.Top( player, config.DBFlag( 2 ) );
                     break;
                 default:
             }
@@ -422,17 +397,17 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             if ( player != null && pc.get( player.getUniqueId() ).getEntry() != 0 ) pc.get( player.getUniqueId() ).save();
 
             Bukkit.getServer().getOnlinePlayers().stream().filter( ( onPlayer ) -> ( pc.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ).forEachOrdered( ( onPlayer ) -> {
-                Bukkit.getServer().getConsoleSender().sendMessage( onPlayer.getDisplayName() + "is Online Event[" + ( ( pc.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ? "true":"false" ) + "]" );
+                Utility.Prt( null, onPlayer.getDisplayName() + "is Online Event[" + ( ( pc.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ? "true":"false" ) + "]", true );
                 pc.get( onPlayer.getUniqueId() ).save();
             } );
 
             TopList TL = new TopList( this, EventName );
-            TL.Top( player );
+            TL.Top( player, config.DBFlag( 2 ) );
             return true;
         }
 
         if ( cmd.getName().equalsIgnoreCase( "pstatus" ) && hasPermission ) {
-            config.Status();
+            config.Status( player );
             return true;
         }
 
@@ -474,12 +449,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                                 if ( args.length == 3 ) { return GiveScore( player, args[2], args[3] ); }
                                 return true;
                             default:
-                                sender.sendMessage( ChatColor.RED + "[Premises] Unknown Command" );
+                                Utility.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + args[0] + "]", config.DBFlag( 2 ) );
                         }
                     }
                 }
-            } else Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "コマンドはコンソールから操作できません" );
-        } else sender.sendMessage( ChatColor.RED + "Unknown Command or You do not have permission." );
+            } else Utility.Prt( null, ChatColor.RED + "コマンドはコンソールから操作できません", true );
+        } else Utility.Prt( player, ChatColor.RED + "Unknown Command or You do not have permission.", config.DBFlag( 1 ) );
         return false;
     }
 
@@ -518,20 +493,23 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      */
     public boolean PlayerJoin( Player player ) {
         switch ( pc.get( player.getUniqueId() ).getEntry() ) {
-            case 1:
-                player.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
+            case 1: //  Double registration failure.
+                Utility.Prt( player, ChatColor.RED + "既にイベントへ参加しています", config.DBFlag( 1 ) );
                 ExecOtherCommand( player, player.getDisplayName() + " さんは、既にイベントに参加しています" );
-                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
+                //  player.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
+                //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
                 return false;
-            case 2:
-                player.sendMessage( ChatColor.RED + "イベントへの参加は拒否されています" );
+            case 2: //  Kick registration.
+                Utility.Prt( player, ChatColor.RED + "イベントへの参加は拒否されています", config.DBFlag( 1 ) );
+                //  player.sendMessage( ChatColor.RED + "イベントへの参加は拒否されています" );
+                //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Kick registration." );
                 //  ExecOtherCommand( player, player.getDisplayName() + " さんは、イベントに参加できませんでした" );
-                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Kick registration." );
                 return false;
-            default:
-                player.sendMessage( config.GetJoinMessage() );
+            default: // Registration success.
+                Utility.Prt( player, config.GetJoinMessage(), config.DBFlag( 1 ) );
+                //  player.sendMessage( config.GetJoinMessage() );
+                //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + "Registration success." );
                 ExecOtherCommand( player, player.getDisplayName() + " さんが、イベントに参加しました" );
-                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + "Registration success." );
                 break;
         }
         return pc.get( player.getUniqueId() ).JoinPlayer( player );
@@ -548,8 +526,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
             if ( config.getTools().contains( Item ) ) {
                 pc.get( player.getUniqueId() ).itemget( player, Material.getMaterial( Item ) );
-            } else player.sendMessage( ChatColor.RED + "再配布対象のツールではありません" );
-        } else player.sendMessage( ChatColor.RED + "イベント参加者のみです" );
+            } else Utility.Prt( player, ChatColor.RED + "再配布対象のツールではありません", config.DBFlag( 1 ) );
+        } else Utility.Prt( player, ChatColor.RED + "イベント参加者のみです", config.DBFlag( 1 ) );
         return false;
     }
 
@@ -562,13 +540,13 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      */
     public boolean PlayerStatus( Player player, String Other ) {
         if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
-            if ( "".equals(Other) ) {
+            if ( "".equals( Other ) ) {
                 pc.get( player.getUniqueId() ).save();
                 pc.get( player.getUniqueId() ).getStatus( player );
             } else {
                 UUID uuid;
 
-                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Look other Player : " + Other );
+                Utility.Prt( player, ChatColor.RED + "Look other Player : " + Other, true );
 
                 OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( Other );
                 if ( op.hasPlayedBefore() ) {
@@ -578,7 +556,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     pc.get( uuid ).setUUID( op.getUniqueId() );
                     pc.get( uuid ).load();
                 } else {
-                    player.sendMessage( ChatColor.RED + "This Player is not joined to server." );
+                    Utility.Prt( player, ChatColor.RED + "This Player is not joined to server.", config.DBFlag( 1 ) );
                     return false;
                 }
                 pc.get( uuid ).getStatus( player );
@@ -586,7 +564,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
             return true;
         } else {
-            player.sendMessage( ChatColor.RED + "イベントに参加していません" );
+            Utility.Prt( player, ChatColor.RED + "イベントに参加していません", config.DBFlag( 1 ) );
             return false;
         }
     }
@@ -608,7 +586,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         try {
             scoreNum = Integer.parseInt( score );
         } catch ( NumberFormatException e ) {
-            player.sendMessage( ChatColor.RED + "指定された値が正しくありません" );
+            Utility.Prt( player, ChatColor.RED + "指定された値が正しくありません", config.DBFlag( 2 ) );
             return false;
         }
 
@@ -630,7 +608,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     pc.get( scorePlayer.getUniqueId() ).load();
                     createStat = true;
                 } else {
-                    player.sendMessage( ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はサーバーに存在しません" );
+                    Utility.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はサーバーに存在しません", config.DBFlag( 1 ) );
                     return false;
                 }
             }
@@ -641,7 +619,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             pc.get( scorePlayer.getUniqueId() ).save();
             retStat = true;
         } else {
-            player.sendMessage( ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません" );
+            Utility.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません", config.DBFlag( 1 ) );
             retStat = false;
         }
 

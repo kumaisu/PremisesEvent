@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 /*
@@ -47,6 +47,7 @@ public class Config {
     private int Event_Z1;
     private int Event_Z2;
     private String JoinMessage;
+    private int DebugFlag;
 
     /**
      * 設定読み込みライブラリ
@@ -129,56 +130,75 @@ public class Config {
         }
 
         JoinMessage = config.getString( "JOIN_MESSAGE" );
+
+        switch ( config.getString( "Debug" ) ) {
+            case "full":
+                DebugFlag = 2;
+                break;
+            case "normal":
+                DebugFlag = 1;
+                break;
+            case "none":
+                DebugFlag = 0;
+                break;
+            default:
+                DebugFlag = 0;
+        }
     }
 
     /**
      * 設定内容を表示する
      *
+     * @param p
      */
-    public void Status() {
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=== Premises Status ===" );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( FreeBreak ? "許可":"不可" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "イベントツール名 : " + EventToolName );
+    public void Status( Player p ) {
+        boolean consolePrintFlag = ( p == null );
+        Utility.Prt( p, ChatColor.GREEN + "=== Premises Status ===", consolePrintFlag );
+        Utility.Prt( p, ChatColor.GREEN + "Degub Mode : " + ChatColor.YELLOW + DBString( DebugFlag ), consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( FreeBreak ? "許可":"不可" ), consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ), consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "イベントツール名 : " + EventToolName, consolePrintFlag );
         /*
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "EventName : " + ChatColor.YELLOW + EventName );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "RePresent : " + ChatColor.YELLOW + RePresent );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "UpdateCost: " + ChatColor.YELLOW + UpCost );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Repair    : " + ChatColor.YELLOW + Repair );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "FreeBreak : " + ChatColor.YELLOW + ( FreeBreak ? "TRUE":"FALSE" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ToolBreak : " + ChatColor.YELLOW + ( ToolBreak ? "TRUE":"FALSE" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Creative  : " + ChatColor.YELLOW + ( OPMode ? "TRUE":"FALSE" ) );
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "ToolName  : " + EventToolName );
+        Utility.Prt( p, ChatColor.WHITE + "EventName : " + ChatColor.YELLOW + EventName, consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "RePresent : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "UpdateCost: " + ChatColor.YELLOW + UpCost, consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "Repair    : " + ChatColor.YELLOW + Repair, consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "FreeBreak : " + ChatColor.YELLOW + ( FreeBreak ? "TRUE":"FALSE" ), consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "ToolBreak : " + ChatColor.YELLOW + ( ToolBreak ? "TRUE":"FALSE" ), consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "Creative  : " + ChatColor.YELLOW + ( OPMode ? "TRUE":"FALSE" ), consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "ToolName  : " + EventToolName, consolePrintFlag );
         */
 
         for( int i = 0; i<tools.size(); i++ ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ) );
+            Utility.Prt( p, ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ), consolePrintFlag );
         }
 
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ) );
+        Utility.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ), consolePrintFlag );
         //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Field     : " + ChatColor.YELLOW + ( Field ? "TRUE":"FALSE" ) );
         if ( Field ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World );
-            Bukkit.getServer().getConsoleSender().sendMessage(
+            Utility.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World, consolePrintFlag );
+            Utility.Prt( p,
                 ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + String.format( "%-7d", Event_X1 ) +
                 ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d",Event_Y1 ) +
-                ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z1 );
-            Bukkit.getServer().getConsoleSender().sendMessage(
+                ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z1,
+                consolePrintFlag );
+            Utility.Prt( p,
                 ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + String.format( "%-7d", Event_X2 ) +
                 ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d", Event_Y2 ) +
-                ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2 );
+                ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2,
+                consolePrintFlag );
         }
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Broadcast Command:" );
+        Utility.Prt( p, ChatColor.WHITE + "Broadcast Command:", consolePrintFlag );
         for( int i = 0; i<bc_command.size(); i++ ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ) );
+            Utility.Prt( p, ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ), consolePrintFlag );
         }
 
-        Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "=======================" );
+        Utility.Prt( p, ChatColor.GREEN + "=======================", consolePrintFlag );
     }
 
     /**
@@ -364,4 +384,68 @@ public class Config {
     public String GetJoinMessage() {
         return JoinMessage;
     }
+
+    /**
+     * DebugMode を数値で受け取る
+     *
+     * @return 
+     */
+    public int getDebug() {
+        return DebugFlag;
+    }
+
+    /**
+     * 一時的にDebugModeを設定しなおす
+     * ただし、Config.ymlには反映しない
+     *
+     * @param num 
+     */
+    public void setDebug( int num ) {
+        DebugFlag = num;
+    }
+
+    /**
+     * lvlに対して、設定されているDebugMode下での可否判定を返す
+     *
+     * @param lvl
+     * @return 
+     */
+    public boolean DBFlag( int lvl ) {
+    // 0:none 1:normal 2:full
+        Boolean prtf;
+        switch ( DebugFlag ) {
+            case 0:
+                prtf = ( lvl == 0 );
+                break;
+            case 1:
+                prtf = ( lvl == 1 );
+                break;
+            case 2:
+                prtf = true;
+                break;
+            default:
+                prtf = false;
+        }
+        return prtf;
+    }
+
+    /**
+     * lvlの値を文字列でDebugModeを返す
+     *
+     * @param lvl
+     * @return 
+     */
+    public String DBString( int lvl ) {
+        switch ( lvl ) {
+            case 0:
+                return "none";
+            case 1:
+                return "normal";
+            case 2:
+                return "full";
+            default:
+                return "Error";
+        }
+    }
+
 }
