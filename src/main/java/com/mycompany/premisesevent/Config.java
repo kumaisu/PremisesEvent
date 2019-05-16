@@ -154,7 +154,7 @@ public class Config {
     public void Status( Player p ) {
         boolean consolePrintFlag = ( p == null );
         Utility.Prt( p, ChatColor.GREEN + "=== Premises Status ===", consolePrintFlag );
-        Utility.Prt( p, ChatColor.GREEN + "Degub Mode : " + ChatColor.YELLOW + DBString( DebugFlag ), consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + DBString( DebugFlag ), consolePrintFlag );
         Utility.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, consolePrintFlag );
         Utility.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
         Utility.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, consolePrintFlag );
@@ -421,6 +421,9 @@ public class Config {
                 prtf = ( lvl == 1 );
                 break;
             case 2:
+                prtf = ( lvl == 2 );
+                break;
+            case 3:
                 prtf = true;
                 break;
             default:
@@ -443,6 +446,8 @@ public class Config {
                 return "normal";
             case 2:
                 return "full";
+            case 3:
+                return "max";
             default:
                 return "Error";
         }

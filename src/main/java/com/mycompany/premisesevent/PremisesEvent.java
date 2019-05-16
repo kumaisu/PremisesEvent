@@ -187,7 +187,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
 
         if ( config.getStones().contains( blockName ) ) {
-            Utility.Prt( null, player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), config.DBFlag( 2 ) );
+            Utility.Prt( null, player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), config.DBFlag( 3 ) );
             pc.get( player.getUniqueId() ).addScore( - config.getPoint( blockName ) );
         } else {
             Utility.Prt( null, ChatColor.LIGHT_PURPLE + "This block is not a target", config.DBFlag( 2 ) );
@@ -299,7 +299,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
 
         if ( config.getStones().contains( blockName ) ) {
-            Utility.Prt( null, player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")", config.DBFlag( 2 ) );
+            Utility.Prt( null, player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")", config.DBFlag( 3 ) );
             pc.get( player.getUniqueId() ).addStoneCount( blockName );
             pc.get( player.getUniqueId() ).addScore( config.getPoint( blockName ) );
 
@@ -332,7 +332,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( WarningFlag && item.getItemMeta().hasDisplayName() ) {
             if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) {
                 if ( ( item.getType().getMaxDurability() * config.getRepair() ) <= item.getDurability() ) {
-                    Utility.Prt( player, ChatColor.RED + "ツールの耐久値がヤバイですよ", config.DBFlag( 2 ) );
+                    Utility.Prt( player, ChatColor.RED + "ツールの耐久値がヤバイですよ", config.DBFlag( 3 ) );
                     WarningFlag = false;
                     task = this.getServer().getScheduler().runTaskTimer( this, new Timer( this ,config.CoolCount() ), 0L, config.CoolTick() );
                 }
@@ -453,7 +453,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         }
                     }
                 }
-            } else Utility.Prt( null, ChatColor.RED + "コマンドはコンソールから操作できません", true );
+            } else Utility.Prt( null, ChatColor.RED + "コマンドはコンソールから操作できません", config.DBFlag( 2 ) );
         } else Utility.Prt( player, ChatColor.RED + "Unknown Command or You do not have permission.", config.DBFlag( 1 ) );
         return false;
     }
