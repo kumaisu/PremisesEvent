@@ -411,73 +411,81 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             return true;
         }
 
-        if ( hasPermission ) {
+        if ( cmd.getName().equalsIgnoreCase( "Premises" ) ) {
+            String commandString = "";
+            String itemName = "";
+
+            if ( args.length > 0 ) commandString = args[0];
+            if ( args.length > 1 ) itemName = args[1];
+
             if ( player != null ) {
-                if ( cmd.getName().equalsIgnoreCase( "Premises" ) ) {
-                    if ( args.length > 0 ) {
+                if ( commandString.equalsIgnoreCase( "join" ) ) return PlayerJoin( player );
+                switch ( commandString ) {
+                    case "get":
+                        return GetEventItem( player, itemName );
+                    case "update":
+                        boolean force = ( itemName.equals( "force" ) );
+                        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).ToolUpdate( player, force );
+                        return true;
+                    case "status":
+                        return PlayerStatus( player, itemName );
+                    case "check":
+                        if ( hasPermission ) {
+                            ItemControl ic = new ItemControl( this );
+                            ic.ShowItemStatus( player );
+                            return true;
+                        } else return false;
+                    case "launch":
+                        if ( hasPermission) {
+                            launchFireWorks( player.getLocation() );
+                            return true;
+                        } else return false;
+                    default:
+                        break;
+                }
+            }
 
-                        String Itemname = "";
-                        if ( args.length>1 ) { Itemname = args[1]; }
-
-                        switch ( args[0] ) {
-                            case "csv":
-                                TopList TL = new TopList( this, EventName );
-                                try {
-                                    TL.ToCSV( config.getStones() );
-                                } catch ( IOException ex ) {
-                                    Logger.getLogger( PremisesEvent.class.getName() ).log( Level.SEVERE, null, ex );
-                                }
-                                return true;
-                            case "get":
-                                return GetEventItem( player, Itemname );
-                            case "update":
-                                boolean force = ( Itemname.equals( "force" ) );
-                                if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).ToolUpdate( player, force );
-                                return true;
-                            case "join":
-                                 return PlayerJoin( player );
-                            case "status":
-                                return PlayerStatus( player, Itemname );
-                            case "check":
-                                ItemControl ic = new ItemControl( this );
-                                ic.ShowItemStatus( player );
-                                return true;
-                            case "launch":
-                                launchFireWorks( player.getLocation() );
-                                return true;
-                            case "give":
-                                if ( args.length == 3 ) { return GiveScore( player, args[2], args[3] ); }
-                                return true;
-                            case "Console":
-                                switch ( Itemname ) {
-                                    case "max":
-                                        config.setDebug( 3 );
-                                        break;
-                                    case "full":
-                                        config.setDebug( 2 );
-                                        break;
-                                    case "normal":
-                                        config.setDebug( 1 );
-                                        break;
-                                    case "none":
-                                        config.setDebug( 0 );
-                                        break;
-                                    default:
-                                        Utility.Prt( player, "usage: PremisesEvent Console [full/normal/none]", ( player == null ) );
-                                }
-                                Utility.Prt( player, 
-                                    ChatColor.GREEN + "System Debug Mode is [ " +
-                                    ChatColor.RED + config.DBString( config.getDebug() ) +
-                                    ChatColor.GREEN + " ]", ( player == null )
-                                );
+            if ( hasPermission ) {
+                switch ( commandString ) {
+                    case "csv":
+                        TopList TL = new TopList( this, EventName );
+                        try {
+                            TL.ToCSV( config.getStones() );
+                        } catch ( IOException ex ) {
+                            Logger.getLogger( PremisesEvent.class.getName() ).log( Level.SEVERE, null, ex );
+                        }
+                        return true;
+                    case "give":
+                        if ( args.length == 4 ) { return GiveScore( player, args[2], args[3] ); }
+                        return true;
+                    case "Console":
+                        switch ( itemName ) {
+                            case "max":
+                                config.setDebug( 3 );
+                                break;
+                            case "full":
+                                config.setDebug( 2 );
+                                break;
+                            case "normal":
+                                config.setDebug( 1 );
+                                break;
+                            case "none":
+                                config.setDebug( 0 );
                                 break;
                             default:
-                                Utility.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + args[0] + "]", config.DBFlag( 2 ) );
+                                Utility.Prt( player, "usage: PremisesEvent Console [max/full/normal/none]", ( player == null ) );
                         }
-                    }
+                        Utility.Prt( player,
+                            ChatColor.GREEN + "System Debug Mode is [ " +
+                            ChatColor.RED + config.DBString( config.getDebug() ) +
+                            ChatColor.GREEN + " ]", ( player == null )
+                        );
+                        break;
+                    default:
+                        Utility.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + commandString + "]", config.DBFlag( 2 ) );
                 }
-            } else Utility.Prt( null, ChatColor.RED + "コマンドはコンソールから操作できません", config.DBFlag( 2 ) );
-        } else Utility.Prt( player, ChatColor.RED + "Unknown Command or You do not have permission.", config.DBFlag( 1 ) );
+            }
+        }
         return false;
     }
 
@@ -519,19 +527,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             case 1: //  Double registration failure.
                 Utility.Prt( player, ChatColor.RED + "既にイベントへ参加しています", config.DBFlag( 1 ) );
                 ExecOtherCommand( player, player.getDisplayName() + " さんは、既にイベントに参加しています" );
-                //  player.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
-                //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
                 return false;
             case 2: //  Kick registration.
                 Utility.Prt( player, ChatColor.RED + "イベントへの参加は拒否されています", config.DBFlag( 1 ) );
-                //  player.sendMessage( ChatColor.RED + "イベントへの参加は拒否されています" );
-                //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Kick registration." );
                 //  ExecOtherCommand( player, player.getDisplayName() + " さんは、イベントに参加できませんでした" );
                 return false;
             default: // Registration success.
+                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + "Registration success." );
                 Utility.Prt( player, config.GetJoinMessage(), config.DBFlag( 1 ) );
-                //  player.sendMessage( config.GetJoinMessage() );
-                //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + "Registration success." );
                 ExecOtherCommand( player, player.getDisplayName() + " さんが、イベントに参加しました" );
                 break;
         }

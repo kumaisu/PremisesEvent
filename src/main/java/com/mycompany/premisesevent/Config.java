@@ -21,6 +21,8 @@ import org.bukkit.plugin.Plugin;
  */
 public class Config {
 
+    protected enum debugMode { none, normal, full, max }
+
     private final Plugin plugin;
     private FileConfiguration config = null;
 
@@ -131,22 +133,7 @@ public class Config {
 
         JoinMessage = config.getString( "JOIN_MESSAGE" );
 
-        switch ( config.getString( "Debug" ) ) {
-            case "max":
-                DebugFlag = 3;
-                break;
-            case "full":
-                DebugFlag = 2;
-                break;
-            case "normal":
-                DebugFlag = 1;
-                break;
-            case "none":
-                DebugFlag = 0;
-                break;
-            default:
-                DebugFlag = 0;
-        }
+        DebugFlag = debugMode.valueOf( config.getString( "Debug" ) ).ordinal();
     }
 
     /**
@@ -157,7 +144,7 @@ public class Config {
     public void Status( Player p ) {
         boolean consolePrintFlag = ( p == null );
         Utility.Prt( p, ChatColor.GREEN + "=== Premises Status ===", consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + DBString( DebugFlag ), consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + debugMode.values()[DebugFlag], consolePrintFlag );
         Utility.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, consolePrintFlag );
         Utility.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
         Utility.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, consolePrintFlag );
@@ -401,10 +388,18 @@ public class Config {
      * 一時的にDebugModeを設定しなおす
      * ただし、Config.ymlには反映しない
      *
-     * @param num 
+     * @param key 
      */
-    public void setDebug( int num ) {
-        DebugFlag = num;
+    public void setDebug( String key ) {
+        DebugFlag = debugMode.valueOf( key ).ordinal();
+    }
+
+    /**
+     * lvlに対して、設定されているDebugMode下での可否判定を返す
+     *
+     */
+    public boolean isDebugFlag( String key ) {
+        return ( DebugFlag >= debugMode.valueOf( key ).ordinal() );
     }
 
     /**

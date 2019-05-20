@@ -14,15 +14,18 @@ commands:
         usage: /<command>
     premises:
         description: Premises Event Control Command
-        aliases: pec
-        usage: |
+        aliases: pe
             /<command> join
             /<command> status [PlayerName]
             /<command> get [Item Material]
             /<command> update
             /<command> check
-            /<command> csv
             /<command> launch
+    premisesadmin:
+        description: Premises Event Admin Command
+        aliases: pea
+        usage: |
+            /<command> csv
             /<command> give PlayerName Score
             /<command> Console [max/full/normal/none]
 permissions:
