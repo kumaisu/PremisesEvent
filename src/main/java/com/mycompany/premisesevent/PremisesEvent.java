@@ -418,6 +418,36 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             if ( args.length > 0 ) commandString = args[0];
             if ( args.length > 1 ) itemName = args[1];
 
+            if ( hasPermission ) {
+                switch ( commandString ) {
+                    case "csv":
+                        TopList TL = new TopList( this, EventName );
+                        try {
+                            TL.ToCSV( config.getStones() );
+                        } catch ( IOException ex ) {
+                            Logger.getLogger( PremisesEvent.class.getName() ).log( Level.SEVERE, null, ex );
+                        }
+                        return true;
+                    case "give":
+                        if ( args.length == 4 ) { return GiveScore( player, args[2], args[3] ); }
+                        return true;
+                    case "Console":
+                        config.setDebug( itemName );
+                        /*
+                            default:
+                                Utility.Prt( player, "usage: PremisesEvent Console [max/full/normal/none]", ( player == null ) );
+                        */
+                        Utility.Prt( player,
+                            ChatColor.GREEN + "System Debug Mode is [ " +
+                            ChatColor.RED + config.getDebug().toString() +
+                            ChatColor.GREEN + " ]", ( player == null )
+                        );
+                        return true;
+                    default:
+                        break;
+                }
+            }
+
             if ( player != null ) {
                 if ( commandString.equalsIgnoreCase( "join" ) ) return PlayerJoin( player );
                 switch ( commandString ) {
@@ -443,37 +473,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     default:
                         break;
                 }
-            }
+            } else Utility.Prt( player, ChatColor.RED + "コンソールからは操作できないコマンドです", true );
 
-            if ( hasPermission ) {
-                switch ( commandString ) {
-                    case "csv":
-                        TopList TL = new TopList( this, EventName );
-                        try {
-                            TL.ToCSV( config.getStones() );
-                        } catch ( IOException ex ) {
-                            Logger.getLogger( PremisesEvent.class.getName() ).log( Level.SEVERE, null, ex );
-                        }
-                        return true;
-                    case "give":
-                        if ( args.length == 4 ) { return GiveScore( player, args[2], args[3] ); }
-                        return true;
-                    case "Console":
-                        config.setDebug( itemName );
-                        /*
-                            default:
-                                Utility.Prt( player, "usage: PremisesEvent Console [max/full/normal/none]", ( player == null ) );
-                        */
-                        Utility.Prt( player,
-                            ChatColor.GREEN + "System Debug Mode is [ " +
-                            ChatColor.RED + config.getDebug().toString() +
-                            ChatColor.GREEN + " ]", ( player == null )
-                        );
-                        break;
-                    default:
-                        Utility.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + commandString + "]", config.isDebugFlag( Utility.consoleMode.full ) );
-                }
-            }
+            Utility.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + commandString + "]", config.isDebugFlag( Utility.consoleMode.full ) );
+            return false;
         }
         return false;
     }

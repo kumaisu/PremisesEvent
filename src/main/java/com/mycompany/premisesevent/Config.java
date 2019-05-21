@@ -397,7 +397,7 @@ public class Config {
     }
 
     /**
-     * lvlに対して、設定されているDebugMode下での可否判定を返す
+     * keyに対して、設定されているDebugMode下での可否判定を返す
      *
      * @param key
      * @return 

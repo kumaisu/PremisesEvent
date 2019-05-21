@@ -21,10 +21,6 @@ commands:
             /<command> update
             /<command> check
             /<command> launch
-    premisesadmin:
-        description: Premises Event Admin Command
-        aliases: pea
-        usage: |
             /<command> csv
             /<command> give PlayerName Score
             /<command> Console [max/full/normal/none]
