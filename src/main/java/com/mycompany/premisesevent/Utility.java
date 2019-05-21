@@ -15,6 +15,8 @@ import org.bukkit.entity.Player;
  */
 public final class Utility {
 
+    public static enum consoleMode { none, normal, full, max }
+    
     /**
      * IPアドレスを整数化する関数
      *

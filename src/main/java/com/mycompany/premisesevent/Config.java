@@ -21,8 +21,6 @@ import org.bukkit.plugin.Plugin;
  */
 public class Config {
 
-    protected enum debugMode { none, normal, full, max }
-
     private final Plugin plugin;
     private FileConfiguration config = null;
 
@@ -49,7 +47,7 @@ public class Config {
     private int Event_Z1;
     private int Event_Z2;
     private String JoinMessage;
-    private int DebugFlag;
+    private Utility.consoleMode DebugFlag;
 
     /**
      * 設定読み込みライブラリ
@@ -133,7 +131,7 @@ public class Config {
 
         JoinMessage = config.getString( "JOIN_MESSAGE" );
 
-        DebugFlag = debugMode.valueOf( config.getString( "Debug" ) ).ordinal();
+        DebugFlag = Utility.consoleMode.valueOf( config.getString( "Debug" ) );
     }
 
     /**
@@ -144,7 +142,7 @@ public class Config {
     public void Status( Player p ) {
         boolean consolePrintFlag = ( p == null );
         Utility.Prt( p, ChatColor.GREEN + "=== Premises Status ===", consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + debugMode.values()[DebugFlag], consolePrintFlag );
+        Utility.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + DebugFlag.toString(), consolePrintFlag );
         Utility.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, consolePrintFlag );
         Utility.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
         Utility.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, consolePrintFlag );
@@ -380,7 +378,7 @@ public class Config {
      *
      * @return 
      */
-    public int getDebug() {
+    public Utility.consoleMode getDebug() {
         return DebugFlag;
     }
 
@@ -391,64 +389,20 @@ public class Config {
      * @param key 
      */
     public void setDebug( String key ) {
-        DebugFlag = debugMode.valueOf( key ).ordinal();
+        try {
+            DebugFlag = Utility.consoleMode.valueOf( key );
+        } catch( IllegalArgumentException e ) {
+            DebugFlag = Utility.consoleMode.none;
+        }
     }
 
     /**
      * lvlに対して、設定されているDebugMode下での可否判定を返す
      *
-     */
-    public boolean isDebugFlag( String key ) {
-        return ( DebugFlag >= debugMode.valueOf( key ).ordinal() );
-    }
-
-    /**
-     * lvlに対して、設定されているDebugMode下での可否判定を返す
-     *
-     * @param lvl
+     * @param key
      * @return 
      */
-    public boolean DBFlag( int lvl ) {
-    // 0:none 1:normal 2:full
-        Boolean prtf;
-        switch ( DebugFlag ) {
-            case 0:
-                prtf = ( lvl == 0 );
-                break;
-            case 1:
-                prtf = ( lvl == 1 );
-                break;
-            case 2:
-                prtf = ( lvl == 2 );
-                break;
-            case 3:
-                prtf = true;
-                break;
-            default:
-                prtf = false;
-        }
-        return prtf;
+    public boolean isDebugFlag( Utility.consoleMode key ) {
+        return ( DebugFlag.ordinal() >= key.ordinal() );
     }
-
-    /**
-     * lvlの値を文字列でDebugModeを返す
-     *
-     * @param lvl
-     * @return 
-     */
-    public String DBString( int lvl ) {
-        switch ( lvl ) {
-            case 0:
-                return "none";
-            case 1:
-                return "normal";
-            case 2:
-                return "full";
-            case 3:
-                return "max";
-            default:
-                return "Error";
-        }
-    }
-
 }
