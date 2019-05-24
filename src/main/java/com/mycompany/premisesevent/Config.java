@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import com.mycompany.kumaisulibraries.Utility;
 
 /*
  *
@@ -131,7 +132,12 @@ public class Config {
 
         JoinMessage = config.getString( "JOIN_MESSAGE" );
 
-        DebugFlag = Utility.consoleMode.valueOf( config.getString( "Debug" ) );
+        try {
+            DebugFlag = Utility.consoleMode.valueOf( config.getString( "Debug" ) );
+        } catch( IllegalArgumentException e ) {
+            Utility.Prt( null, ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", true );
+            DebugFlag = Utility.consoleMode.normal;
+        }
     }
 
     /**
