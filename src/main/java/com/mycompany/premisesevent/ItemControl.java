@@ -25,14 +25,17 @@ import com.mycompany.kumaisulibraries.Utility;
 public class ItemControl {
 
     private final Plugin plugin;
+    private final Config config;
 
     /**
      * アイテムコントロール初期化
      *
      * @param plugin
+     * @param config
      */
-    public ItemControl( Plugin plugin ) {
+    public ItemControl( Plugin plugin, Config config ) {
         this.plugin = plugin;
+        this.config = config;
     }
 
     /**
@@ -62,7 +65,7 @@ public class ItemControl {
         is.setItemMeta( im );                       //元のItemStackに、変更したItemMetaを設定
 
         player.getInventory().addItem( is );
-        Utility.Prt( player, ChatColor.GREEN + "イベント用装備をプレゼントしました", true );
+        Utility.Prt( player, ChatColor.GREEN + "イベント用装備をプレゼントしました", config.isDebugFlag( Utility.consoleMode.full ) );
     }
 
     /**
@@ -102,7 +105,10 @@ public class ItemControl {
             is.setItemMeta( im );                       //  元のItemStackに、変更したItemMetaを設定
 
             player.getInventory().addItem( is );
-            Utility.Prt( player, ChatColor.GREEN + "イベント用ツールをプレゼントしました", true );
+            Utility.Prt( player,
+                    ChatColor.WHITE + player.getDisplayName() +
+                    ChatColor.GREEN + " さんへイベント用ツールをプレゼントしました",
+                    config.isDebugFlag( Utility.consoleMode.full ) );
         } else {
             String[] stringArray = { "", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "ⅩⅠ" };
             String UpdateMessage;
@@ -140,8 +146,12 @@ public class ItemControl {
             itemstack.setDurability( (short) 0 );
 
             player.getInventory().addItem( itemstack );
-            player.sendMessage( ChatColor.AQUA + "イベント用ツールを[" + UpdateMessage + ChatColor.AQUA + "]にアップデートしました" );
-            Utility.Prt( null, ChatColor.AQUA + player.getDisplayName() + ChatColor.GOLD + " Tool Update !! [効率強化" + digs + " 耐久力" + ench + "]", true );
+            Utility.Prt( player, 
+                    ChatColor.WHITE + player.getDisplayName() + 
+                    ChatColor.AQUA + " さんのイベント用ツールを[" + 
+                    ChatColor.GREEN + UpdateMessage +
+                    ChatColor.AQUA + "]にアップデートしました"
+                    , config.isDebugFlag( Utility.consoleMode.full ) );
         }
     }
 

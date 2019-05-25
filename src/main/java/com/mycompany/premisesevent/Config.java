@@ -48,7 +48,7 @@ public class Config {
     private int Event_Z1;
     private int Event_Z2;
     private String JoinMessage;
-    private Utility.consoleMode DebugFlag;
+    private static Utility.consoleMode DebugFlag;
 
     /**
      * 設定読み込みライブラリ

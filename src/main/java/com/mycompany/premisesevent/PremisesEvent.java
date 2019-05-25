@@ -130,7 +130,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             pc.get( p.getUniqueId() ).ScoreBoardEntry( p );
             Utility.Prt( null, ChatColor.AQUA + p.getDisplayName() + " is participating in the this Event", true );
 
-            ItemControl ic = new ItemControl( this );
+            ItemControl ic = new ItemControl( this, config );
             if ( pc.get( p.getUniqueId() ).getPresentFlag() ) {
                 Utility.Prt( p, ChatColor.YELLOW + "イベント装備の再配布", config.isDebugFlag( Utility.consoleMode.normal ) );
                 ic.ItemPresent( p );
@@ -372,7 +372,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 case "[P-TOP]":
                     if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).save();
                     TopList TL = new TopList( this, EventName );
-                    TL.Top( player, config.isDebugFlag( Utility.consoleMode.full ) );
+                    TL.Top( player, config.isDebugFlag( Utility.consoleMode.max ) );
                     break;
                 default:
             }
@@ -403,7 +403,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             } );
 
             TopList TL = new TopList( this, EventName );
-            TL.Top( player, config.isDebugFlag( Utility.consoleMode.full ) );
+            TL.Top( player, config.isDebugFlag( Utility.consoleMode.max ) );
             return true;
         }
 
@@ -462,7 +462,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         return PlayerStatus( player, itemName );
                     case "check":
                         if ( hasPermission ) {
-                            ItemControl ic = new ItemControl( this );
+                            ItemControl ic = new ItemControl( this, config );
                             ic.ShowItemStatus( player );
                             return true;
                         } else return false;

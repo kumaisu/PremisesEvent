@@ -196,7 +196,7 @@ public class PlayerControl {
         ScoreBoardEntry( p );
         Utility.Prt( p, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, config.isDebugFlag( Utility.consoleMode.normal ) );
 
-        ItemControl ic = new ItemControl( plugin );
+        ItemControl ic = new ItemControl( plugin, config );
         ic.ItemPresent( p );
         for( int i = 0; i<config.getTools().size(); i++ ) {
             //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.GREEN + "Config Tool Name : " + config.getTools().get( i ) );
@@ -217,7 +217,7 @@ public class PlayerControl {
     public boolean itemget( Player player, Material Tool ) {
         int Rep = config.getRePresent();
         if ( getScore() > Rep ) {
-            ItemControl ic = new ItemControl( plugin );
+            ItemControl ic = new ItemControl( plugin, config );
             ic.ItemUpdate( player, null, config.getEventToolName(), Tool );
             addScore( -Rep );
             Utility.Prt( null, ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Tool.name() + " update tools !!", config.isDebugFlag( Utility.consoleMode.normal ) );
@@ -249,7 +249,7 @@ public class PlayerControl {
                 if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) {
                     double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );
                     if ( ( CheckDurability <= item.getDurability() ) || Force ) {
-                        ItemControl ic = new ItemControl( plugin );
+                        ItemControl ic = new ItemControl( plugin, config );
                         player.getInventory().setItemInMainHand( null );
                         ic.ItemUpdate( player, item, config.getEventToolName(), null );
                         addScore( -Rep );
@@ -345,15 +345,15 @@ public class PlayerControl {
      */
     public void getStatus( Player p ) {
         Utility.Prt( null, ChatColor.RED + "Look Status: " + DisplayName, config.isDebugFlag( Utility.consoleMode.normal ) );
-        Utility.Prt( p, ChatColor.GREEN + "--------------------------------------------------", config.isDebugFlag( Utility.consoleMode.full ) );
-        Utility.Prt( p, ChatColor.AQUA + "Block mined by: " + DisplayName, config.isDebugFlag( Utility.consoleMode.full ) );
-        Utility.Prt( p, ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore(), config.isDebugFlag( Utility.consoleMode.full ) );
+        Utility.Prt( p, ChatColor.GREEN + "--------------------------------------------------", config.isDebugFlag( Utility.consoleMode.max ) );
+        Utility.Prt( p, ChatColor.AQUA + "Block mined by: " + DisplayName, config.isDebugFlag( Utility.consoleMode.max ) );
+        Utility.Prt( p, ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore(), config.isDebugFlag( Utility.consoleMode.max ) );
 
         BlockCount.entrySet().forEach( ( entry ) -> {
-            Utility.Prt( p, ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue(), config.isDebugFlag( Utility.consoleMode.full ) );
+            Utility.Prt( p, ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue(), config.isDebugFlag( Utility.consoleMode.max ) );
         } );
 
-        Utility.Prt( p, ChatColor.GREEN + "--------------------------------------------------", config.isDebugFlag( Utility.consoleMode.full ) );
+        Utility.Prt( p, ChatColor.GREEN + "--------------------------------------------------", config.isDebugFlag( Utility.consoleMode.max ) );
     }
 
     /**
