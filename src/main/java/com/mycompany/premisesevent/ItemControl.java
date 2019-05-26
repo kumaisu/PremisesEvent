@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
-import com.mycompany.kumaisulibraries.Utility;
 
 /**
  * アイテムコントロールライブラリ

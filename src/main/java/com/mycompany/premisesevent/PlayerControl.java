@@ -26,7 +26,6 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
-import com.mycompany.kumaisulibraries.Utility;
 
 /**
  *
@@ -166,7 +165,6 @@ public class PlayerControl {
         catch (IOException e) {
             plugin.getServer().getLogger().log( Level.WARNING, "{0}Could not save UnknownIP File.", ChatColor.RED );
         }
-        // player.sendMessage( ChatColor.AQUA + "Data Saved" );
     }
 
     /**
@@ -176,14 +174,6 @@ public class PlayerControl {
      * @return
      */
     public boolean JoinPlayer( Player p ) {
-        /*
-        if ( EntryFlag ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "Double registration failure." );
-            p.sendMessage( ChatColor.RED + "既にイベントへ参加しています" );
-            return false;
-        }
-        */
-
         if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
             Utility.Prt( p, ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です", config.isDebugFlag( Utility.consoleMode.normal ) );
             return false;
