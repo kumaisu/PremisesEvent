@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2019 sugichan. All rights reserved.
  */
-package com.mycompany.premisesevent;
+package com.mycompany.kumaisulibraries;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
