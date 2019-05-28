@@ -27,6 +27,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import com.mycompany.kumaisulibraries.Utility;
+import com.mycompany.premisesevent.config.Config;
 
 /**
  *
@@ -106,7 +107,7 @@ public class PlayerControl {
         obj.setDisplayName( "Mining Count" );
         obj.setDisplaySlot( DisplaySlot.SIDEBAR );
         player.setScoreboard( board );
-        score = obj.getScore( ChatColor.YELLOW + "Score:" );
+        score = obj.getScore( Utility.StringBuild( ChatColor.YELLOW.toString(), "Score:" ) );
     }
 
     /**
@@ -309,7 +310,7 @@ public class PlayerControl {
         try {
             CD = BlockCount.get( StoneName );
         } catch( Exception e ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.RED + "No Data for [" + StoneName + "]" );
+            Bukkit.getServer().getConsoleSender().sendMessage( Utility.StringBuild( ChatColor.RED.toString(), "No Data for [", StoneName, "]" ) );
             CD = 0;
         }
         return CD;
@@ -325,7 +326,7 @@ public class PlayerControl {
         CD++;
         BlockCount.put( StoneName, CD );
         // プレイヤーの掘削数を更新し反映します
-        mines.put( StoneName, obj.getScore( ChatColor.GREEN + StoneName + ":" ) );
+        mines.put( StoneName, obj.getScore( Utility.StringBuild( ChatColor.GREEN.toString(), StoneName + ":" ) ) );
         mines.get( StoneName ).setScore( CD );
     }
 

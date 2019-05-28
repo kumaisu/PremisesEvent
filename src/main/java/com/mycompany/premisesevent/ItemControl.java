@@ -5,6 +5,7 @@
  */
 package com.mycompany.premisesevent;
 
+import com.mycompany.premisesevent.config.Config;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;

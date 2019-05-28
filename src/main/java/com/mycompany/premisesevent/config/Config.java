@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.premisesevent;
+package com.mycompany.premisesevent.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -5,6 +5,7 @@
  */
 package com.mycompany.premisesevent;
 
+import com.mycompany.premisesevent.config.Config;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
