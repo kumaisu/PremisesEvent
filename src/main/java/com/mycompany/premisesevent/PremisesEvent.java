@@ -240,7 +240,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
 
         if ( config.getStones().contains( blockName ) ) {
-            Minecraft.Prt( player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) + ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")", config.isDebugFlag( Utility.consoleMode.max ) );
+            Minecraft.Prt(
+                player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) +
+                ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")",
+                config.isDebugFlag( Utility.consoleMode.max ) );
             pc.get( player.getUniqueId() ).addStoneCount( blockName );
             pc.get( player.getUniqueId() ).addScore( player, config.getPoint( blockName ) );
             if ( config.getPoint( blockName )<0 ) {
@@ -251,6 +254,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     ChatColor.YELLOW + blockName,
                     config.isDebugFlag( Utility.consoleMode.full )
                 );
+                if ( config.getSendTitle() ) {
+                    player.sendTitle(
+                        ChatColor.RED + "破壊不可なブロックを破壊しました",
+                        ChatColor.YELLOW + "元に戻してくださいね",
+                        0, 100, 0 );
+                }
             }
 
         } else {
@@ -267,6 +276,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     Minecraft.Prt( player, ChatColor.RED + "ツールの耐久値がヤバイですよ", config.isDebugFlag( Utility.consoleMode.max ) );
                     WarningFlag = false;
                     task = this.getServer().getScheduler().runTaskTimer( this, new Timer( this ,config.CoolCount() ), 0L, config.CoolTick() );
+                    if ( config.getSendTitle() ) {
+                        player.sendTitle(
+                            ChatColor.RED + "ツールの耐久値がヤバイですよ",
+                            ChatColor.YELLOW + "アップデートして成長させましょう",
+                            0, 50, 0 );
+                    }
                 }
             }
         }

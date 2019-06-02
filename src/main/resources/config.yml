@@ -31,6 +31,9 @@ CreativeCount: true
 #   Percentage of endurance value that can be updated ( 0.1 = 10% )
 Repair: 0.1
 
+#   Player.sendTitle Status
+sendTitle: true
+
 #   Player's score arrival notice
 #   0(zero) is disable
 ScoreNotice: 10000

@@ -49,6 +49,7 @@ public class Config {
     private int Event_Z1;
     private int Event_Z2;
     private String JoinMessage;
+    private boolean titlePrint;
     private static Utility.consoleMode DebugFlag;
 
     /**
@@ -94,6 +95,7 @@ public class Config {
         RePresent = config.getInt( "RePresent" );
         UpCost = config.getInt( "UpdateCost" );
         Repair = 1 - config.getDouble( "Repair" );
+        titlePrint  = config.getBoolean( "sendTitle" );
         OPMode = config.getBoolean( "CreativeCount" );
         EventToolName = config.getString( "EventToolName" );
         FreeBreak = config.getBoolean( "FreeBreak" );
@@ -157,6 +159,7 @@ public class Config {
         Minecraft.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( FreeBreak ? "許可":"不可" ), consolePrintFlag );
         Minecraft.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ), consolePrintFlag );
         Minecraft.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), consolePrintFlag );
+        Minecraft.Prt( p, ChatColor.WHITE + "タイトル表示     : " + ChatColor.YELLOW + ( titlePrint ? "する":"しない" ), consolePrintFlag );
         Minecraft.Prt( p, ChatColor.WHITE + "イベントツール名 : " + EventToolName, consolePrintFlag );
 
         for( int i = 0; i<tools.size(); i++ ) {
@@ -367,6 +370,15 @@ public class Config {
      */
     public String GetJoinMessage() {
         return JoinMessage;
+    }
+
+    /**
+     * 警告メッセージをタイトル表示するかの可否
+     *
+     * @return 
+     */
+    public boolean getSendTitle() {
+        return titlePrint;
     }
 
     /**
