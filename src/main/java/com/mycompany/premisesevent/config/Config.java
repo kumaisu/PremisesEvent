@@ -15,6 +15,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import com.mycompany.kumaisulibraries.Utility;
+import com.mycompany.kumaisulibraries.Minecraft;
 
 /*
  *
@@ -55,7 +56,7 @@ public class Config {
      *
      * @param plugin
      */
-    public Config(Plugin plugin) {
+    public Config( Plugin plugin ) {
         this.stones = new ArrayList<>();
         this.plugin = plugin;
         plugin.getLogger().info( "Config Loading now..." );
@@ -135,7 +136,7 @@ public class Config {
         try {
             DebugFlag = Utility.consoleMode.valueOf( config.getString( "Debug" ) );
         } catch( IllegalArgumentException e ) {
-            Utility.Prt( null, ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", true );
+            Minecraft.Prt( null, ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", true );
             DebugFlag = Utility.consoleMode.normal;
         }
     }
@@ -147,52 +148,41 @@ public class Config {
      */
     public void Status( Player p ) {
         boolean consolePrintFlag = ( p == null );
-        Utility.Prt( p, ChatColor.GREEN + "=== Premises Status ===", consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + DebugFlag.toString(), consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( FreeBreak ? "許可":"不可" ), consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ), consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "イベントツール名 : " + EventToolName, consolePrintFlag );
-        /*
-        Utility.Prt( p, ChatColor.WHITE + "EventName : " + ChatColor.YELLOW + EventName, consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "RePresent : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "UpdateCost: " + ChatColor.YELLOW + UpCost, consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "Repair    : " + ChatColor.YELLOW + Repair, consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "FreeBreak : " + ChatColor.YELLOW + ( FreeBreak ? "TRUE":"FALSE" ), consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "ToolBreak : " + ChatColor.YELLOW + ( ToolBreak ? "TRUE":"FALSE" ), consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "Creative  : " + ChatColor.YELLOW + ( OPMode ? "TRUE":"FALSE" ), consolePrintFlag );
-        Utility.Prt( p, ChatColor.WHITE + "ToolName  : " + EventToolName, consolePrintFlag );
-        */
+        Minecraft.Prt( p, ChatColor.GREEN + "=== Premises Status ===", consolePrintFlag );
+        Minecraft.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + DebugFlag.toString(), consolePrintFlag );
+        Minecraft.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, consolePrintFlag );
+        Minecraft.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
+        Minecraft.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, consolePrintFlag );
+        Minecraft.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, consolePrintFlag );
+        Minecraft.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( FreeBreak ? "許可":"不可" ), consolePrintFlag );
+        Minecraft.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ), consolePrintFlag );
+        Minecraft.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), consolePrintFlag );
+        Minecraft.Prt( p, ChatColor.WHITE + "イベントツール名 : " + EventToolName, consolePrintFlag );
 
         for( int i = 0; i<tools.size(); i++ ) {
-            Utility.Prt( p, ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ), consolePrintFlag );
+            Minecraft.Prt( p, ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ), consolePrintFlag );
         }
 
-        Utility.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ), consolePrintFlag );
-        //  Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.WHITE + "Field     : " + ChatColor.YELLOW + ( Field ? "TRUE":"FALSE" ) );
+        Minecraft.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ), consolePrintFlag );
         if ( Field ) {
-            Utility.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World, consolePrintFlag );
-            Utility.Prt( p,
+            Minecraft.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World, consolePrintFlag );
+            Minecraft.Prt( p,
                 ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + String.format( "%-7d", Event_X1 ) +
                 ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d",Event_Y1 ) +
                 ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z1,
                 consolePrintFlag );
-            Utility.Prt( p,
+            Minecraft.Prt( p,
                 ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + String.format( "%-7d", Event_X2 ) +
                 ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d", Event_Y2 ) +
                 ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2,
                 consolePrintFlag );
         }
-        Utility.Prt( p, ChatColor.WHITE + "Broadcast Command:", consolePrintFlag );
+        Minecraft.Prt( p, ChatColor.WHITE + "Broadcast Command:", consolePrintFlag );
         for( int i = 0; i<bc_command.size(); i++ ) {
-            Utility.Prt( p, ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ), consolePrintFlag );
+            Minecraft.Prt( p, ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ), consolePrintFlag );
         }
 
-        Utility.Prt( p, ChatColor.GREEN + "=======================", consolePrintFlag );
+        Minecraft.Prt( p, ChatColor.GREEN + "=======================", consolePrintFlag );
     }
 
     /**

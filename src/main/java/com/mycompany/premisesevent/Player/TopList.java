@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.premisesevent;
+package com.mycompany.premisesevent.Player;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -22,27 +22,26 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import com.mycompany.kumaisulibraries.Utility;
+import com.mycompany.kumaisulibraries.Minecraft;
+import com.mycompany.premisesevent.config.Config;
 
 /**
  *
  * @author sugichan
  */
 public class TopList {
-
-    private final Plugin plugin;
-    private final String EventName;
+    private final Config config;
+    private final String DataFolder;
 
     /**
      * スコアーランキングリスト
      *
-     * @param plugin
-     * @param EN
+     * @param CF
+     * @param DF
      */
-    public TopList( Plugin plugin, String EN ) {
-        this.plugin = plugin;
-        EventName = EN;
+    public TopList( Config CF, String DF ) {
+        this.config = CF;
+        this.DataFolder = DF;
     }
 
     /**
@@ -69,7 +68,7 @@ public class TopList {
      * @return  Total Score
      */
     public int getScore( String filename ) {
-        File getFile = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator + filename );
+        File getFile = new File( DataFolder + File.separator + config.getEventName() + File.separator + "users" + File.separator + filename );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( getFile );
 
         if( !getFile.exists() ) { return 0; }
@@ -85,7 +84,7 @@ public class TopList {
      * @return  Count
      */
     public int getCount( String filename, String StoneName ) {
-        File getFile = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator + filename );
+        File getFile = new File( DataFolder + File.separator + config.getEventName() + File.separator + "users" + File.separator + filename );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( getFile );
 
         if( !getFile.exists() ) { return 0; }
@@ -102,12 +101,12 @@ public class TopList {
     public void Top( Player player, boolean debugFlag ) {
         boolean debugPrint = ( ( player == null ) || debugFlag );
         String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
-        Utility.Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング", debugPrint );
-        Utility.Prt( player, ChatColor.GREEN + "============================", debugPrint );
+        Minecraft.Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング", debugPrint );
+        Minecraft.Prt( player, ChatColor.GREEN + "============================", debugPrint );
 
         Map<String, Integer> rank = new HashMap<>();
         File folder;
-        folder = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator );
+        folder = new File( DataFolder + File.separator + config.getEventName() + File.separator + "users" + File.separator );
         File files[] = folder.listFiles();
 
         // 1.File からスコアの取り出しし、マッピングする
@@ -126,17 +125,17 @@ public class TopList {
             i++;
             if ( entry.getKey().equals( PlayerName ) ) lineflag = false;
             if ( ( i<11 ) || entry.getKey().equals( PlayerName ) || ( player == null ) )
-                Utility.Prt( player, 
+                Minecraft.Prt( player, 
                     ChatColor.WHITE + String.format( "%2d", i ) + " : " +
                     ( entry.getKey().equals( PlayerName ) ? ChatColor.AQUA:ChatColor.GRAY ) +
                     String.format( "%-15s", entry.getKey() ) + ChatColor.YELLOW +
                     String.format( "%8d", entry.getValue() ),
                     debugFlag
                 );
-            if ( ( i == 10 ) && lineflag ) Utility.Prt( player, ChatColor.GREEN + "============================", debugPrint );
+            if ( ( i == 10 ) && lineflag ) Minecraft.Prt( player, ChatColor.GREEN + "============================", debugPrint );
         }
 
-        Utility.Prt( player, ChatColor.GREEN + "============================",debugPrint );
+        Minecraft.Prt( player, ChatColor.GREEN + "============================",debugPrint );
     }
 
     /**
@@ -147,7 +146,7 @@ public class TopList {
      */
     public void ToCSV( List<String>stone ) throws IOException {
         try {
-            File cvsFile = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "data.csv" );
+            File cvsFile = new File( DataFolder + File.separator + config.getEventName() + File.separator + "data.csv" );
             //  cvs Header を作成
             try (PrintWriter pw = new PrintWriter( new BufferedWriter( new FileWriter( cvsFile ) ) )) {
                 //  cvs Header を作成
@@ -156,7 +155,7 @@ public class TopList {
                 pw.println( Header );
 
                 File folder;
-                folder = new File( plugin.getDataFolder() + File.separator + EventName + File.separator + "users" + File.separator );
+                folder = new File( DataFolder + File.separator + config.getEventName() + File.separator + "users" + File.separator );
                 File files[] = folder.listFiles();
 
                 for( File file : files ) {

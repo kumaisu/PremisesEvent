@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.premisesevent;
+package com.mycompany.premisesevent.Item;
 
-import com.mycompany.premisesevent.config.Config;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;
@@ -15,8 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
 import com.mycompany.kumaisulibraries.Utility;
+import com.mycompany.kumaisulibraries.Minecraft;
+import com.mycompany.premisesevent.config.Config;
 
 /**
  * アイテムコントロールライブラリ
@@ -24,19 +24,15 @@ import com.mycompany.kumaisulibraries.Utility;
  * @author sugichan
  */
 public class ItemControl {
-
-    private final Plugin plugin;
     private final Config config;
 
     /**
      * アイテムコントロール初期化
      *
-     * @param plugin
-     * @param config
+     * @param CF
      */
-    public ItemControl( Plugin plugin, Config config ) {
-        this.plugin = plugin;
-        this.config = config;
+    public ItemControl( Config CF ) {
+        config = CF;
     }
 
     /**
@@ -66,7 +62,7 @@ public class ItemControl {
         is.setItemMeta( im );                       //元のItemStackに、変更したItemMetaを設定
 
         player.getInventory().addItem( is );
-        Utility.Prt( player, ChatColor.GREEN + "イベント用装備をプレゼントしました", config.isDebugFlag( Utility.consoleMode.full ) );
+        Minecraft.Prt( player, ChatColor.GREEN + "イベント用装備をプレゼントしました", config.isDebugFlag( Utility.consoleMode.full ) );
     }
 
     /**
@@ -106,7 +102,7 @@ public class ItemControl {
             is.setItemMeta( im );                       //  元のItemStackに、変更したItemMetaを設定
 
             player.getInventory().addItem( is );
-            Utility.Prt( player,
+            Minecraft.Prt( player,
                     ChatColor.WHITE + player.getDisplayName() +
                     ChatColor.GREEN + " さんへイベント用ツールをプレゼントしました",
                     config.isDebugFlag( Utility.consoleMode.full ) );
@@ -147,7 +143,7 @@ public class ItemControl {
             itemstack.setDurability( (short) 0 );
 
             player.getInventory().addItem( itemstack );
-            Utility.Prt( player, 
+            Minecraft.Prt( player, 
                     ChatColor.WHITE + player.getDisplayName() + 
                     ChatColor.AQUA + " さんのイベント用ツールを[" + 
                     ChatColor.GREEN + UpdateMessage +

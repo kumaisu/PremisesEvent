@@ -3,9 +3,6 @@
  */
 package com.mycompany.kumaisulibraries;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 /**
  * 各プラグイン共通の関数群.....にするつもりのもの
  *
@@ -47,19 +44,4 @@ public final class Utility {
     public static String ReplaceString( String data, String Names ) {
         return ReplaceString( data.replace( "%player%", Names ) );
     }
-    
-    /**
-     * メッセージ表示
-     * @param player    表示するプレイヤー
-     * @param msg       表示内容
-     * @param console   システムコンソールに表示するか？
-     */
-    public static void Prt( Player player, String msg, boolean console ) {
-        if ( console ) Bukkit.getServer().getConsoleSender().sendMessage( msg );
-        if ( player != null ) player.sendMessage( msg );
-    }
-
-    public static void Prt( String msg )                { Prt( ( Player ) null, msg, true ); }
-    public static void Prt( String msg, boolean Flag )  { Prt( ( Player ) null, msg, Flag ); }
-    public static void Prt( Player player, String msg ) { Prt( player, msg, ( player == null ) ); }
 }
