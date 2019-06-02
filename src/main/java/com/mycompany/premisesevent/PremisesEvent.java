@@ -50,7 +50,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     BukkitTask task = null; //  あとで自分を止めるためのもの
     private Config config;
-    private String EventName;
     private final Map<UUID, PlayerControl> pc = new HashMap<>();
     private boolean WarningFlag = true;
 
@@ -91,7 +90,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onEnable() {
         getServer().getPluginManager().registerEvents( this, this );
         config = new Config( this );
-        EventName = config.getEventName();
     }
 
     /**
@@ -123,23 +121,24 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         pc.put( p.getUniqueId(), new PlayerControl( p, config, this.getDataFolder().toString() ) );
         pc.get( p.getUniqueId() ).load();
 
-        if ( pc.get( p.getUniqueId() ).getEntry() == 1 ) {
-            pc.get( p.getUniqueId() ).ScoreBoardEntry( p );
-            Minecraft.Prt( ChatColor.AQUA + p.getDisplayName() + " is participating in the this Event" );
-
-            ItemControl ic = new ItemControl( config );
-            if ( pc.get( p.getUniqueId() ).getPresentFlag() ) {
-                Minecraft.Prt( p, ChatColor.YELLOW + "イベント装備の再配布", config.isDebugFlag( Utility.consoleMode.normal ) );
-                ic.ItemPresent( p );
-            }
-            if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
-                Minecraft.Prt( p, ChatColor.YELLOW + "イベントツールの再配布", config.isDebugFlag( Utility.consoleMode.normal ) );
-                for( int i = 0; i<config.getTools().size(); i++ ) {
-                    ic.ItemUpdate( p, null, config.getEventToolName(), Material.getMaterial( config.getTools().get( i ).toString() ) );
-                }
-            }
-        } else {
+        if ( pc.get( p.getUniqueId() ).getEntry() != 1 ) {
             Minecraft.Prt( ChatColor.RED + p.getDisplayName() + " has not joined the this Event" );
+            return;
+        }
+
+        pc.get( p.getUniqueId() ).ScoreBoardEntry( p );
+        Minecraft.Prt( ChatColor.AQUA + p.getDisplayName() + " is participating in the this Event" );
+
+        ItemControl ic = new ItemControl( config );
+        if ( pc.get( p.getUniqueId() ).getPresentFlag() ) {
+            Minecraft.Prt( p, ChatColor.YELLOW + "イベント装備の再配布", config.isDebugFlag( Utility.consoleMode.normal ) );
+            ic.ItemPresent( p );
+        }
+        if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
+            Minecraft.Prt( p, ChatColor.YELLOW + "イベントツールの再配布", config.isDebugFlag( Utility.consoleMode.normal ) );
+            for( int i = 0; i<config.getTools().size(); i++ ) {
+                ic.ItemUpdate( p, null, config.getEventToolName(), Material.getMaterial( config.getTools().get( i ).toString() ) );
+            }
         }
     }
 
@@ -188,7 +187,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Minecraft.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), config.isDebugFlag( Utility.consoleMode.max ) );
             pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
         } else {
-            Minecraft.Prt( ChatColor.GREEN + "This [" + ChatColor.GOLD + blockName + ChatColor.GREEN + "] is not a target", config.isDebugFlag( Utility.consoleMode.full ) );
+            Minecraft.Prt(
+                ChatColor.AQUA + player.getDisplayName() +
+                ChatColor.GREEN + " [" +
+                ChatColor.GOLD + blockName +
+                ChatColor.GREEN + "] is not a target",
+                config.isDebugFlag( Utility.consoleMode.full ) );
         }
 
         player.setPlayerListName( ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
@@ -263,7 +267,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
 
         } else {
-            Minecraft.Prt( ChatColor.LIGHT_PURPLE + "This [" + ChatColor.GOLD + block.getType().toString() + ChatColor.LIGHT_PURPLE + "] is not a target", config.isDebugFlag( Utility.consoleMode.full ) );
+            Minecraft.Prt(
+                ChatColor.AQUA + player.getDisplayName() +
+                ChatColor.LIGHT_PURPLE + " [" +
+                ChatColor.GOLD + block.getType().toString() +
+                ChatColor.LIGHT_PURPLE + "] is not a target",
+                config.isDebugFlag( Utility.consoleMode.full ) );
         }
 
         player.setPlayerListName( ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
@@ -380,10 +389,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         return true;
                     case "Console":
                         config.setDebug( itemName );
-                        /*
-                            default:
-                                Utility.Prt( player, "usage: PremisesEvent Console [max/full/normal/none]", ( player == null ) );
-                        */
                         Minecraft.Prt( player,
                             ChatColor.GREEN + "System Debug Mode is [ " +
                             ChatColor.RED + config.getDebug().toString() +
