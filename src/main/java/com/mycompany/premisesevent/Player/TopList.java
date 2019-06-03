@@ -5,6 +5,7 @@
  */
 package com.mycompany.premisesevent.Player;
 
+import com.mycompany.kumaisulibraries.Utility;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -22,8 +23,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import com.mycompany.kumaisulibraries.Minecraft;
 import com.mycompany.premisesevent.config.Config;
+import com.mycompany.premisesevent.tool.Tools;
 
 /**
  *
@@ -96,13 +97,13 @@ public class TopList {
      * ランキング表示本体
      *
      * @param player
-     * @param debugFlag
+     * @param key
      */
-    public void Top( Player player, boolean debugFlag ) {
-        boolean debugPrint = ( ( player == null ) || debugFlag );
+    public void Top( Player player, Utility.consoleMode key ) {
+        Utility.consoleMode debugPrint = ( ( player == null ) ? Utility.consoleMode.none:Utility.consoleMode.max );
         String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
-        Minecraft.Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング", debugPrint );
-        Minecraft.Prt( player, ChatColor.GREEN + "============================", debugPrint );
+        Tools.Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング", debugPrint );
+        Tools.Prt( player, ChatColor.GREEN + "============================", debugPrint );
 
         Map<String, Integer> rank = new HashMap<>();
         File folder;
@@ -125,17 +126,17 @@ public class TopList {
             i++;
             if ( entry.getKey().equals( PlayerName ) ) lineflag = false;
             if ( ( i<11 ) || entry.getKey().equals( PlayerName ) || ( player == null ) )
-                Minecraft.Prt( player, 
+                Tools.Prt( player, 
                     ChatColor.WHITE + String.format( "%2d", i ) + " : " +
                     ( entry.getKey().equals( PlayerName ) ? ChatColor.AQUA:ChatColor.GRAY ) +
                     String.format( "%-15s", entry.getKey() ) + ChatColor.YELLOW +
                     String.format( "%8d", entry.getValue() ),
-                    debugFlag
+                    key
                 );
-            if ( ( i == 10 ) && lineflag ) Minecraft.Prt( player, ChatColor.GREEN + "============================", debugPrint );
+            if ( ( i == 10 ) && lineflag ) Tools.Prt( player, ChatColor.GREEN + "============================", debugPrint );
         }
 
-        Minecraft.Prt( player, ChatColor.GREEN + "============================",debugPrint );
+        Tools.Prt( player, ChatColor.GREEN + "============================",debugPrint );
     }
 
     /**

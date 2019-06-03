@@ -26,9 +26,9 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import com.mycompany.kumaisulibraries.Utility;
-import com.mycompany.kumaisulibraries.Minecraft;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.config.Config;
+import com.mycompany.premisesevent.tool.Tools;
 
 /**
  *
@@ -174,7 +174,7 @@ public class PlayerControl {
             EntryFlag = 1;
         }
         catch ( IOException e ) {
-            Minecraft.Prt( ChatColor.RED + "Could not save UnknownIP File." );
+            Tools.Prt( ChatColor.RED + "Could not save UnknownIP File." );
         }
     }
 
@@ -186,23 +186,23 @@ public class PlayerControl {
      */
     public boolean JoinPlayer( Player p ) {
         if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
-            Minecraft.Prt( p, ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です", config.isDebugFlag( Utility.consoleMode.normal ) );
+            Tools.Prt( p, ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です", Utility.consoleMode.normal );
             return false;
         }
 
         switch ( getEntry() ) {
             case 1: //  Double registration failure.
-                Minecraft.Prt( p, ChatColor.RED + "既にイベントへ参加しています", config.isDebugFlag( Utility.consoleMode.normal ) );
-                Minecraft.ExecOtherCommand( p, p.getDisplayName() + " さんは、既にイベントに参加しています", config.getBC_Command() );
+                Tools.Prt( p, ChatColor.RED + "既にイベントへ参加しています", Utility.consoleMode.normal );
+                Tools.ExecOtherCommand( p, p.getDisplayName() + " さんは、既にイベントに参加しています", config.getBC_Command() );
                 return false;
             case 2: //  Kick registration.
-                Minecraft.Prt( p, ChatColor.RED + "イベントへの参加は拒否されています", config.isDebugFlag( Utility.consoleMode.normal ) );
+                Tools.Prt( p, ChatColor.RED + "イベントへの参加は拒否されています", Utility.consoleMode.normal );
                 //  ExecOtherCommand( player, player.getDisplayName() + " さんは、イベントに参加できませんでした" );
                 return false;
             default: // Registration success.
                 Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + "Registration success." );
-                Minecraft.Prt( p, config.GetJoinMessage(), config.isDebugFlag( Utility.consoleMode.normal ) );
-                Minecraft.ExecOtherCommand( p, p.getDisplayName() + " さんが、イベントに参加しました", config.getBC_Command() );
+                Tools.Prt( p, config.GetJoinMessage(), Utility.consoleMode.normal );
+                Tools.ExecOtherCommand( p, p.getDisplayName() + " さんが、イベントに参加しました", config.getBC_Command() );
                 break;
         }
 
@@ -211,12 +211,12 @@ public class PlayerControl {
         EntryFlag = 1;
         save();
         ScoreBoardEntry( p );
-        Minecraft.Prt( p, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, config.isDebugFlag( Utility.consoleMode.normal ) );
+        Tools.Prt( p, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, Utility.consoleMode.normal );
 
-        ItemControl ic = new ItemControl( config );
+        ItemControl ic = new ItemControl();
         ic.ItemPresent( p );
         for( int i = 0; i<config.getTools().size(); i++ ) {
-            Minecraft.Prt( ChatColor.GREEN + "Config Tool Name : " + config.getTools().get( i ) );
+            Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + config.getTools().get( i ) );
             ic.ItemUpdate( p, null, config.getEventToolName(), Material.getMaterial( config.getTools().get( i ).toString() ) );
         }
 
@@ -233,29 +233,29 @@ public class PlayerControl {
      */
     public boolean getEventItem( Player player, String Item ) {
         if ( getEntry() != 1 ) {
-            Minecraft.Prt( player, ChatColor.RED + "イベント参加者のみです", config.isDebugFlag( Utility.consoleMode.normal ) );
+            Tools.Prt( player, ChatColor.RED + "イベント参加者のみです", Utility.consoleMode.normal );
             return false;
         }
     
         if ( !Arrays.asList( player.getInventory().getStorageContents() ).contains( null ) ) {
-            Minecraft.Prt( player, ChatColor.RED + "アイテム配布用のためインベントリに空きが必要です", config.isDebugFlag( Utility.consoleMode.normal ) );
+            Tools.Prt( player, ChatColor.RED + "アイテム配布用のためインベントリに空きが必要です", Utility.consoleMode.normal );
             return false;
         }
 
         if ( !config.getTools().contains( Item ) ) {
-            Minecraft.Prt( player, ChatColor.RED + "再配布対象のツールではありません", config.isDebugFlag( Utility.consoleMode.normal ) );
+            Tools.Prt( player, ChatColor.RED + "再配布対象のツールではありません", Utility.consoleMode.normal );
             return false;
         }
 
         int Rep = config.getRePresent();
         if ( getScore() > Rep ) {
-            ItemControl ic = new ItemControl( config );
+            ItemControl ic = new ItemControl();
             ic.ItemUpdate( player, null, config.getEventToolName(), Material.getMaterial( Item ) );
             addScore( null, - Rep );
-            Minecraft.Prt( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Material.getMaterial( Item ).name() + " tools !!", config.isDebugFlag( Utility.consoleMode.normal ) );
+            Tools.Prt( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Material.getMaterial( Item ).name() + " tools !!", Utility.consoleMode.normal );
             return true;
         } else {
-            Minecraft.Prt( player, ChatColor.RED + "Scoreが足りないので配布できません", config.isDebugFlag( Utility.consoleMode.normal ) );
+            Tools.Prt( player, ChatColor.RED + "Scoreが足りないので配布できません", Utility.consoleMode.normal );
             return false;
         }
     }
@@ -269,7 +269,7 @@ public class PlayerControl {
     public void ToolUpdate( Player player, boolean Force ) {
 
         if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) {
-            Minecraft.Prt( player, ChatColor.RED + "アップデートするアイテムを持ってください", config.isDebugFlag( Utility.consoleMode.full ) );
+            Tools.Prt( player, ChatColor.RED + "アップデートするアイテムを持ってください", Utility.consoleMode.full );
             return;
         }
 
@@ -281,23 +281,23 @@ public class PlayerControl {
                 if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) {
                     double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );
                     if ( ( CheckDurability <= item.getDurability() ) || Force ) {
-                        ItemControl ic = new ItemControl( config );
+                        ItemControl ic = new ItemControl();
                         player.getInventory().setItemInMainHand( null );
                         ic.ItemUpdate( player, item, config.getEventToolName(), null );
                         addScore( null, -Rep );
                     } else {
-                        Minecraft.Prt( player,
+                        Tools.Prt( player,
                             ChatColor.YELLOW + "ツール耐久値は " +
                             ChatColor.WHITE + ( item.getType().getMaxDurability() - item.getDurability() ) +
                             ChatColor.YELLOW + " なので " +
                             ChatColor.WHITE + ( (int) ( item.getType().getMaxDurability() - CheckDurability ) ) +
                             ChatColor.YELLOW + " 以下にしてね",
-                            config.isDebugFlag( Utility.consoleMode.full )
+                            Utility.consoleMode.full
                         );
                     }
-                } else Minecraft.Prt( player, ChatColor.YELLOW + "ツール名が違います", config.isDebugFlag( Utility.consoleMode.full ) );
-            } else Minecraft.Prt( player, ChatColor.YELLOW + "イベント用のツールではありません", config.isDebugFlag( Utility.consoleMode.full ) );
-        } else Minecraft.Prt( player, ChatColor.RED + "Scoreが足りないのでアップデートできません", config.isDebugFlag( Utility.consoleMode.full ) );
+                } else Tools.Prt( player, ChatColor.YELLOW + "ツール名が違います", Utility.consoleMode.full );
+            } else Tools.Prt( player, ChatColor.YELLOW + "イベント用のツールではありません", Utility.consoleMode.full );
+        } else Tools.Prt( player, ChatColor.RED + "Scoreが足りないのでアップデートできません", Utility.consoleMode.full );
     }
 
     /**
@@ -344,7 +344,7 @@ public class PlayerControl {
             //  不具合や他責によるスコアの未記録時の対応ログとして表示
             if ( config.getScoreNotice() > 0 ) {
                 if ( PlayerScore >= scoreNotice ) {
-                    Minecraft.Prt( "[Premises] " + DisplayName + " reached " + PlayerScore + " points.", config.isDebugFlag( Utility.consoleMode.normal ) );
+                    Tools.Prt( "[Premises] " + DisplayName + " reached " + PlayerScore + " points.", Utility.consoleMode.normal );
                     scoreNotice = config.getScoreNotice() * ( ( int ) Math.floor( PlayerScore / config.getScoreNotice() ) + 1 );
                 }
             }
@@ -354,8 +354,8 @@ public class PlayerControl {
                 if ( PlayerScore >= scoreBroadcast ) {
                     String SendMessage = "<イベント> " + ChatColor.AQUA + DisplayName + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + PlayerScore + ChatColor.WHITE + " 点に到達しました";
                     Bukkit.broadcastMessage( SendMessage );
-                    Minecraft.launchFireWorks( player.getLocation() );
-                    Minecraft.ExecOtherCommand( player, SendMessage, config.getBC_Command() );
+                    Tools.launchFireWorks( player.getLocation() );
+                    Tools.ExecOtherCommand( player, SendMessage, config.getBC_Command() );
                     scoreBroadcast = config.getScoreBroadcast() * ( ( int ) Math.floor( PlayerScore / config.getScoreBroadcast() ) + 1 );
                 }
             }
@@ -399,21 +399,21 @@ public class PlayerControl {
      * @param p
      */
     public void getStatus( Player p ) {
-        Minecraft.Prt( null, ChatColor.RED + "Look Status: " + DisplayName, config.isDebugFlag( Utility.consoleMode.normal ) );
-        Minecraft.Prt( p, ChatColor.GREEN + "--------------------------------------------------", config.isDebugFlag( Utility.consoleMode.max ) );
-        Minecraft.Prt( p, ChatColor.AQUA + "Block mined by: " + DisplayName, config.isDebugFlag( Utility.consoleMode.max ) );
-        Minecraft.Prt( p, ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore(), config.isDebugFlag( Utility.consoleMode.max ) );
+        Tools.Prt( null, ChatColor.RED + "Look Status: " + DisplayName, Utility.consoleMode.normal );
+        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", Utility.consoleMode.max );
+        Tools.Prt( p, ChatColor.AQUA + "Block mined by: " + DisplayName, Utility.consoleMode.max );
+        Tools.Prt( p, ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore(), Utility.consoleMode.max );
 
         if ( p.isOp() ) {
-            Minecraft.Prt( p, ChatColor.GOLD + "Notice   : " + ChatColor.WHITE + scoreNotice, config.isDebugFlag( Utility.consoleMode.max ) );
-            Minecraft.Prt( p, ChatColor.GOLD + "Broadcast: " + ChatColor.WHITE + scoreBroadcast, config.isDebugFlag( Utility.consoleMode.max ) );
+            Tools.Prt( p, ChatColor.GOLD + "Notice   : " + ChatColor.WHITE + scoreNotice, Utility.consoleMode.max );
+            Tools.Prt( p, ChatColor.GOLD + "Broadcast: " + ChatColor.WHITE + scoreBroadcast, Utility.consoleMode.max );
         }
         
         BlockCount.entrySet().forEach( ( entry ) -> {
-            Minecraft.Prt( p, ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue(), config.isDebugFlag( Utility.consoleMode.max ) );
+            Tools.Prt( p, ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue(), Utility.consoleMode.max );
         } );
 
-        Minecraft.Prt( p, ChatColor.GREEN + "--------------------------------------------------", config.isDebugFlag( Utility.consoleMode.max ) );
+        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", Utility.consoleMode.max );
     }
 
     /**

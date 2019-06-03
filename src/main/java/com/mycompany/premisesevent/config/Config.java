@@ -15,7 +15,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import com.mycompany.kumaisulibraries.Utility;
-import com.mycompany.kumaisulibraries.Minecraft;
+import com.mycompany.premisesevent.tool.Tools;
 
 /*
  *
@@ -50,7 +50,8 @@ public class Config {
     private int Event_Z2;
     private String JoinMessage;
     private boolean titlePrint;
-    private static Utility.consoleMode DebugFlag;
+
+    public static Utility.consoleMode DebugFlag;
 
     /**
      * 設定読み込みライブラリ
@@ -138,7 +139,7 @@ public class Config {
         try {
             DebugFlag = Utility.consoleMode.valueOf( config.getString( "Debug" ) );
         } catch( IllegalArgumentException e ) {
-            Minecraft.Prt( null, ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", true );
+            Tools.Prt( null, ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", Utility.consoleMode.none );
             DebugFlag = Utility.consoleMode.normal;
         }
     }
@@ -149,43 +150,43 @@ public class Config {
      * @param p
      */
     public void Status( Player p ) {
-        boolean consolePrintFlag = ( p == null );
-        Minecraft.Prt( p, ChatColor.GREEN + "=== Premises Status ===", consolePrintFlag );
-        Minecraft.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + DebugFlag.toString(), consolePrintFlag );
-        Minecraft.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, consolePrintFlag );
-        Minecraft.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
-        Minecraft.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, consolePrintFlag );
-        Minecraft.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, consolePrintFlag );
-        Minecraft.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( FreeBreak ? "許可":"不可" ), consolePrintFlag );
-        Minecraft.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ), consolePrintFlag );
-        Minecraft.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), consolePrintFlag );
-        Minecraft.Prt( p, ChatColor.WHITE + "タイトル表示     : " + ChatColor.YELLOW + ( titlePrint ? "する":"しない" ), consolePrintFlag );
-        Minecraft.Prt( p, ChatColor.WHITE + "イベントツール名 : " + EventToolName, consolePrintFlag );
+        Utility.consoleMode consolePrintFlag = ( ( p == null ) ? Utility.consoleMode.none:Utility.consoleMode.max );
+        Tools.Prt( p, ChatColor.GREEN + "=== Premises Status ===", consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + DebugFlag.toString(), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( FreeBreak ? "許可":"不可" ), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "タイトル表示     : " + ChatColor.YELLOW + ( titlePrint ? "する":"しない" ), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "イベントツール名 : " + EventToolName, consolePrintFlag );
 
         for( int i = 0; i<tools.size(); i++ ) {
-            Minecraft.Prt( p, ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ), consolePrintFlag );
+            Tools.Prt( p, ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ), consolePrintFlag );
         }
 
-        Minecraft.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ), consolePrintFlag );
         if ( Field ) {
-            Minecraft.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World, consolePrintFlag );
-            Minecraft.Prt( p,
+            Tools.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World, consolePrintFlag );
+            Tools.Prt( p,
                 ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + String.format( "%-7d", Event_X1 ) +
                 ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d",Event_Y1 ) +
                 ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z1,
                 consolePrintFlag );
-            Minecraft.Prt( p,
+            Tools.Prt( p,
                 ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + String.format( "%-7d", Event_X2 ) +
                 ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d", Event_Y2 ) +
                 ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2,
                 consolePrintFlag );
         }
-        Minecraft.Prt( p, ChatColor.WHITE + "Broadcast Command:", consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "Broadcast Command:", consolePrintFlag );
         for( int i = 0; i<bc_command.size(); i++ ) {
-            Minecraft.Prt( p, ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ), consolePrintFlag );
+            Tools.Prt( p, ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ), consolePrintFlag );
         }
 
-        Minecraft.Prt( p, ChatColor.GREEN + "=======================", consolePrintFlag );
+        Tools.Prt( p, ChatColor.GREEN + "=======================", consolePrintFlag );
     }
 
     /**
@@ -382,15 +383,6 @@ public class Config {
     }
 
     /**
-     * DebugMode を数値で受け取る
-     *
-     * @return 
-     */
-    public Utility.consoleMode getDebug() {
-        return DebugFlag;
-    }
-
-    /**
      * 一時的にDebugModeを設定しなおす
      * ただし、Config.ymlには反映しない
      *
@@ -402,15 +394,5 @@ public class Config {
         } catch( IllegalArgumentException e ) {
             DebugFlag = Utility.consoleMode.none;
         }
-    }
-
-    /**
-     * keyに対して、設定されているDebugMode下での可否判定を返す
-     *
-     * @param key
-     * @return 
-     */
-    public boolean isDebugFlag( Utility.consoleMode key ) {
-        return ( DebugFlag.ordinal() >= key.ordinal() );
     }
 }

@@ -10,7 +10,7 @@ package com.mycompany.kumaisulibraries;
  */
 public final class Utility {
 
-    public static enum consoleMode { none, normal, full, max }
+    public static enum consoleMode { none, normal, full, max, stop }
 
     /**
      * 複数の文字列を連結するる

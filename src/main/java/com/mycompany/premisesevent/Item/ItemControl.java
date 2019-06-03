@@ -15,8 +15,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import com.mycompany.kumaisulibraries.Utility;
-import com.mycompany.kumaisulibraries.Minecraft;
-import com.mycompany.premisesevent.config.Config;
+import com.mycompany.premisesevent.tool.Tools;
 
 /**
  * アイテムコントロールライブラリ
@@ -24,15 +23,12 @@ import com.mycompany.premisesevent.config.Config;
  * @author sugichan
  */
 public class ItemControl {
-    private final Config config;
 
     /**
      * アイテムコントロール初期化
      *
-     * @param CF
      */
-    public ItemControl( Config CF ) {
-        config = CF;
+    public ItemControl() {
     }
 
     /**
@@ -62,7 +58,7 @@ public class ItemControl {
         is.setItemMeta( im );                       //元のItemStackに、変更したItemMetaを設定
 
         player.getInventory().addItem( is );
-        Minecraft.Prt( player, ChatColor.GREEN + "イベント用装備をプレゼントしました", config.isDebugFlag( Utility.consoleMode.full ) );
+        Tools.Prt( player, ChatColor.GREEN + "イベント用装備をプレゼントしました", Utility.consoleMode.full );
     }
 
     /**
@@ -102,10 +98,10 @@ public class ItemControl {
             is.setItemMeta( im );                       //  元のItemStackに、変更したItemMetaを設定
 
             player.getInventory().addItem( is );
-            Minecraft.Prt( player,
+            Tools.Prt( player,
                     ChatColor.WHITE + player.getDisplayName() +
                     ChatColor.GREEN + " さんへイベント用ツールをプレゼントしました",
-                    config.isDebugFlag( Utility.consoleMode.full ) );
+                    Utility.consoleMode.full );
         } else {
             String[] stringArray = { "", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "ⅩⅠ" };
             String UpdateMessage;
@@ -143,12 +139,12 @@ public class ItemControl {
             itemstack.setDurability( (short) 0 );
 
             player.getInventory().addItem( itemstack );
-            Minecraft.Prt( player, 
+            Tools.Prt( player, 
                     ChatColor.WHITE + player.getDisplayName() + 
                     ChatColor.AQUA + " さんのイベント用ツールを[" + 
                     ChatColor.GREEN + UpdateMessage +
-                    ChatColor.AQUA + "]にアップデートしました"
-                    , config.isDebugFlag( Utility.consoleMode.full ) );
+                    ChatColor.AQUA + "]にアップデートしました",
+                    Utility.consoleMode.full );
         }
     }
 
@@ -159,10 +155,10 @@ public class ItemControl {
      */
     public void ShowItemStatus( Player player ) {
             ItemStack PlayerItem = player.getInventory().getItemInMainHand();
-            player.sendMessage( ChatColor.GREEN + "Detect Enchant..." );
-            player.sendMessage( "効率強化 : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.DIG_SPEED ) );
-            player.sendMessage( "耐久力   : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.DURABILITY ) );
-            player.sendMessage( "入れ食い : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.LURE ) );
-            player.sendMessage( "無限     : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.ARROW_INFINITE ) );
+            Tools.Prt( player, ChatColor.GREEN + "Detect Enchant...", Utility.consoleMode.max );
+            Tools.Prt( player, "効率強化 : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.DIG_SPEED ), Utility.consoleMode.max );
+            Tools.Prt( player, "耐久力   : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.DURABILITY ), Utility.consoleMode.max );
+            Tools.Prt( player, "入れ食い : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.LURE ), Utility.consoleMode.max );
+            Tools.Prt( player, "無限     : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.ARROW_INFINITE ), Utility.consoleMode.max );
     }
 }
