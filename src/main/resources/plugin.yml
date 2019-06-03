@@ -15,15 +15,16 @@ commands:
     premises:
         description: Premises Event Control Command
         aliases: pe
-            /<command> join
-            /<command> status [PlayerName]
-            /<command> get [Item Material]
-            /<command> update
-            /<command> check
-            /<command> launch
-            /<command> csv
-            /<command> give PlayerName Score
-            /<command> Console [max/full/normal/none]
+        usage: |
+            /<command> join 
+            /<command> status [PlayerName] 
+            /<command> get [Item Material] 
+            /<command> update 
+            /<command> check 
+            /<command> launch 
+            /<command> csv 
+            /<command> give PlayerName Score 
+            /<command> Console [max/full/normal/none] 
 permissions:
     Premises.broadcast:
         description: Broadcast announce
