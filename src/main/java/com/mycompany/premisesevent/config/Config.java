@@ -26,6 +26,8 @@ public class Config {
     private final Plugin plugin;
     private FileConfiguration config = null;
 
+    public static enum EventMode { Easy, Normal, Hard }
+
     private final Map< String, Integer > GetPoint = new HashMap<>();
     private boolean OPMode;
     private double Repair;
@@ -38,6 +40,7 @@ public class Config {
     private int Event_Z1;
     private int Event_Z2;
 
+    public static EventMode difficulty;
     public static boolean FreePlace;
     public static boolean EventPlace;
     public static boolean FreeBreak;
@@ -144,9 +147,15 @@ public class Config {
 
         try {
             DebugFlag = Utility.consoleMode.valueOf( config.getString( "Debug" ) );
-        } catch( IllegalArgumentException e ) {
+        } catch ( IllegalArgumentException e ) {
             Tools.Prt( null, ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", Utility.consoleMode.none );
             DebugFlag = Utility.consoleMode.normal;
+        }
+        try {
+            difficulty = EventMode.valueOf( config.getString( "Difficulty" ) );
+        } catch ( IllegalArgumentException e ) {
+            Tools.Prt( null, ChatColor.RED + "Config Event 難易度が不正なので、Normal 設定にしました", Utility.consoleMode.none );
+            defficulty = EventMode.Normal
         }
     }
 
@@ -160,6 +169,7 @@ public class Config {
         Tools.Prt( p, ChatColor.GREEN + "=== Premises Status ===", consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + DebugFlag.toString(), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "難易度           : " + ChatColor.YELLOW + difficulty.toString(), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, consolePrintFlag );

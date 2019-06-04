@@ -172,7 +172,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
         if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
         if ( pc.get( player.getUniqueId() ).getEntry() != 1 ) {
-            if ( !Config.FreePlace )  event.setCancelled( true );
+            if ( !Config.FreePlace ) event.setCancelled( true );
             return;
         }
 
@@ -187,8 +187,13 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 Tools.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), Utility.consoleMode.max );
                 pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
                 pc.get( player.getUniqueId() ).subStoneCount( blockName );
+                player.setPlayerListName(
+                    ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
+                    ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
+                );
             } else {
                 if ( !Config.FreePlace ) {
+                    Tools.Prt( player, ChatColor.RED + "これ以上このブロックは設置できません", Utility.consoleMode.full );
                     if ( Config.titlePrint ) {
                         player.sendTitle(
                             ChatColor.RED + "ブロックは設置できません",
@@ -201,6 +206,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         } else {
             if ( !Config.EventPlace ) {
+                Utility.Prt( player, "このブロックは設置できません", Utility.consoleMode.full );
                 event.setCancelled( true );
                 return;
             }
@@ -212,8 +218,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 Utility.consoleMode.full
             );
         }
-
-        player.setPlayerListName( ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
     }
 
     /**
@@ -255,7 +259,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     ( !item.getItemMeta().hasDisplayName() ) ||
                     ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) )
                ) {
-                player.sendMessage( ChatColor.RED + "指定ツールで行ってください" );
+                Tools.Prt( player, ChatColor.RED + "指定ツールで行ってください", Utility.consoleMode.full );
                 event.setCancelled( true );
                 return;
             }
@@ -268,19 +272,35 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 Utility.consoleMode.max );
             pc.get( player.getUniqueId() ).addStoneCount( blockName );
             pc.get( player.getUniqueId() ).addScore( player, config.getPoint( blockName ) );
+            player.setPlayerListName(
+                ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
+                ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
+            );
+
             if ( config.getPoint( blockName )<0 ) {
                 Tools.Prt(
-                    ChatColor.RED + "[Premises] Warning " +
+                    ChatColor.RED + "Warning " +
                     ChatColor.AQUA + player.getDisplayName() +
                     ChatColor.RED + " broke a " +
                     ChatColor.YELLOW + blockName,
                     Utility.consoleMode.full
                 );
-                if ( Config.titlePrint ) {
-                    player.sendTitle(
-                        ChatColor.RED + "破壊不可なブロックです",
-                        ChatColor.YELLOW + "元に戻してくださいね",
-                        0, 100, 0 );
+                switch( Config.EventMode ) {
+                    case Easy:
+                        Tools.Prt( player, ChatColor.RED + "そのブロックは破壊できません", Utility.consoleMode.full );
+                        event.setCancelled( true );
+                        return;
+                    case Normal:
+                        Tools.Prt( player, ChatColor.RED + "壊してはいけないブロックです", Utility.consoleMode.full );
+                        if ( Config.titlePrint ) {
+                            player.sendTitle(
+                                ChatColor.RED + "破壊不可なブロックです",
+                                ChatColor.YELLOW + "元に戻してくださいね",
+                                0, 100, 0 );
+                        }
+                        break;
+                    case Hard:
+                        //	検討中
                 }
             }
 
@@ -292,8 +312,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 ChatColor.LIGHT_PURPLE + "] is not a target",
                 Utility.consoleMode.full );
         }
-
-        player.setPlayerListName( ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );
 
         if ( item.getType() == Material.AIR ) return;
 

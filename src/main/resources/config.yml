@@ -12,6 +12,8 @@ Field: true
 World: world
 AreaPos1: 200,50,100
 AreaPos2: 100,2,200
+#   イベント難易度 (Easy/Normal/Hard)
+Difficulty: Normal
 
 #   参加者以外のブロック設置を許すか
 FreePlace: false
