@@ -43,7 +43,7 @@ public final class Tools {
      */
     public static void Prt( Player player, String msg, Utility.consoleMode key ) {
         if ( isDebugFlag( key ) ) {
-            String printString = Utility.StringBuild( ChatColor.YELLOW.toString(), "(EC:", key.toString(), ") " );
+            String printString = Utility.StringBuild( ChatColor.YELLOW.toString(), "(PE:", key.toString(), ") " );
             if ( player != null ) { printString = Utility.StringBuild( printString, player.getDisplayName(), " " ); }
             printString = Utility.StringBuild( printString, ChatColor.WHITE.toString(), msg );
             Bukkit.getServer().getConsoleSender().sendMessage( printString );
@@ -68,11 +68,10 @@ public final class Tools {
      *
      * @param player
      * @param Message
-     * @param command
      */
-    public static void ExecOtherCommand( Player player, String Message, List< String > command ) {
-        for( int i = 0; i<command.size(); i++ ) {
-            String ExecCommand = command.get( i );
+    public static void ExecOtherCommand( Player player, String Message ) {
+        for( int i = 0; i<Config.bc_command.size(); i++ ) {
+            String ExecCommand = Config.bc_command.get( i );
             ExecCommand = ExecCommand.replace( "%message%", Message );
             ExecCommand = ExecCommand.replace( "%player%", player.getDisplayName() );
             Prt( ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + ExecCommand );

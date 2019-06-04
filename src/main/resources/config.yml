@@ -3,6 +3,8 @@
 #   Debug ( max / full / Default:normal / none )
 Debug: normal
 
+#   イベントエリアを限定する場合設定
+#   Fieldがfalseの場合サーバー全体が対象となる
 #   Whether to perform a field check
 #   If it is false, it will be the entire server
 EventName: EventName
@@ -11,34 +13,48 @@ World: world
 AreaPos1: 200,50,100
 AreaPos2: 100,2,200
 
+#   参加者以外のブロック破壊を許すか
 #   Free Block Break
 #   true = All Player
 #   false = EntryPlayer Only
 FreeBreak: true
 
+#   イベントツールのみ破壊可能とするか
 #   Special Tools Only Break
 ToolBreak: false
 
+#   ブロックのカウントがゼロの時、設置可能とするか
+#   Block Count Zero Place
+ZeroPlace: false
+
+#   イベントアイテムを再配布するのに必要なスコアーコスト
 #   Required score for redistributing gift Tool Items
 RePresent: 2000
 
+#   イベントツールのアップデートに必要なスコアーコスト
 #   Score required for event tool update
 UpdateCost: 0
 
+#   クリエイティブモードでのカウント停止
 #   CreativeCount True = no Count False = Alwayes Count
 CreativeCount: true
 
+#   ツールの耐久値警告設定（残り％）
 #   Percentage of endurance value that can be updated ( 0.1 = 10% )
 Repair: 0.1
 
+#   重要メッセージを画面中央に表示するか
 #   Player.sendTitle Status
 sendTitle: true
 
+#   スコア達成アナウンス設定
+#   Notice:コンソールのみ   Broadcast:サーバーチャット
 #   Player's score arrival notice
 #   0(zero) is disable
 ScoreNotice: 10000
 ScoreBroadcast: 100000
 
+#   耐久値警告を再表示するまでのクールタイム
 #   Warning Message Cool Time
 #   Tick 1 = 0.05sec
 #   CoolTick x CoolCount = 1.00 sec( CoolTime )
@@ -46,14 +62,17 @@ ScoreBroadcast: 100000
 CoolTick: 10
 CoolCount: 1
 
+#   ScoreBroadcast達成時に実行されるコマンド一覧
 #   When score set for broadcast, console command execution setting
 BroadcastCommand:
     - discord broadcast %message%
     - give %player% BREAD 10
 
+#   イベント参加時にプレイヤーに表示されるメッセージ
 #   Join Message
 JOIN_MESSAGE: "§eイベントルールに則って参加してください [ §ahttps://bit.ly/2Tf7tL8§b ]"
 
+#   イベント参加時に自動配布されるツールの種類
 #   Present Tool Item Setting
 EventToolName: §bイベントツール
 Present:
@@ -61,7 +80,8 @@ Present:
     - IRON_SPADE
     - IRON_AXE
 
-# Count Stones
+#   イベントに関するブロックのポイント設定
+#   Count Stones
 PointStone:
     - OBSIDIAN,10
     - SANDSTONE,1

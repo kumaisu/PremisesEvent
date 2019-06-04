@@ -35,7 +35,6 @@ import com.mycompany.premisesevent.tool.Tools;
  * @author sugichan
  */
 public class PlayerControl {
-    private final Config config;
     private final String DataFolder;
     
     /*
@@ -72,7 +71,6 @@ public class PlayerControl {
         this.DisplayName = player.getName();
         this.uuid = player.getUniqueId();
         this.PlayerScore = 0;
-        this.config = CF;
         this.DataFolder = DF;
     }
 
@@ -122,7 +120,7 @@ public class PlayerControl {
      */
     public boolean load() {
         // 設定ファイルを保存
-        File dataFolder = new File( DataFolder + File.separator + config.getEventName() + File.separator + "users" );
+        File dataFolder = new File( DataFolder + File.separator + Config.EventName + File.separator + "users" );
         File UKfile = new File( dataFolder, uuid + ".yml" );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
 
@@ -150,7 +148,7 @@ public class PlayerControl {
      *
      */
     public void save() {
-        File dataFolder = new File( DataFolder + File.separator + config.getEventName() + File.separator + "users" );
+        File dataFolder = new File( DataFolder + File.separator + Config.EventName + File.separator + "users" );
         if( !dataFolder.exists() ) { dataFolder.mkdir(); }
 
         File UKfile = new File( dataFolder, uuid + ".yml" );
@@ -193,7 +191,7 @@ public class PlayerControl {
         switch ( getEntry() ) {
             case 1: //  Double registration failure.
                 Tools.Prt( p, ChatColor.RED + "既にイベントへ参加しています", Utility.consoleMode.normal );
-                Tools.ExecOtherCommand( p, p.getDisplayName() + " さんは、既にイベントに参加しています", config.getBC_Command() );
+                Tools.ExecOtherCommand( p, p.getDisplayName() + " さんは、既にイベントに参加しています" );
                 return false;
             case 2: //  Kick registration.
                 Tools.Prt( p, ChatColor.RED + "イベントへの参加は拒否されています", Utility.consoleMode.normal );
@@ -201,8 +199,8 @@ public class PlayerControl {
                 return false;
             default: // Registration success.
                 Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + "Registration success." );
-                Tools.Prt( p, config.GetJoinMessage(), Utility.consoleMode.normal );
-                Tools.ExecOtherCommand( p, p.getDisplayName() + " さんが、イベントに参加しました", config.getBC_Command() );
+                Tools.Prt( p, Config.JoinMessage, Utility.consoleMode.normal );
+                Tools.ExecOtherCommand( p, p.getDisplayName() + " さんが、イベントに参加しました" );
                 break;
         }
 
@@ -215,9 +213,9 @@ public class PlayerControl {
 
         ItemControl ic = new ItemControl();
         ic.ItemPresent( p );
-        for( int i = 0; i<config.getTools().size(); i++ ) {
-            Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + config.getTools().get( i ) );
-            ic.ItemUpdate( p, null, config.getEventToolName(), Material.getMaterial( config.getTools().get( i ).toString() ) );
+        for( int i = 0; i<Config.tools.size(); i++ ) {
+            Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + Config.tools.get( i ) );
+            ic.ItemUpdate( p, null, Config.EventToolName, Material.getMaterial( Config.tools.get( i ).toString() ) );
         }
 
         Bukkit.broadcastMessage( "<Premises> " + ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
@@ -242,15 +240,15 @@ public class PlayerControl {
             return false;
         }
 
-        if ( !config.getTools().contains( Item ) ) {
+        if ( !Config.tools.contains( Item ) ) {
             Tools.Prt( player, ChatColor.RED + "再配布対象のツールではありません", Utility.consoleMode.normal );
             return false;
         }
 
-        int Rep = config.getRePresent();
+        int Rep = Config.RePresent;
         if ( getScore() > Rep ) {
             ItemControl ic = new ItemControl();
-            ic.ItemUpdate( player, null, config.getEventToolName(), Material.getMaterial( Item ) );
+            ic.ItemUpdate( player, null, Config.EventToolName, Material.getMaterial( Item ) );
             addScore( null, - Rep );
             Tools.Prt( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Material.getMaterial( Item ).name() + " tools !!", Utility.consoleMode.normal );
             return true;
@@ -273,17 +271,17 @@ public class PlayerControl {
             return;
         }
 
-        int Rep = config.getUpCost();
+        int Rep = Config.UpCost;
         if ( getScore() > Rep ) {
             ItemStack item = player.getInventory().getItemInMainHand();
 
             if ( item.getItemMeta().hasDisplayName() ) {
-                if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) {
+                if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) ) {
                     double CheckDurability = ( item.getType().getMaxDurability() * 0.9 );
                     if ( ( CheckDurability <= item.getDurability() ) || Force ) {
                         ItemControl ic = new ItemControl();
                         player.getInventory().setItemInMainHand( null );
-                        ic.ItemUpdate( player, item, config.getEventToolName(), null );
+                        ic.ItemUpdate( player, item, Config.EventToolName, null );
                         addScore( null, -Rep );
                     } else {
                         Tools.Prt( player,
@@ -342,21 +340,21 @@ public class PlayerControl {
         if ( player != null ) {
             //  デバッグ（または保守）用、一定数到達記録をコンソールログに残す
             //  不具合や他責によるスコアの未記録時の対応ログとして表示
-            if ( config.getScoreNotice() > 0 ) {
+            if ( Config.ScoreNotice > 0 ) {
                 if ( PlayerScore >= scoreNotice ) {
                     Tools.Prt( "[Premises] " + DisplayName + " reached " + PlayerScore + " points.", Utility.consoleMode.normal );
-                    scoreNotice = config.getScoreNotice() * ( ( int ) Math.floor( PlayerScore / config.getScoreNotice() ) + 1 );
+                    scoreNotice = Config.ScoreNotice * ( ( int ) Math.floor( PlayerScore / Config.ScoreNotice ) + 1 );
                 }
             }
 
             //  ブロードキャスト、一定スコア達成をオンラインプレイヤーに知らせる
-            if ( ( player.hasPermission( "Premises.broadcast" ) ) && ( config.getScoreBroadcast() > 0 ) ) {
+            if ( ( player.hasPermission( "Premises.broadcast" ) ) && ( Config.ScoreBroadcast > 0 ) ) {
                 if ( PlayerScore >= scoreBroadcast ) {
                     String SendMessage = "<イベント> " + ChatColor.AQUA + DisplayName + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + PlayerScore + ChatColor.WHITE + " 点に到達しました";
                     Bukkit.broadcastMessage( SendMessage );
                     Tools.launchFireWorks( player.getLocation() );
-                    Tools.ExecOtherCommand( player, SendMessage, config.getBC_Command() );
-                    scoreBroadcast = config.getScoreBroadcast() * ( ( int ) Math.floor( PlayerScore / config.getScoreBroadcast() ) + 1 );
+                    Tools.ExecOtherCommand( player, SendMessage );
+                    scoreBroadcast = Config.ScoreBroadcast * ( ( int ) Math.floor( PlayerScore / Config.ScoreBroadcast ) + 1 );
                 }
             }
         }
@@ -387,6 +385,20 @@ public class PlayerControl {
     public void addStoneCount( String StoneName ) {
         int CD = getStoneCount( StoneName );
         CD++;
+        BlockCount.put( StoneName, CD );
+        // プレイヤーの掘削数を更新し反映します
+        mines.put( StoneName, obj.getScore( Utility.StringBuild( ChatColor.GREEN.toString(), StoneName + ":" ) ) );
+        mines.get( StoneName ).setScore( CD );
+    }
+
+    /**
+     * 指定ブロックの掘削数を減算します
+     *
+     * @param StoneName
+     */
+    public void subStoneCount( String StoneName ) {
+        int CD = getStoneCount( StoneName );
+        CD--;
         BlockCount.put( StoneName, CD );
         // プレイヤーの掘削数を更新し反映します
         mines.put( StoneName, obj.getScore( Utility.StringBuild( ChatColor.GREEN.toString(), StoneName + ":" ) ) );

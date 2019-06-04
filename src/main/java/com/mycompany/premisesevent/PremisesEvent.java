@@ -136,8 +136,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
         if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
             Tools.Prt( p, ChatColor.YELLOW + "イベントツールの再配布", Utility.consoleMode.normal );
-            for( int i = 0; i<config.getTools().size(); i++ ) {
-                ic.ItemUpdate( p, null, config.getEventToolName(), Material.getMaterial( config.getTools().get( i ).toString() ) );
+            for( int i = 0; i<Config.tools.size(); i++ ) {
+                ic.ItemUpdate( p, null, Config.EventToolName, Material.getMaterial( Config.tools.get( i ) ) );
             }
         }
     }
@@ -174,7 +174,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
         if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
         if ( pc.get( player.getUniqueId() ).getEntry() != 1 ) {
-            if ( !config.FreeBreak() )  event.setCancelled( true );
+            if ( Config.FreeBreak )  event.setCancelled( true );
             return;
         }
 
@@ -183,9 +183,21 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         String blockName = Tools.getStoneName( block );
         block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
 
-        if ( config.getStones().contains( blockName ) ) {
-            Tools.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), Utility.consoleMode.max );
-            pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
+        if ( Config.stones.contains( blockName ) ) {
+            if ( ( pc.get( player.getUniqueId() ).getStoneCount( blockName ) > 0 ) || Config.zeroPlace ) {
+                Tools.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), Utility.consoleMode.max );
+                pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
+                pc.get( player.getUniqueId() ).subStoneCount( blockName );
+            } else {
+                if ( Config.titlePrint ) {
+                    player.sendTitle(
+                        ChatColor.RED + "ブロックは設置できません",
+                        ChatColor.YELLOW + "イベントルールを確認してください",
+                        0, 100, 0 );
+                }
+                event.setCancelled( true );
+                return;
+            }
         } else {
             Tools.Prt(
                 ChatColor.AQUA + player.getDisplayName() +
@@ -212,7 +224,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         switch ( pc.get( player.getUniqueId() ).getEntry() ) {
             case 0:
-                if ( !config.FreeBreak() ) {
+                if ( !Config.FreeBreak ) {
                     Tools.Prt( player, ChatColor.RED + "イベントに参加してください", Utility.consoleMode.normal );
                     event.setCancelled( true );
                 }
@@ -231,11 +243,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         String blockName = Tools.getStoneName( block );
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if ( config.ToolBreak() && ( item.getType() != Material.TORCH ) ) {
+        if ( Config.ToolBreak && ( item.getType() != Material.TORCH ) ) {
             if (
                     ( item.getType() == Material.AIR ) ||
                     ( !item.getItemMeta().hasDisplayName() ) ||
-                    ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) )
+                    ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) )
                ) {
                 player.sendMessage( ChatColor.RED + "指定ツールで行ってください" );
                 event.setCancelled( true );
@@ -243,7 +255,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         }
 
-        if ( config.getStones().contains( blockName ) ) {
+        if ( Config.stones.contains( blockName ) ) {
             Tools.Prt(
                 player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) +
                 ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")",
@@ -258,9 +270,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     ChatColor.YELLOW + blockName,
                     Utility.consoleMode.full
                 );
-                if ( config.getSendTitle() ) {
+                if ( Config.titlePrint ) {
                     player.sendTitle(
-                        ChatColor.RED + "破壊不可なブロックを破壊しました",
+                        ChatColor.RED + "破壊不可なブロックです",
                         ChatColor.YELLOW + "元に戻してくださいね",
                         0, 100, 0 );
                 }
@@ -280,14 +292,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( item.getType() == Material.AIR ) return;
 
         if ( WarningFlag && item.getItemMeta().hasDisplayName() ) {
-            if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( config.getEventToolName() ) ) {
+            if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) ) {
                 if ( ( item.getType().getMaxDurability() * config.getRepair() ) <= item.getDurability() ) {
                     Tools.Prt( player, ChatColor.RED + "ツールの耐久値がヤバイですよ", Utility.consoleMode.max );
                     WarningFlag = false;
                     task = this.getServer().getScheduler().runTaskTimer( this, new Timer( this ,config.CoolCount() ), 0L, config.CoolTick() );
-                    if ( config.getSendTitle() ) {
+                    if ( Config.titlePrint ) {
                         player.sendTitle(
-                            ChatColor.RED + "ツールの耐久値がヤバイですよ",
+                            ChatColor.RED + "耐久値がヤバイですよ",
                             ChatColor.YELLOW + "アップデートして成長させましょう",
                             0, 50, 0 );
                     }
@@ -326,7 +338,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     break;
                 case "[P-TOP]":
                     if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).save();
-                    TopList TL = new TopList( config, this.getDataFolder().toString() );
+                    TopList TL = new TopList( this.getDataFolder().toString() );
                     TL.Top( player, Utility.consoleMode.max );
                     break;
                 default:
@@ -357,7 +369,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 pc.get( onPlayer.getUniqueId() ).save();
             } );
 
-            TopList TL = new TopList( config, this.getDataFolder().toString() );
+            TopList TL = new TopList( this.getDataFolder().toString() );
             TL.Top( player, Utility.consoleMode.max );
             return true;
         }
@@ -377,9 +389,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             if ( hasPermission ) {
                 switch ( commandString ) {
                     case "csv":
-                        TopList TL = new TopList( config, this.getDataFolder().toString() );
+                        TopList TL = new TopList( this.getDataFolder().toString() );
                         try {
-                            TL.ToCSV( config.getStones() );
+                            TL.ToCSV( Config.stones );
                         } catch ( IOException ex ) {
                             Logger.getLogger( PremisesEvent.class.getName() ).log( Level.SEVERE, null, ex );
                         }

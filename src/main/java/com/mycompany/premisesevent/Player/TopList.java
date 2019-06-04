@@ -5,7 +5,6 @@
  */
 package com.mycompany.premisesevent.Player;
 
-import com.mycompany.kumaisulibraries.Utility;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -23,6 +22,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import com.mycompany.kumaisulibraries.Utility;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.tool.Tools;
 
@@ -31,17 +31,14 @@ import com.mycompany.premisesevent.tool.Tools;
  * @author sugichan
  */
 public class TopList {
-    private final Config config;
     private final String DataFolder;
 
     /**
      * スコアーランキングリスト
      *
-     * @param CF
      * @param DF
      */
-    public TopList( Config CF, String DF ) {
-        this.config = CF;
+    public TopList( String DF ) {
         this.DataFolder = DF;
     }
 
@@ -69,7 +66,7 @@ public class TopList {
      * @return  Total Score
      */
     public int getScore( String filename ) {
-        File getFile = new File( DataFolder + File.separator + config.getEventName() + File.separator + "users" + File.separator + filename );
+        File getFile = new File( DataFolder + File.separator + Config.EventName + File.separator + "users" + File.separator + filename );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( getFile );
 
         if( !getFile.exists() ) { return 0; }
@@ -85,7 +82,7 @@ public class TopList {
      * @return  Count
      */
     public int getCount( String filename, String StoneName ) {
-        File getFile = new File( DataFolder + File.separator + config.getEventName() + File.separator + "users" + File.separator + filename );
+        File getFile = new File( DataFolder + File.separator + Config.EventName + File.separator + "users" + File.separator + filename );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( getFile );
 
         if( !getFile.exists() ) { return 0; }
@@ -107,7 +104,7 @@ public class TopList {
 
         Map<String, Integer> rank = new HashMap<>();
         File folder;
-        folder = new File( DataFolder + File.separator + config.getEventName() + File.separator + "users" + File.separator );
+        folder = new File( DataFolder + File.separator + Config.EventName + File.separator + "users" + File.separator );
         File files[] = folder.listFiles();
 
         // 1.File からスコアの取り出しし、マッピングする
@@ -147,7 +144,7 @@ public class TopList {
      */
     public void ToCSV( List<String>stone ) throws IOException {
         try {
-            File cvsFile = new File( DataFolder + File.separator + config.getEventName() + File.separator + "data.csv" );
+            File cvsFile = new File( DataFolder + File.separator + Config.EventName + File.separator + "data.csv" );
             //  cvs Header を作成
             try (PrintWriter pw = new PrintWriter( new BufferedWriter( new FileWriter( cvsFile ) ) )) {
                 //  cvs Header を作成
@@ -156,7 +153,7 @@ public class TopList {
                 pw.println( Header );
 
                 File folder;
-                folder = new File( DataFolder + File.separator + config.getEventName() + File.separator + "users" + File.separator );
+                folder = new File( DataFolder + File.separator + Config.EventName + File.separator + "users" + File.separator );
                 File files[] = folder.listFiles();
 
                 for( File file : files ) {

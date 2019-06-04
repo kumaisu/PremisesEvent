@@ -27,20 +27,9 @@ public class Config {
     private FileConfiguration config = null;
 
     private final Map< String, Integer > GetPoint = new HashMap<>();
-    private List< String > stones;
-    private List< String > tools;
-    private List< String > bc_command;
     private boolean OPMode;
-    private int ScoreNotice;
-    private int ScoreBroadcast;
-    private int RePresent;
-    private int UpCost;
     private double Repair;
     private boolean Field;
-    private String EventToolName;
-    private boolean FreeBreak;
-    private boolean ToolBreak;
-    private String EventName;
     private String Event_World;
     private int Event_X1;
     private int Event_X2;
@@ -48,9 +37,21 @@ public class Config {
     private int Event_Y2;
     private int Event_Z1;
     private int Event_Z2;
-    private String JoinMessage;
-    private boolean titlePrint;
 
+    public static boolean FreeBreak;
+    public static boolean ToolBreak;
+    public static boolean zeroPlace;
+    public static boolean titlePrint;
+    public static String EventName;
+    public static String JoinMessage;
+    public static String EventToolName;
+    public static int RePresent;
+    public static int UpCost;
+    public static int ScoreNotice;
+    public static int ScoreBroadcast;
+    public static List< String > bc_command;
+    public static List< String > stones;
+    public static List< String > tools;
     public static Utility.consoleMode DebugFlag;
 
     /**
@@ -59,7 +60,7 @@ public class Config {
      * @param plugin
      */
     public Config( Plugin plugin ) {
-        this.stones = new ArrayList<>();
+        stones = new ArrayList<>();
         this.plugin = plugin;
         plugin.getLogger().info( "Config Loading now..." );
         load();
@@ -101,6 +102,7 @@ public class Config {
         EventToolName = config.getString( "EventToolName" );
         FreeBreak = config.getBoolean( "FreeBreak" );
         ToolBreak = config.getBoolean( "ToolBreak" );
+        zeroPlace = config.getBoolean( "ZeroPlace" );
 
         Event_World = config.getString( "World" );
 
@@ -159,6 +161,7 @@ public class Config {
         Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( FreeBreak ? "許可":"不可" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "ブロック無限設置 : " + ChatColor.YELLOW + ( zeroPlace ? "許可":"不可" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "タイトル表示     : " + ChatColor.YELLOW + ( titlePrint ? "する":"しない" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "イベントツール名 : " + EventToolName, consolePrintFlag );
@@ -190,24 +193,6 @@ public class Config {
     }
 
     /**
-     * 実行されているイベント名取得
-     *
-     * @return
-     */
-    public String getEventName() {
-        return EventName;
-    }
-
-    /**
-     * カウントされている石情報取得
-     *
-     * @return
-     */
-    public List getStones() {
-        return stones;
-    }
-
-    /**
      * 石に設定されているポイントを取得
      *
      * @param sd    判定する石の名称（コードではない）
@@ -218,33 +203,6 @@ public class Config {
             return GetPoint.get( sd );
         }
         return 0;
-    }
-
-    /**
-     * イベントで配布されているツール名称取得
-     *
-     * @return
-     */
-    public String getEventToolName() {
-        return EventToolName;
-    }
-
-    /**
-     * ツール再取得の時に必要なスコア
-     *
-     * @return
-     */
-    public int getRePresent() {
-        return RePresent;
-    }
-
-    /**
-     * ツールのアップデートに必要なスコア
-     *
-     * @return
-     */
-    public int getUpCost() {
-        return UpCost;
     }
 
     /**
@@ -289,63 +247,6 @@ public class Config {
     }
 
     /**
-     * 一般掘削の許可フラグ
-     * True:全プレイヤー False:参加者のみ
-     *
-     * @return
-     */
-    public boolean FreeBreak() {
-        return FreeBreak;
-    }
-
-    /**
-     * 指定ツールでの掘削可否
-     * True:指定ツールのみ False:すべてOK
-     *
-     * @return
-     */
-    public boolean ToolBreak() {
-        return ToolBreak;
-    }
-
-    /**
-     * イベントツールの種類
-     *
-     * @return
-     */
-    public List getTools() {
-        return tools;
-    }
-
-    /**
-     * プレイヤーに対してのスコアーアナウンスの点数
-     *
-     * @return
-     */
-    public int getScoreNotice() {
-        return ScoreNotice;
-    }
-
-    /**
-     * スコアーアナウンスを何点で行うか
-     *
-     * @return
-     */
-    public int getScoreBroadcast() {
-        return ScoreBroadcast;
-    }
-
-    /**
-     * ブロードキャスト用コマンド
-     * Discordなどに独自でメッセージを送信するときに利用
-     *
-     * @return
-     */
-    public List getBC_Command() {
-        return bc_command;
-    }
-
-    /**
      * 5tick(0.25秒)ごとにTimerクラスのrunメソッドを実行してね
      * Timer 5tick×4回 = 1秒です
      *
@@ -362,24 +263,6 @@ public class Config {
      */
     public int CoolCount() {
         return config.getInt( "CoolCount" );
-    }
-
-    /**
-     * 参加時に表示されるメッセージ
-     *
-     * @return
-     */
-    public String GetJoinMessage() {
-        return JoinMessage;
-    }
-
-    /**
-     * 警告メッセージをタイトル表示するかの可否
-     *
-     * @return 
-     */
-    public boolean getSendTitle() {
-        return titlePrint;
     }
 
     /**
