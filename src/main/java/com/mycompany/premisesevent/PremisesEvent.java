@@ -53,7 +53,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     private final Map<UUID, PlayerControl> pc = new HashMap<>();
     private boolean WarningFlag = true;
 
-
     /**
      * 耐久値警告を一定間隔で表示するためのタイマー
      * 掘る毎に出しているとログが埋まってしまうので
@@ -98,11 +97,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      */
     @Override
     public void onDisable(){
-        Tools.Prt( "[Premises] Disable processing..." );
+        Tools.Prt( "Disable processing..." );
         pc.entrySet().forEach( ( entry ) -> {
             if ( pc.get( entry.getKey() ).getEntry() != 0 ) {
                 pc.get( entry.getKey() ).save();
-                Tools.Prt( "[Premises] " + ChatColor.AQUA + pc.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score" );
+                Tools.Prt( ChatColor.AQUA + pc.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score" );
             }
         } );
     }
@@ -151,11 +150,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onPlayerQuit( PlayerQuitEvent event ) {
         Player player = event.getPlayer();
         if ( pc.get( player.getUniqueId() ).getEntry() != 0 ) {
-            Tools.Prt( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " logged out, Saved the Score" );
+            Tools.Prt( ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " logged out, Saved the Score" );
 
             pc.get( player.getUniqueId() ).save();
         } else {
-            Tools.Prt( "[Premises] " + ChatColor.AQUA + player.getDisplayName() + ChatColor.LIGHT_PURPLE + " logged out, not Save" );
+            Tools.Prt( ChatColor.AQUA + player.getDisplayName() + ChatColor.LIGHT_PURPLE + " logged out, not Save" );
         }
         pc.remove( player.getUniqueId() );
     }
@@ -163,8 +162,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     /**
      * ブロックを設置した時の処理
      * ポイントブロックを置いた場合は、スコアからポイントをマイナスする
-     * ポイントブロックで無い場合は何もしない
-     * ※自然生成か設置かを判断するための試作をしているが昨日していない
+     * ※自然生成か設置かを判断するための試作をしているが機能していない
      *
      * @param event
      */
@@ -174,13 +172,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
         if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
         if ( pc.get( player.getUniqueId() ).getEntry() != 1 ) {
-            if ( Config.FreeBreak )  event.setCancelled( true );
+            if ( !Config.FreePlace )  event.setCancelled( true );
             return;
         }
 
-        //  設置したブロックであるというフラグを設定しているが、機能していない
         Block block = event.getBlock();
         String blockName = Tools.getStoneName( block );
+
+        //  設置したブロックであるというフラグを設定しているが、機能していない
         block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
 
         if ( Config.stones.contains( blockName ) ) {
@@ -189,22 +188,29 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
                 pc.get( player.getUniqueId() ).subStoneCount( blockName );
             } else {
-                if ( Config.titlePrint ) {
-                    player.sendTitle(
-                        ChatColor.RED + "ブロックは設置できません",
-                        ChatColor.YELLOW + "イベントルールを確認してください",
-                        0, 100, 0 );
+                if ( !Config.FreePlace ) {
+                    if ( Config.titlePrint ) {
+                        player.sendTitle(
+                            ChatColor.RED + "ブロックは設置できません",
+                            ChatColor.YELLOW + "イベントルールを確認してください",
+                            0, 100, 0 );
+                    }
+                    event.setCancelled( true );
+                    return;
                 }
+            }
+        } else {
+            if ( !Config.EventPlace ) {
                 event.setCancelled( true );
                 return;
             }
-        } else {
             Tools.Prt(
                 ChatColor.AQUA + player.getDisplayName() +
                 ChatColor.GREEN + " [" +
                 ChatColor.GOLD + blockName +
                 ChatColor.GREEN + "] is not a target",
-                Utility.consoleMode.full );
+                Utility.consoleMode.full
+            );
         }
 
         player.setPlayerListName( ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " + ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() ) );

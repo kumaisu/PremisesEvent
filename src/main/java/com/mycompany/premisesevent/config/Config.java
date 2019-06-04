@@ -38,6 +38,8 @@ public class Config {
     private int Event_Z1;
     private int Event_Z2;
 
+    public static boolean FreePlace;
+    public static boolean EventPlace;
     public static boolean FreeBreak;
     public static boolean ToolBreak;
     public static boolean zeroPlace;
@@ -100,6 +102,8 @@ public class Config {
         titlePrint  = config.getBoolean( "sendTitle" );
         OPMode = config.getBoolean( "CreativeCount" );
         EventToolName = config.getString( "EventToolName" );
+        FreePlace = config.getBoolean( "FreePlace" );
+        EventPlace = config.getBoolean( "EventPlace" );
         FreeBreak = config.getBoolean( "FreeBreak" );
         ToolBreak = config.getBoolean( "ToolBreak" );
         zeroPlace = config.getBoolean( "ZeroPlace" );
@@ -163,6 +167,8 @@ public class Config {
         Tools.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "ブロック無限設置 : " + ChatColor.YELLOW + ( zeroPlace ? "許可":"不可" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "参加者以外の設置 : " + ChatColor.YELLOW + ( FreePlace ? "許可":"不可" ), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "指定以外の設置   : " + ChatColor.YELLOW + ( EventPlace ? "許可":"不可" ), consolePrintFalg );
         Tools.Prt( p, ChatColor.WHITE + "タイトル表示     : " + ChatColor.YELLOW + ( titlePrint ? "する":"しない" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "イベントツール名 : " + EventToolName, consolePrintFlag );
 

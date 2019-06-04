@@ -13,6 +13,14 @@ World: world
 AreaPos1: 200,50,100
 AreaPos2: 100,2,200
 
+#   参加者以外のブロック設置を許すか
+FreePlace: false
+
+#   登録ブロック以外の設置を許すか
+#   true = All Blocks
+#   false = Event Block Only
+EventPlace: true
+
 #   参加者以外のブロック破壊を許すか
 #   Free Block Break
 #   true = All Player
