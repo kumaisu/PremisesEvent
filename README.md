@@ -30,6 +30,9 @@ This plug-in is a tool to support players achievement and event item distributio
 /toplist  
   
 [Admin]  
+/pstatus  
+/Premises Console [none/normal/full/max]  
+/Premises give PlayerName ScoreAmount  
 /Premises check  
 /Premises csv  
 /Premises launch  
