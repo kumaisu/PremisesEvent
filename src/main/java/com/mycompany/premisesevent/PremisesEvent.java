@@ -117,7 +117,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onPlayerJoin( PlayerJoinEvent event ){
         Player p = event.getPlayer();
 
-        pc.put( p.getUniqueId(), new PlayerControl( p, config, this.getDataFolder().toString() ) );
+        pc.put( p.getUniqueId(), new PlayerControl( p, this.getDataFolder().toString() ) );
         pc.get( p.getUniqueId() ).load();
 
         if ( pc.get( p.getUniqueId() ).getEntry() != 1 ) {
@@ -201,12 +201,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                             0, 100, 0 );
                     }
                     event.setCancelled( true );
-                    return;
                 }
             }
         } else {
             if ( !Config.EventPlace ) {
-                Utility.Prt( player, "このブロックは設置できません", Utility.consoleMode.full );
+                Tools.Prt( player, "このブロックは設置できません", Utility.consoleMode.full );
                 event.setCancelled( true );
                 return;
             }
@@ -269,12 +268,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Tools.Prt(
                 player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) +
                 ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")",
-                Utility.consoleMode.max );
-            pc.get( player.getUniqueId() ).addStoneCount( blockName );
-            pc.get( player.getUniqueId() ).addScore( player, config.getPoint( blockName ) );
-            player.setPlayerListName(
-                ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
-                ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
+                Utility.consoleMode.max
             );
 
             if ( config.getPoint( blockName )<0 ) {
@@ -285,7 +279,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     ChatColor.YELLOW + blockName,
                     Utility.consoleMode.full
                 );
-                switch( Config.EventMode ) {
+
+                switch( Config.difficulty ) {
                     case Easy:
                         Tools.Prt( player, ChatColor.RED + "そのブロックは破壊できません", Utility.consoleMode.full );
                         event.setCancelled( true );
@@ -300,9 +295,26 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         }
                         break;
                     case Hard:
-                        //	検討中
+                        Tools.Prt( player, ChatColor.RED + "ルール違反です", Utility.consoleMode.full );
+                        if ( Config.titlePrint ) {
+                            player.sendTitle(
+                                ChatColor.RED + "破壊不可なブロックです",
+                                ChatColor.YELLOW + "参加資格を取り消しました",
+                                0, 100, 0 );
+                        }
+                        pc.get( player.getUniqueId() ).addStoneCount( blockName );
+                        pc.get( player.getUniqueId() ).addScore( player, config.getPoint( blockName ) );
+                        event.setCancelled( true );
+                        return;
                 }
             }
+
+            pc.get( player.getUniqueId() ).addStoneCount( blockName );
+            pc.get( player.getUniqueId() ).addScore( player, config.getPoint( blockName ) );
+            player.setPlayerListName(
+                ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
+                ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
+            );
 
         } else {
             Tools.Prt(
@@ -490,7 +502,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( Other );
                 if ( op.hasPlayedBefore() ) {
                     uuid = op.getUniqueId();
-                    pc.put( uuid, new PlayerControl( op, config, this.getDataFolder().toString() ) );
+                    pc.put( uuid, new PlayerControl( op, this.getDataFolder().toString() ) );
                     pc.get( uuid ).load();
                 } else {
                     Tools.Prt( player, ChatColor.RED + "This Player is not joined to server.", Utility.consoleMode.normal );
@@ -539,7 +551,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( name );
                 if ( op.hasPlayedBefore() ) {
                     scorePlayer = op.getPlayer();
-                    pc.put( scorePlayer.getUniqueId(), new PlayerControl( player, config, this.getDataFolder().toString() ) );
+                    pc.put( scorePlayer.getUniqueId(), new PlayerControl( player, this.getDataFolder().toString() ) );
                     pc.get( scorePlayer.getUniqueId() ).load();
                     createStat = true;
                 } else {

@@ -148,14 +148,14 @@ public class Config {
         try {
             DebugFlag = Utility.consoleMode.valueOf( config.getString( "Debug" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( null, ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", Utility.consoleMode.none );
+            Tools.Prt( ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", Utility.consoleMode.none );
             DebugFlag = Utility.consoleMode.normal;
         }
         try {
             difficulty = EventMode.valueOf( config.getString( "Difficulty" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( null, ChatColor.RED + "Config Event 難易度が不正なので、Normal 設定にしました", Utility.consoleMode.none );
-            defficulty = EventMode.Normal
+            Tools.Prt( ChatColor.RED + "Config Event 難易度が不正なので、Normal 設定にしました", Utility.consoleMode.none );
+            difficulty = EventMode.Normal;
         }
     }
 
@@ -178,7 +178,7 @@ public class Config {
         Tools.Prt( p, ChatColor.WHITE + "ブロック無限設置 : " + ChatColor.YELLOW + ( zeroPlace ? "許可":"不可" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "参加者以外の設置 : " + ChatColor.YELLOW + ( FreePlace ? "許可":"不可" ), consolePrintFlag );
-        Tools.Prt( p, ChatColor.WHITE + "指定以外の設置   : " + ChatColor.YELLOW + ( EventPlace ? "許可":"不可" ), consolePrintFalg );
+        Tools.Prt( p, ChatColor.WHITE + "指定以外の設置   : " + ChatColor.YELLOW + ( EventPlace ? "許可":"不可" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "タイトル表示     : " + ChatColor.YELLOW + ( titlePrint ? "する":"しない" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "イベントツール名 : " + EventToolName, consolePrintFlag );
 
@@ -200,6 +200,9 @@ public class Config {
                 ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2,
                 consolePrintFlag );
         }
+
+        Tools.Prt( p, ChatColor.WHITE + "参加時メッセージ : " + JoinMessage, consolePrintFlag );
+        
         Tools.Prt( p, ChatColor.WHITE + "Broadcast Command:", consolePrintFlag );
         for( int i = 0; i<bc_command.size(); i++ ) {
             Tools.Prt( p, ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ), consolePrintFlag );

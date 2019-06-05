@@ -64,10 +64,9 @@ public class PlayerControl {
      * プレイヤーコントロールライブラリ
      *
      * @param player
-     * @param CF
      * @param DF
      */
-    public PlayerControl( OfflinePlayer player, Config CF, String DF ) {
+    public PlayerControl( OfflinePlayer player, String DF ) {
         this.DisplayName = player.getName();
         this.uuid = player.getUniqueId();
         this.PlayerScore = 0;
