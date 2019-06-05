@@ -202,7 +202,7 @@ public class Config {
         }
 
         Tools.Prt( p, ChatColor.WHITE + "参加時メッセージ : " + JoinMessage, consolePrintFlag );
-        
+
         Tools.Prt( p, ChatColor.WHITE + "Broadcast Command:", consolePrintFlag );
         for( int i = 0; i<bc_command.size(); i++ ) {
             Tools.Prt( p, ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ), consolePrintFlag );
@@ -266,29 +266,10 @@ public class Config {
     }
 
     /**
-     * 5tick(0.25秒)ごとにTimerクラスのrunメソッドを実行してね
-     * Timer 5tick×4回 = 1秒です
-     *
-     * @return
-     */
-    public long CoolTick() {
-        return config.getLong( "CoolTick" );
-    }
-
-    /**
-     * クールタイムの利用回数
-     *
-     * @return
-     */
-    public int CoolCount() {
-        return config.getInt( "CoolCount" );
-    }
-
-    /**
      * 一時的にDebugModeを設定しなおす
      * ただし、Config.ymlには反映しない
      *
-     * @param key 
+     * @param key
      */
     public void setDebug( String key ) {
         try {

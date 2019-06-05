@@ -48,39 +48,8 @@ import com.mycompany.premisesevent.tool.Tools;
  */
 public class PremisesEvent extends JavaPlugin implements Listener {
 
-    BukkitTask task = null; //  あとで自分を止めるためのもの
     private Config config;
     private final Map<UUID, PlayerControl> pc = new HashMap<>();
-    private boolean WarningFlag = true;
-
-    /**
-     * 耐久値警告を一定間隔で表示するためのタイマー
-     * 掘る毎に出しているとログが埋まってしまうので
-     */
-    private class Timer extends BukkitRunnable{
-        int time;//秒数
-        JavaPlugin plugin;//BukkitのAPIにアクセスするためのJavaPlugin
-
-        public Timer( JavaPlugin plugin ,int i ) {
-            this.time = i;
-            this.plugin = plugin;
-        }
-
-        @Override
-        public void run() {
-            if( time <= 0 ){
-                //タイムアップなら
-                WarningFlag = true;
-                plugin.getServer().getScheduler().cancelTask( task.getTaskId() ); //自分自身を止める
-            }
-            /*
-            else{
-                plugin.getServer().broadcastMessage("" + time);//残り秒数を全員に表示
-            }
-            */
-            time--; //  1秒減算
-        }
-    }
 
     /**
      * 起動シーケンス
@@ -295,17 +264,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         }
                         break;
                     case Hard:
-                        Tools.Prt( player, ChatColor.RED + "ルール違反です", Utility.consoleMode.full );
-                        if ( Config.titlePrint ) {
-                            player.sendTitle(
-                                ChatColor.RED + "破壊不可なブロックです",
-                                ChatColor.YELLOW + "参加資格を取り消しました",
-                                0, 100, 0 );
-                        }
-                        pc.get( player.getUniqueId() ).addStoneCount( blockName );
-                        pc.get( player.getUniqueId() ).addScore( player, config.getPoint( blockName ) );
-                        event.setCancelled( true );
-                        return;
+                        break;
                 }
             }
 
@@ -327,17 +286,16 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         if ( item.getType() == Material.AIR ) return;
 
-        if ( WarningFlag && item.getItemMeta().hasDisplayName() ) {
+        if ( item.getItemMeta().hasDisplayName() ) {
             if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) ) {
                 if ( ( item.getType().getMaxDurability() * config.getRepair() ) <= item.getDurability() ) {
                     Tools.Prt( player, ChatColor.RED + "ツールの耐久値がヤバイですよ", Utility.consoleMode.max );
-                    WarningFlag = false;
-                    task = this.getServer().getScheduler().runTaskTimer( this, new Timer( this ,config.CoolCount() ), 0L, config.CoolTick() );
                     if ( Config.titlePrint ) {
                         player.sendTitle(
                             ChatColor.RED + "耐久値がヤバイですよ",
                             ChatColor.YELLOW + "アップデートして成長させましょう",
-                            0, 50, 0 );
+                            0, 50, 0
+                        );
                     }
                 }
             }
