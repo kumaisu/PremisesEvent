@@ -26,6 +26,13 @@ public class Config {
     private final Plugin plugin;
     private FileConfiguration config = null;
 
+    /**
+     * イベント参加モード用のenum
+     *
+     * Easy : NG行為を事前にブロックする
+     * Normal : NG行為を警告し、リカバリー可能
+     * Hard : NG行為を警告しない
+     */
     public static enum EventMode { Easy, Normal, Hard }
 
     private final Map< String, Integer > GetPoint = new HashMap<>();
@@ -40,23 +47,77 @@ public class Config {
     private int Event_Z1;
     private int Event_Z2;
 
+    /**
+     * 
+     */
     public static EventMode difficulty;
-    public static boolean FreePlace;
-    public static boolean EventPlace;
-    public static boolean FreeBreak;
-    public static boolean ToolBreak;
+    /**
+     * 
+     */
+    public static boolean placeFree;
+    /**
+     * 
+     */
+    public static boolean placeSpecified;
+    /**
+     * 
+     */
+    public static boolean breakFree;
+    /**
+     * 
+     */
+    public static boolean breakTool;
+    /**
+     * 
+     */
     public static boolean zeroPlace;
+    /**
+     * 
+     */
     public static boolean titlePrint;
+    /**
+     * 
+     */
     public static String EventName;
+    /**
+     * 
+     */
     public static String JoinMessage;
+    /**
+     * 
+     */
     public static String EventToolName;
+    /**
+     * 
+     */
     public static int RePresent;
+    /**
+     * 
+     */
     public static int UpCost;
+    /**
+     * 
+     */
     public static int ScoreNotice;
+    /**
+     * 
+     */
     public static int ScoreBroadcast;
+    /**
+     * 
+     */
     public static List< String > bc_command;
+    /**
+     * 
+     */
     public static List< String > stones;
+    /**
+     * 
+     */
     public static List< String > tools;
+    /**
+     * 
+     */
     public static Utility.consoleMode DebugFlag;
 
     /**
@@ -105,10 +166,10 @@ public class Config {
         titlePrint  = config.getBoolean( "sendTitle" );
         OPMode = config.getBoolean( "CreativeCount" );
         EventToolName = config.getString( "EventToolName" );
-        FreePlace = config.getBoolean( "FreePlace" );
-        EventPlace = config.getBoolean( "EventPlace" );
-        FreeBreak = config.getBoolean( "FreeBreak" );
-        ToolBreak = config.getBoolean( "ToolBreak" );
+        placeFree = config.getBoolean( "FreePlace" );
+        placeSpecified = config.getBoolean( "SpecifiedPlace" );
+        breakFree = config.getBoolean( "FreeBreak" );
+        breakTool = config.getBoolean( "ToolBreak" );
         zeroPlace = config.getBoolean( "ZeroPlace" );
 
         Event_World = config.getString( "World" );
@@ -173,12 +234,12 @@ public class Config {
         Tools.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, consolePrintFlag );
-        Tools.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( FreeBreak ? "許可":"不可" ), consolePrintFlag );
-        Tools.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( ToolBreak ? "不可":"許可" ), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( breakFree ? "許可":"不可" ), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( breakTool ? "不可":"許可" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "ブロック無限設置 : " + ChatColor.YELLOW + ( zeroPlace ? "許可":"不可" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), consolePrintFlag );
-        Tools.Prt( p, ChatColor.WHITE + "参加者以外の設置 : " + ChatColor.YELLOW + ( FreePlace ? "許可":"不可" ), consolePrintFlag );
-        Tools.Prt( p, ChatColor.WHITE + "指定以外の設置   : " + ChatColor.YELLOW + ( EventPlace ? "許可":"不可" ), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "参加者以外の設置 : " + ChatColor.YELLOW + ( placeFree ? "許可":"不可" ), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "指定以外の設置   : " + ChatColor.YELLOW + ( placeSpecified ? "許可":"不可" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "タイトル表示     : " + ChatColor.YELLOW + ( titlePrint ? "する":"しない" ), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "イベントツール名 : " + EventToolName, consolePrintFlag );
 

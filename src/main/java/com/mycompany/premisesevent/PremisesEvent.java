@@ -33,8 +33,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import com.mycompany.kumaisulibraries.Utility;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.Player.PlayerControl;
@@ -141,7 +139,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
         if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
         if ( pc.get( player.getUniqueId() ).getEntry() != 1 ) {
-            if ( !Config.FreePlace ) event.setCancelled( true );
+            if ( !Config.placeFree ) event.setCancelled( true );
             return;
         }
 
@@ -151,32 +149,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         //  設置したブロックであるというフラグを設定しているが、機能していない
         block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
 
-        if ( Config.stones.contains( blockName ) ) {
-            if ( ( pc.get( player.getUniqueId() ).getStoneCount( blockName ) > 0 ) || Config.zeroPlace ) {
-                Tools.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), Utility.consoleMode.max );
-                pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
-                pc.get( player.getUniqueId() ).subStoneCount( blockName );
-                player.setPlayerListName(
-                    ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
-                    ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
-                );
-            } else {
-                if ( !Config.FreePlace ) {
-                    Tools.Prt( player, ChatColor.RED + "これ以上このブロックは設置できません", Utility.consoleMode.full );
-                    if ( Config.titlePrint ) {
-                        player.sendTitle(
-                            ChatColor.RED + "ブロックは設置できません",
-                            ChatColor.YELLOW + "イベントルールを確認してください",
-                            0, 100, 0 );
-                    }
-                    event.setCancelled( true );
-                }
-            }
-        } else {
-            if ( !Config.EventPlace ) {
+        if ( !Config.stones.contains( blockName ) ) {
+            if ( !Config.placeSpecified ) {
                 Tools.Prt( player, "このブロックは設置できません", Utility.consoleMode.full );
                 event.setCancelled( true );
-                return;
             }
             Tools.Prt(
                 ChatColor.AQUA + player.getDisplayName() +
@@ -185,6 +161,30 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 ChatColor.GREEN + "] is not a target",
                 Utility.consoleMode.full
             );
+            return;
+        }
+
+        if ( ( Config.zeroPlace ) || ( config.getPoint( blockName ) == 0 ) || ( pc.get( player.getUniqueId() ).getStoneCount( blockName ) > 0 ) ) {
+            Tools.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), Utility.consoleMode.max );
+            if ( config.getPoint( blockName ) != 0 ) {
+                pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
+                pc.get( player.getUniqueId() ).subStoneCount( blockName );
+                player.setPlayerListName(
+                    ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
+                    ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
+                );
+            }
+        } else {
+            if ( !Config.placeFree ) {
+                Tools.Prt( player, ChatColor.RED + "これ以上このブロックは設置できません", Utility.consoleMode.full );
+                if ( Config.titlePrint ) {
+                    player.sendTitle(
+                        ChatColor.RED + "ブロックは設置できません",
+                        ChatColor.YELLOW + "イベントルールを確認してください",
+                        0, 100, 0 );
+                }
+                event.setCancelled( true );
+            }
         }
     }
 
@@ -202,7 +202,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         switch ( pc.get( player.getUniqueId() ).getEntry() ) {
             case 0:
-                if ( !Config.FreeBreak ) {
+                if ( !Config.breakFree ) {
                     Tools.Prt( player, ChatColor.RED + "イベントに参加してください", Utility.consoleMode.normal );
                     event.setCancelled( true );
                 }
@@ -221,7 +221,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         String blockName = Tools.getStoneName( block );
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if ( Config.ToolBreak && ( item.getType() != Material.TORCH ) ) {
+        if ( Config.breakTool && ( item.getType() != Material.TORCH ) ) {
             if (
                     ( item.getType() == Material.AIR ) ||
                     ( !item.getItemMeta().hasDisplayName() ) ||
@@ -268,12 +268,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 }
             }
 
-            pc.get( player.getUniqueId() ).addStoneCount( blockName );
-            pc.get( player.getUniqueId() ).addScore( player, config.getPoint( blockName ) );
-            player.setPlayerListName(
-                ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
-                ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
-            );
+            if ( config.getPoint( blockName ) != 0 ){
+                pc.get( player.getUniqueId() ).addStoneCount( blockName );
+                pc.get( player.getUniqueId() ).addScore( player, config.getPoint( blockName ) );
+                player.setPlayerListName(
+                    ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
+                    ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
+                );
+            }
 
         } else {
             Tools.Prt(

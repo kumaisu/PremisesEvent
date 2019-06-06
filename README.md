@@ -38,9 +38,7 @@ This plug-in is a tool to support players achievement and event item distributio
 /Premises launch  
   
 **Future**  
-· Determine spontaneous generation and installation and affect scoring  
-    自然生成と設置を判定し、スコアリングに影響させる  
+·  
   
 Contact is Discord Kitsune#5955  
 Discord Server https://discord.gg/AgX3UxR  
-

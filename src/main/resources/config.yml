@@ -14,48 +14,45 @@ AreaPos1: 200,50,100
 AreaPos2: 100,2,200
 
 #   イベント難易度 (Easy/Normal/Hard)
+#   Easy :      ペナルティブロックは破壊できない＋警告
+#   Normal :    ペナルティブロックの警告メッセージのみ表示
+#   Hard :      ペナルティブロックの警告も無い（参加者の注意力が要求される）
 Difficulty: Normal
 
-#   参加者以外のブロック設置を許すか
-FreePlace: false
-
-#   登録ブロック以外の設置を許すか
-#   true = All Blocks
-#   false = Event Block Only
-EventPlace: true
-
-#   参加者以外のブロック破壊を許すか
-#   Free Block Break
+#   参加者以外のブロック破壊を許すか/Free Block Break
 #   true = All Player
 #   false = EntryPlayer Only
 FreeBreak: true
 
-#   イベントツールのみ破壊可能とするか
-#   Special Tools Only Break
+#   参加者以外のブロック設置を許すか/Allow block placement for non-participant
+#   true = All Player/全プレイヤー
+#   false = Entry Player/参加プレイヤーのみ
+FreePlace: false
+
+#   登録ブロック以外の設置を許すか/Permit installation other than registration block
+#   true = All Blocks
+#   false = Event Block Only
+SpecifiedPlace: true
+
+#   イベントツールのみ破壊可能とするか/Special Tools Only Break
 ToolBreak: false
 
-#   ブロックのカウントがゼロの時、設置可能とするか
-#   Block Count Zero Place
+#   ブロックのカウントがゼロの時、設置可能とするか/Block Count Zero Place
 ZeroPlace: false
 
-#   イベントアイテムを再配布するのに必要なスコアーコスト
-#   Required score for redistributing gift Tool Items
+#   イベントアイテムを再配布するのに必要なスコアーコスト/Required score for redistributing gift Tool Items
 RePresent: 2000
 
-#   イベントツールのアップデートに必要なスコアーコスト
-#   Score required for event tool update
+#   イベントツールのアップデートに必要なスコアーコスト/Score required for event tool update
 UpdateCost: 0
 
-#   クリエイティブモードでのカウント停止
-#   CreativeCount True = no Count False = Alwayes Count
+#   クリエイティブモードでのカウント停止/CreativeCount True = no Count False = Alwayes Count
 CreativeCount: true
 
-#   ツールの耐久値警告設定（残り％）
-#   Percentage of endurance value that can be updated ( 0.1 = 10% )
+#   ツールの耐久値警告設定（残り％）/Percentage of endurance value that can be updated ( 0.1 = 10% )
 Repair: 0.1
 
-#   重要メッセージを画面中央に表示するか
-#   Player.sendTitle Status
+#   重要メッセージを画面中央に表示するか/Player.sendTitle Status
 sendTitle: true
 
 #   スコア達成アナウンス設定
@@ -65,27 +62,26 @@ sendTitle: true
 ScoreNotice: 10000
 ScoreBroadcast: 100000
 
-#   ScoreBroadcast達成時に実行されるコマンド一覧
-#   When score set for broadcast, console command execution setting
+#   ScoreBroadcast達成時に実行されるコマンド一覧/When score set for broadcast, console command execution setting
 BroadcastCommand:
     - discord broadcast %message%
     - give %player% BREAD 10
 
-#   イベント参加時にプレイヤーに表示されるメッセージ
-#   Join Message
+#   イベント参加時にプレイヤーに表示されるメッセージ/Join Message
 JOIN_MESSAGE: "§eイベントルールに則って参加してください [ §ahttps://bit.ly/2Tf7tL8§b ]"
 
-#   イベント参加時に自動配布されるツールの種類
-#   Present Tool Item Setting
+#   イベント参加時に自動配布されるツールの種類/Present Tool Item Setting
 EventToolName: §bイベントツール
 Present:
     - IRON_PICKAXE
     - IRON_SPADE
     - IRON_AXE
 
-#   イベントに関するブロックのポイント設定
-#   Count Stones
+#   イベントに関するブロックのポイント設定/Count Stones
+#   ポイントマイナス値はペナルティブロック扱い
+#   ポイントゼロ値は足場ブロック扱い
 PointStone:
+    - COBBLESTONE,0
     - OBSIDIAN,10
     - SANDSTONE,1
     - STAINED_CLAY,1
