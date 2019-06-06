@@ -128,7 +128,8 @@ public class Config {
     public Config( Plugin plugin ) {
         stones = new ArrayList<>();
         this.plugin = plugin;
-        plugin.getLogger().info( "Config Loading now..." );
+        DebugFlag = Utility.consoleMode.none;
+        Tools.Prt( "Config Loading now..." );
         load();
     }
 
@@ -140,7 +141,7 @@ public class Config {
         // 設定ファイルを保存
         plugin.saveDefaultConfig();
         if (config != null) { // configが非null == リロードで呼び出された
-            plugin.getLogger().info( "Config Reloading now..." );
+            Tools.Prt( "Config Reloading now..." );
             plugin.reloadConfig();
         }
         config = plugin.getConfig();
@@ -156,21 +157,21 @@ public class Config {
         tools = ( List< String > )config.getList( "Present" );
 
         EventName = config.getString( "EventName" );
-        Field = config.getBoolean( "Field" );
-        ScoreNotice = config.getInt( "ScoreNotice" );
-        ScoreBroadcast = config.getInt( "ScoreBroadcast" );
+        Field = config.getBoolean( "Field", false );
+        ScoreNotice = config.getInt( "ScoreNotice", 0 );
+        ScoreBroadcast = config.getInt( "ScoreBroadcast", 0 );
         bc_command = ( List< String > )config.getList( "BroadcastCommand" );
-        RePresent = config.getInt( "RePresent" );
-        UpCost = config.getInt( "UpdateCost" );
-        Repair = 1 - config.getDouble( "Repair" );
-        titlePrint  = config.getBoolean( "sendTitle" );
-        OPMode = config.getBoolean( "CreativeCount" );
+        RePresent = config.getInt( "RePresent", 0 );
+        UpCost = config.getInt( "UpdateCost", 0 );
+        Repair = 1 - config.getDouble( "Repair", 0 );
+        titlePrint  = config.getBoolean( "sendTitle", true );
+        OPMode = config.getBoolean( "CreativeCount", true );
         EventToolName = config.getString( "EventToolName" );
-        placeFree = config.getBoolean( "FreePlace" );
-        placeSpecified = config.getBoolean( "SpecifiedPlace" );
-        breakFree = config.getBoolean( "FreeBreak" );
-        breakTool = config.getBoolean( "ToolBreak" );
-        zeroPlace = config.getBoolean( "ZeroPlace" );
+        placeFree = config.getBoolean( "FreePlace", false );
+        placeSpecified = config.getBoolean( "SpecifiedPlace",true );
+        breakFree = config.getBoolean( "FreeBreak", true );
+        breakTool = config.getBoolean( "ToolBreak", true );
+        zeroPlace = config.getBoolean( "ZeroPlace", false );
 
         Event_World = config.getString( "World" );
 
@@ -218,6 +219,18 @@ public class Config {
             Tools.Prt( ChatColor.RED + "Config Event 難易度が不正なので、Normal 設定にしました", Utility.consoleMode.none );
             difficulty = EventMode.Normal;
         }
+    }
+
+    /**
+     * ポイントブロックの一覧表示
+     *
+     * @param player 
+     */
+    public void getStoneList( Player player ) {
+        Tools.Prt( player, ChatColor.GREEN + "=== Premises Stone List ===", Utility.consoleMode.full );
+        GetPoint.keySet().forEach( ( key ) -> {
+            Tools.Prt( player, ChatColor.GREEN + key + " : " + ChatColor.WHITE + GetPoint.get( key ), Utility.consoleMode.full );
+        } );
     }
 
     /**

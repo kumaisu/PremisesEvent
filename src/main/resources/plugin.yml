@@ -25,6 +25,8 @@ commands:
             /<command> csv 
             /<command> give PlayerName Score 
             /<command> Console [max/full/normal/none] 
+            /<command> reload
+            /<command> stones
 permissions:
     Premises.broadcast:
         description: Broadcast announce

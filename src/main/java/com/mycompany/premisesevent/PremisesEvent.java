@@ -168,7 +168,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Tools.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), Utility.consoleMode.max );
             if ( config.getPoint( blockName ) != 0 ) {
                 pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
-                pc.get( player.getUniqueId() ).subStoneCount( blockName );
+                pc.get( player.getUniqueId() ).subStoneCount( blockName, ( config.getPoint( blockName ) < 0 ) );
                 player.setPlayerListName(
                     ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
                     ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
@@ -269,7 +269,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
 
             if ( config.getPoint( blockName ) != 0 ){
-                pc.get( player.getUniqueId() ).addStoneCount( blockName );
+                pc.get( player.getUniqueId() ).addStoneCount( blockName, ( config.getPoint( blockName ) < 0 ) );
                 pc.get( player.getUniqueId() ).addScore( player, config.getPoint( blockName ) );
                 player.setPlayerListName(
                     ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
@@ -384,6 +384,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
             if ( hasPermission ) {
                 switch ( commandString ) {
+                    case "reload":
+                        config.load();
+                        return true;
                     case "csv":
                         TopList TL = new TopList( this.getDataFolder().toString() );
                         try {
@@ -403,6 +406,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                             ChatColor.GREEN + " ]",
                             ( ( player == null ) ? Utility.consoleMode.none:Utility.consoleMode.max )
                         );
+                        return true;
+                    case "stones":
+                        config.getStoneList( player );
                         return true;
                     default:
                         break;

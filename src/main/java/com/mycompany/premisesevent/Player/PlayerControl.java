@@ -380,28 +380,34 @@ public class PlayerControl {
      * 指定ブロックの掘削数を加算します
      *
      * @param StoneName
+     * @param toScore
      */
-    public void addStoneCount( String StoneName ) {
+    public void addStoneCount( String StoneName, boolean toScore ) {
         int CD = getStoneCount( StoneName );
         CD++;
         BlockCount.put( StoneName, CD );
-        // プレイヤーの掘削数を更新し反映します
-        mines.put( StoneName, obj.getScore( Utility.StringBuild( ChatColor.GREEN.toString(), StoneName + ":" ) ) );
-        mines.get( StoneName ).setScore( CD );
+        if ( toScore ) {
+            // プレイヤーの掘削数を更新し反映します
+            mines.put( StoneName, obj.getScore( Utility.StringBuild( ChatColor.RED.toString(), StoneName + ":" ) ) );
+            mines.get( StoneName ).setScore( CD );
+        }
     }
 
     /**
      * 指定ブロックの掘削数を減算します
      *
      * @param StoneName
+     * @param toScore
      */
-    public void subStoneCount( String StoneName ) {
+    public void subStoneCount( String StoneName, boolean toScore ) {
         int CD = getStoneCount( StoneName );
         CD--;
         BlockCount.put( StoneName, CD );
-        // プレイヤーの掘削数を更新し反映します
-        mines.put( StoneName, obj.getScore( Utility.StringBuild( ChatColor.GREEN.toString(), StoneName + ":" ) ) );
-        mines.get( StoneName ).setScore( CD );
+        if ( toScore ) {
+            // プレイヤーの掘削数を更新し反映します
+            mines.put( StoneName, obj.getScore( Utility.StringBuild( ChatColor.RED.toString(), StoneName + ":" ) ) );
+            mines.get( StoneName ).setScore( CD );
+        }
     }
 
     /**
