@@ -118,7 +118,7 @@ public class Config {
     /**
      * 
      */
-    public static Utility.consoleMode DebugFlag;
+    public static Utility.consoleMode DebugFlag = Utility.consoleMode.none;
 
     /**
      * 設定読み込みライブラリ
@@ -128,7 +128,6 @@ public class Config {
     public Config( Plugin plugin ) {
         stones = new ArrayList<>();
         this.plugin = plugin;
-        DebugFlag = Utility.consoleMode.none;
         Tools.Prt( "Config Loading now..." );
         load();
     }
