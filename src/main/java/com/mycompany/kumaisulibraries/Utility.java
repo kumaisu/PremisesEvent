@@ -44,4 +44,22 @@ public final class Utility {
     public static String ReplaceString( String data, String Names ) {
         return ReplaceString( data.replace( "%player%", Names ) );
     }
+
+    /**
+     * 長い文字を途中省略して、文字列成形する
+     * @param data
+     * @param length
+     * @return 
+     */
+    public static String CutMiddleString( String data, int length ) {
+        if ( length<=11 ) { return data; }
+
+        if ( data.length()>length ) {
+            String prefixStr = data.substring( 0, length - 10 );
+            String suffixStr = data.substring( data.length() - 5, data.length() );
+            data = StringBuild( prefixStr, " ... ", suffixStr );
+        }
+
+        return data;
+    }
 }
