@@ -47,7 +47,7 @@ public final class Tools {
             printString = Utility.StringBuild( printString, ChatColor.WHITE.toString(), msg );
             Bukkit.getServer().getConsoleSender().sendMessage( printString );
         }
-        if ( player != null ) player.sendMessage( msg );
+        if ( player != null ) player.sendMessage( msg.split( "/n" ) );
     }
 
     public static void Prt( String msg ) {
