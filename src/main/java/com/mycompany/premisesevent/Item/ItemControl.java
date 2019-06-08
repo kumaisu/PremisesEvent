@@ -98,10 +98,7 @@ public class ItemControl {
             is.setItemMeta( im );                       //  元のItemStackに、変更したItemMetaを設定
 
             player.getInventory().addItem( is );
-            Tools.Prt( player,
-                    ChatColor.WHITE + player.getDisplayName() +
-                    ChatColor.GREEN + " さんへイベント用ツールをプレゼントしました",
-                    Utility.consoleMode.full );
+            Tools.Prt( player, ChatColor.GREEN + "イベント用ツールをプレゼントしました", Utility.consoleMode.full );
         } else {
             String[] stringArray = { "", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "ⅩⅠ" };
             String UpdateMessage;
@@ -140,8 +137,7 @@ public class ItemControl {
 
             player.getInventory().addItem( itemstack );
             Tools.Prt( player, 
-                    ChatColor.WHITE + player.getDisplayName() + 
-                    ChatColor.AQUA + " さんのイベント用ツールを[" + 
+                    ChatColor.AQUA + "イベント用ツールを[" + 
                     ChatColor.GREEN + UpdateMessage +
                     ChatColor.AQUA + "]にアップデートしました",
                     Utility.consoleMode.full );

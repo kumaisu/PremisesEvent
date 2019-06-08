@@ -214,7 +214,7 @@ public class PlayerControl {
         ic.ItemPresent( p );
         for( int i = 0; i<Config.tools.size(); i++ ) {
             Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + Config.tools.get( i ) );
-            ic.ItemUpdate( p, null, Config.EventToolName, Material.getMaterial( Config.tools.get( i ).toString() ) );
+            ic.ItemUpdate( p, null, Config.EventToolName, Material.getMaterial( Config.tools.get( i ) ) );
         }
 
         Bukkit.broadcastMessage( "<Premises> " + ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
