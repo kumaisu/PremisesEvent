@@ -23,8 +23,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import com.mycompany.kumaisulibraries.Utility;
+import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.premisesevent.config.Config;
-import com.mycompany.premisesevent.tool.Tools;
 
 /**
  *
@@ -96,8 +96,8 @@ public class TopList {
      * @param player
      * @param key
      */
-    public void Top( Player player, Utility.consoleMode key ) {
-        Utility.consoleMode debugPrint = ( ( player == null ) ? Utility.consoleMode.none:Utility.consoleMode.max );
+    public void Top( Player player, Tools.consoleMode key ) {
+        Tools.consoleMode debugPrint = ( ( player == null ) ? Tools.consoleMode.none:Tools.consoleMode.max );
         String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
         Tools.Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング", debugPrint );
         Tools.Prt( player, ChatColor.GREEN + "============================", debugPrint );

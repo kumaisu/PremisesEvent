@@ -26,9 +26,9 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import com.mycompany.kumaisulibraries.Utility;
+import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.config.Config;
-import com.mycompany.premisesevent.tool.Tools;
 
 /**
  *
@@ -183,23 +183,27 @@ public class PlayerControl {
      */
     public boolean JoinPlayer( Player p ) {
         if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
-            Tools.Prt( p, ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です", Utility.consoleMode.normal );
+            Tools.Prt( p, ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です", Tools.consoleMode.normal );
             return false;
         }
 
         switch ( getEntry() ) {
             case 1: //  Double registration failure.
-                Tools.Prt( p, ChatColor.RED + "既にイベントへ参加しています", Utility.consoleMode.normal );
-                Tools.ExecOtherCommand( p, p.getDisplayName() + " さんは、既にイベントに参加しています" );
+                Tools.Prt( p, ChatColor.RED + "既にイベントへ参加しています", Tools.consoleMode.normal );
+                for( int i = 0; i<Config.bc_command.size(); i++ ) {
+                    Tools.ExecOtherCommand( p, Config.bc_command.get( i ), p.getDisplayName() + " さんは、既にイベントに参加しています" );
+                }
                 return false;
             case 2: //  Kick registration.
-                Tools.Prt( p, ChatColor.RED + "イベントへの参加は拒否されています", Utility.consoleMode.normal );
+                Tools.Prt( p, ChatColor.RED + "イベントへの参加は拒否されています", Tools.consoleMode.normal );
                 //  ExecOtherCommand( player, player.getDisplayName() + " さんは、イベントに参加できませんでした" );
                 return false;
             default: // Registration success.
                 Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + "Registration success." );
-                Tools.Prt( p, Config.JoinMessage, Utility.consoleMode.normal );
-                Tools.ExecOtherCommand( p, p.getDisplayName() + " さんが、イベントに参加しました" );
+                Tools.Prt( p, Config.JoinMessage, Tools.consoleMode.normal );
+                for( int i = 0; i<Config.bc_command.size(); i++ ) {
+                    Tools.ExecOtherCommand( p, Config.bc_command.get( i ), p.getDisplayName() + " さんが、イベントに参加しました" );
+                }
                 break;
         }
 
@@ -208,7 +212,7 @@ public class PlayerControl {
         EntryFlag = 1;
         save();
         ScoreBoardEntry( p );
-        Tools.Prt( p, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, Utility.consoleMode.normal );
+        Tools.Prt( p, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, Tools.consoleMode.normal );
 
         ItemControl ic = new ItemControl();
         ic.ItemPresent( p );
@@ -230,17 +234,17 @@ public class PlayerControl {
      */
     public boolean getEventItem( Player player, String Item ) {
         if ( getEntry() != 1 ) {
-            Tools.Prt( player, ChatColor.RED + "イベント参加者のみです", Utility.consoleMode.normal );
+            Tools.Prt( player, ChatColor.RED + "イベント参加者のみです", Tools.consoleMode.normal );
             return false;
         }
     
         if ( !Arrays.asList( player.getInventory().getStorageContents() ).contains( null ) ) {
-            Tools.Prt( player, ChatColor.RED + "アイテム配布用のためインベントリに空きが必要です", Utility.consoleMode.normal );
+            Tools.Prt( player, ChatColor.RED + "アイテム配布用のためインベントリに空きが必要です", Tools.consoleMode.normal );
             return false;
         }
 
         if ( !Config.tools.contains( Item ) ) {
-            Tools.Prt( player, ChatColor.RED + "再配布対象のツールではありません", Utility.consoleMode.normal );
+            Tools.Prt( player, ChatColor.RED + "再配布対象のツールではありません", Tools.consoleMode.normal );
             return false;
         }
 
@@ -249,10 +253,10 @@ public class PlayerControl {
             ItemControl ic = new ItemControl();
             ic.ItemUpdate( player, null, Config.EventToolName, Material.getMaterial( Item ) );
             addScore( null, - Rep );
-            Tools.Prt( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Material.getMaterial( Item ).name() + " tools !!", Utility.consoleMode.normal );
+            Tools.Prt( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Material.getMaterial( Item ).name() + " tools !!", Tools.consoleMode.normal );
             return true;
         } else {
-            Tools.Prt( player, ChatColor.RED + "Scoreが足りないので配布できません", Utility.consoleMode.normal );
+            Tools.Prt( player, ChatColor.RED + "Scoreが足りないので配布できません", Tools.consoleMode.normal );
             return false;
         }
     }
@@ -266,7 +270,7 @@ public class PlayerControl {
     public void ToolUpdate( Player player, boolean Force ) {
 
         if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) {
-            Tools.Prt( player, ChatColor.RED + "アップデートするアイテムを持ってください", Utility.consoleMode.full );
+            Tools.Prt( player, ChatColor.RED + "アップデートするアイテムを持ってください", Tools.consoleMode.full );
             return;
         }
 
@@ -289,12 +293,12 @@ public class PlayerControl {
                             ChatColor.YELLOW + " なので " +
                             ChatColor.WHITE + ( (int) ( item.getType().getMaxDurability() - CheckDurability ) ) +
                             ChatColor.YELLOW + " 以下にしてね",
-                            Utility.consoleMode.full
+                            Tools.consoleMode.full
                         );
                     }
-                } else Tools.Prt( player, ChatColor.YELLOW + "ツール名が違います", Utility.consoleMode.full );
-            } else Tools.Prt( player, ChatColor.YELLOW + "イベント用のツールではありません", Utility.consoleMode.full );
-        } else Tools.Prt( player, ChatColor.RED + "Scoreが足りないのでアップデートできません", Utility.consoleMode.full );
+                } else Tools.Prt( player, ChatColor.YELLOW + "ツール名が違います", Tools.consoleMode.full );
+            } else Tools.Prt( player, ChatColor.YELLOW + "イベント用のツールではありません", Tools.consoleMode.full );
+        } else Tools.Prt( player, ChatColor.RED + "Scoreが足りないのでアップデートできません", Tools.consoleMode.full );
     }
 
     /**
@@ -341,7 +345,7 @@ public class PlayerControl {
             //  不具合や他責によるスコアの未記録時の対応ログとして表示
             if ( Config.ScoreNotice > 0 ) {
                 if ( PlayerScore >= scoreNotice ) {
-                    Tools.Prt( "[Premises] " + DisplayName + " reached " + PlayerScore + " points.", Utility.consoleMode.normal );
+                    Tools.Prt( "[Premises] " + DisplayName + " reached " + PlayerScore + " points.", Tools.consoleMode.normal );
                     scoreNotice = Config.ScoreNotice * ( ( int ) Math.floor( PlayerScore / Config.ScoreNotice ) + 1 );
                 }
             }
@@ -352,7 +356,9 @@ public class PlayerControl {
                     String SendMessage = "<イベント> " + ChatColor.AQUA + DisplayName + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + PlayerScore + ChatColor.WHITE + " 点に到達しました";
                     Bukkit.broadcastMessage( SendMessage );
                     Tools.launchFireWorks( player.getLocation() );
-                    Tools.ExecOtherCommand( player, SendMessage );
+                    for( int i = 0; i<Config.bc_command.size(); i++ ) {
+                        Tools.ExecOtherCommand( player, Config.bc_command.get( i ), SendMessage );
+                    }
                     scoreBroadcast = Config.ScoreBroadcast * ( ( int ) Math.floor( PlayerScore / Config.ScoreBroadcast ) + 1 );
                 }
             }
@@ -416,21 +422,21 @@ public class PlayerControl {
      * @param p
      */
     public void getStatus( Player p ) {
-        Tools.Prt( null, ChatColor.RED + "Look Status: " + DisplayName, Utility.consoleMode.normal );
-        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", Utility.consoleMode.max );
-        Tools.Prt( p, ChatColor.AQUA + "Block mined by: " + DisplayName, Utility.consoleMode.max );
-        Tools.Prt( p, ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore(), Utility.consoleMode.max );
+        Tools.Prt( null, ChatColor.RED + "Look Status: " + DisplayName, Tools.consoleMode.normal );
+        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", Tools.consoleMode.max );
+        Tools.Prt( p, ChatColor.AQUA + "Block mined by: " + DisplayName, Tools.consoleMode.max );
+        Tools.Prt( p, ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore(), Tools.consoleMode.max );
 
         if ( p.isOp() ) {
-            Tools.Prt( p, ChatColor.GOLD + "Notice   : " + ChatColor.WHITE + scoreNotice, Utility.consoleMode.max );
-            Tools.Prt( p, ChatColor.GOLD + "Broadcast: " + ChatColor.WHITE + scoreBroadcast, Utility.consoleMode.max );
+            Tools.Prt( p, ChatColor.GOLD + "Notice   : " + ChatColor.WHITE + scoreNotice, Tools.consoleMode.max );
+            Tools.Prt( p, ChatColor.GOLD + "Broadcast: " + ChatColor.WHITE + scoreBroadcast, Tools.consoleMode.max );
         }
         
         BlockCount.entrySet().forEach( ( entry ) -> {
-            Tools.Prt( p, ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue(), Utility.consoleMode.max );
+            Tools.Prt( p, ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue(), Tools.consoleMode.max );
         } );
 
-        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", Utility.consoleMode.max );
+        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", Tools.consoleMode.max );
     }
 
     /**

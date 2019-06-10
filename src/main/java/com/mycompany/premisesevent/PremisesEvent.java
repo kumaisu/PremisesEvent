@@ -33,12 +33,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.mycompany.kumaisulibraries.Utility;
+import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.Player.PlayerControl;
 import com.mycompany.premisesevent.Player.TopList;
 import com.mycompany.premisesevent.config.Config;
-import com.mycompany.premisesevent.tool.Tools;
 
 /**
  *
@@ -54,6 +53,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      */
     @Override
     public void onEnable() {
+        Tools.programCode = "PE";
         getServer().getPluginManager().registerEvents( this, this );
         config = new Config( this );
     }
@@ -97,11 +97,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         ItemControl ic = new ItemControl();
         if ( pc.get( p.getUniqueId() ).getPresentFlag() ) {
-            Tools.Prt( p, ChatColor.YELLOW + "イベント装備の再配布", Utility.consoleMode.normal );
+            Tools.Prt( p, ChatColor.YELLOW + "イベント装備の再配布", Tools.consoleMode.normal );
             ic.ItemPresent( p );
         }
         if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
-            Tools.Prt( p, ChatColor.YELLOW + "イベントツールの再配布", Utility.consoleMode.normal );
+            Tools.Prt( p, ChatColor.YELLOW + "イベントツールの再配布", Tools.consoleMode.normal );
             for( int i = 0; i<Config.tools.size(); i++ ) {
                 ic.ItemUpdate( p, null, Config.EventToolName, Material.getMaterial( Config.tools.get( i ) ) );
             }
@@ -151,7 +151,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         if ( !Config.stones.contains( blockName ) ) {
             if ( !Config.placeSpecified ) {
-                Tools.Prt( player, "このブロックは設置できません", Utility.consoleMode.full );
+                Tools.Prt( player, "このブロックは設置できません", Tools.consoleMode.full );
                 event.setCancelled( true );
             }
             Tools.Prt(
@@ -159,13 +159,13 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 ChatColor.GREEN + " [" +
                 ChatColor.GOLD + blockName +
                 ChatColor.GREEN + "] is not a target",
-                Utility.consoleMode.full
+                Tools.consoleMode.full
             );
             return;
         }
 
         if ( ( Config.zeroPlace ) || ( config.getPoint( blockName ) == 0 ) || ( pc.get( player.getUniqueId() ).getStoneCount( blockName ) > 0 ) ) {
-            Tools.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), Utility.consoleMode.max );
+            Tools.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), Tools.consoleMode.max );
             if ( config.getPoint( blockName ) != 0 ) {
                 pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
                 pc.get( player.getUniqueId() ).subStoneCount( blockName, ( config.getPoint( blockName ) < 0 ) );
@@ -176,7 +176,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         } else {
             if ( !Config.placeFree ) {
-                Tools.Prt( player, ChatColor.RED + "これ以上このブロックは設置できません", Utility.consoleMode.full );
+                Tools.Prt( player, ChatColor.RED + "これ以上このブロックは設置できません", Tools.consoleMode.full );
                 if ( Config.titlePrint ) {
                     player.sendTitle(
                         ChatColor.RED + "ブロックは設置できません",
@@ -203,7 +203,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         switch ( pc.get( player.getUniqueId() ).getEntry() ) {
             case 0:
                 if ( !Config.breakFree ) {
-                    Tools.Prt( player, ChatColor.RED + "イベントに参加してください", Utility.consoleMode.normal );
+                    Tools.Prt( player, ChatColor.RED + "イベントに参加してください", Tools.consoleMode.normal );
                     event.setCancelled( true );
                 }
                 return;
@@ -211,7 +211,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 // 参加者なので、スルー
                 break;
             case 2:
-                Tools.Prt( player, ChatColor.RED + "イベントエリアの操作はできません", Utility.consoleMode.normal );
+                Tools.Prt( player, ChatColor.RED + "イベントエリアの操作はできません", Tools.consoleMode.normal );
                 event.setCancelled( true );
                 return;
         }
@@ -227,7 +227,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     ( !item.getItemMeta().hasDisplayName() ) ||
                     ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) )
                ) {
-                Tools.Prt( player, ChatColor.RED + "指定ツールで行ってください", Utility.consoleMode.full );
+                Tools.Prt( player, ChatColor.RED + "指定ツールで行ってください", Tools.consoleMode.full );
                 event.setCancelled( true );
                 return;
             }
@@ -237,7 +237,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Tools.Prt(
                 player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) +
                 ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")",
-                Utility.consoleMode.max
+                Tools.consoleMode.max
             );
 
             if ( config.getPoint( blockName )<0 ) {
@@ -246,16 +246,16 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     ChatColor.AQUA + player.getDisplayName() +
                     ChatColor.RED + " broke a " +
                     ChatColor.YELLOW + blockName,
-                    Utility.consoleMode.full
+                    Tools.consoleMode.full
                 );
 
                 switch( Config.difficulty ) {
                     case Easy:
-                        Tools.Prt( player, ChatColor.RED + "そのブロックは破壊できません", Utility.consoleMode.full );
+                        Tools.Prt( player, ChatColor.RED + "そのブロックは破壊できません", Tools.consoleMode.full );
                         event.setCancelled( true );
                         return;
                     case Normal:
-                        Tools.Prt( player, ChatColor.RED + "壊してはいけないブロックです", Utility.consoleMode.full );
+                        Tools.Prt( player, ChatColor.RED + "壊してはいけないブロックです", Tools.consoleMode.full );
                         if ( Config.titlePrint ) {
                             player.sendTitle(
                                 ChatColor.RED + "破壊不可なブロックです",
@@ -283,7 +283,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 ChatColor.LIGHT_PURPLE + " [" +
                 ChatColor.GOLD + block.getType().toString() +
                 ChatColor.LIGHT_PURPLE + "] is not a target",
-                Utility.consoleMode.full );
+                Tools.consoleMode.full );
         }
 
         if ( item.getType() == Material.AIR ) return;
@@ -291,7 +291,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( item.getItemMeta().hasDisplayName() ) {
             if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) ) {
                 if ( ( item.getType().getMaxDurability() * config.getRepair() ) <= item.getDurability() ) {
-                    Tools.Prt( player, ChatColor.RED + "ツールの耐久値がヤバイですよ", Utility.consoleMode.max );
+                    Tools.Prt( player, ChatColor.RED + "ツールの耐久値がヤバイですよ", Tools.consoleMode.max );
                     if ( Config.titlePrint ) {
                         player.sendTitle(
                             ChatColor.RED + "耐久値がヤバイですよ",
@@ -335,7 +335,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 case "[P-TOP]":
                     if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).save();
                     TopList TL = new TopList( this.getDataFolder().toString() );
-                    TL.Top( player, Utility.consoleMode.max );
+                    TL.Top( player, Tools.consoleMode.max );
                     break;
                 default:
             }
@@ -366,7 +366,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             } );
 
             TopList TL = new TopList( this.getDataFolder().toString() );
-            TL.Top( player, Utility.consoleMode.max );
+            TL.Top( player, Tools.consoleMode.max );
             return true;
         }
 
@@ -399,12 +399,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                         if ( args.length == 4 ) { return GiveScore( player, args[2], args[3] ); }
                         return true;
                     case "Console":
-                        config.setDebug( itemName );
+                        Tools.setDebug( itemName );
                         Tools.Prt( player,
                             ChatColor.GREEN + "System Debug Mode is [ " +
-                            ChatColor.RED + Config.DebugFlag.toString() +
+                            ChatColor.RED + Tools.DebugFlag.toString() +
                             ChatColor.GREEN + " ]",
-                            ( ( player == null ) ? Utility.consoleMode.none:Utility.consoleMode.max )
+                            ( ( player == null ) ? Tools.consoleMode.none:Tools.consoleMode.max )
                         );
                         return true;
                     case "stones":
@@ -440,9 +440,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     default:
                         break;
                 }
-            } else Tools.Prt( player, ChatColor.RED + "コンソールからは操作できないコマンドです", Utility.consoleMode.none );
+            } else Tools.Prt( player, ChatColor.RED + "コンソールからは操作できないコマンドです", Tools.consoleMode.none );
 
-            Tools.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + commandString + "]", Utility.consoleMode.full );
+            Tools.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + commandString + "]", Tools.consoleMode.full );
             return false;
         }
         return false;
@@ -463,7 +463,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             } else {
                 UUID uuid;
 
-                Tools.Prt( player, ChatColor.RED + "Look other Player : " + Other, Utility.consoleMode.none );
+                Tools.Prt( player, ChatColor.RED + "Look other Player : " + Other, Tools.consoleMode.none );
 
                 OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( Other );
                 if ( op.hasPlayedBefore() ) {
@@ -471,7 +471,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     pc.put( uuid, new PlayerControl( op, this.getDataFolder().toString() ) );
                     pc.get( uuid ).load();
                 } else {
-                    Tools.Prt( player, ChatColor.RED + "This Player is not joined to server.", Utility.consoleMode.normal );
+                    Tools.Prt( player, ChatColor.RED + "This Player is not joined to server.", Tools.consoleMode.normal );
                     return false;
                 }
                 pc.get( uuid ).getStatus( player );
@@ -479,7 +479,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
             return true;
         } else {
-            Tools.Prt( player, ChatColor.RED + "イベントに参加していません", Utility.consoleMode.normal );
+            Tools.Prt( player, ChatColor.RED + "イベントに参加していません", Tools.consoleMode.normal );
             return false;
         }
     }
@@ -501,7 +501,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         try {
             scoreNum = Integer.parseInt( score );
         } catch ( NumberFormatException e ) {
-            Tools.Prt( player, ChatColor.RED + "指定された値が正しくありません", Utility.consoleMode.full );
+            Tools.Prt( player, ChatColor.RED + "指定された値が正しくありません", Tools.consoleMode.full );
             return false;
         }
 
@@ -521,7 +521,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     pc.get( scorePlayer.getUniqueId() ).load();
                     createStat = true;
                 } else {
-                    Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はサーバーに存在しません", Utility.consoleMode.normal );
+                    Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はサーバーに存在しません", Tools.consoleMode.normal );
                     return false;
                 }
             }
@@ -532,7 +532,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             pc.get( scorePlayer.getUniqueId() ).save();
             retStat = true;
         } else {
-            Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません", Utility.consoleMode.normal );
+            Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません", Tools.consoleMode.normal );
             retStat = false;
         }
 

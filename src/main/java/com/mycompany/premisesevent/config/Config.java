@@ -15,7 +15,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import com.mycompany.kumaisulibraries.Utility;
-import com.mycompany.premisesevent.tool.Tools;
+import com.mycompany.kumaisulibraries.Tools;
 
 /*
  *
@@ -115,10 +115,6 @@ public class Config {
      * 
      */
     public static List< String > tools;
-    /**
-     * 
-     */
-    public static Utility.consoleMode DebugFlag = Utility.consoleMode.none;
 
     /**
      * 設定読み込みライブラリ
@@ -207,15 +203,15 @@ public class Config {
         JoinMessage = config.getString( "JOIN_MESSAGE" );
 
         try {
-            DebugFlag = Utility.consoleMode.valueOf( config.getString( "Debug" ) );
+            Tools.DebugFlag = Tools.consoleMode.valueOf( config.getString( "Debug" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", Utility.consoleMode.none );
-            DebugFlag = Utility.consoleMode.normal;
+            Tools.Prt( ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", Tools.consoleMode.none );
+            Tools.DebugFlag = Tools.consoleMode.normal;
         }
         try {
             difficulty = EventMode.valueOf( config.getString( "Difficulty" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( ChatColor.RED + "Config Event 難易度が不正なので、Normal 設定にしました", Utility.consoleMode.none );
+            Tools.Prt( ChatColor.RED + "Config Event 難易度が不正なので、Normal 設定にしました", Tools.consoleMode.none );
             difficulty = EventMode.Normal;
         }
     }
@@ -226,9 +222,9 @@ public class Config {
      * @param player 
      */
     public void getStoneList( Player player ) {
-        Tools.Prt( player, ChatColor.GREEN + "=== Premises Stone List ===", Utility.consoleMode.full );
+        Tools.Prt( player, ChatColor.GREEN + "=== Premises Stone List ===", Tools.consoleMode.full );
         GetPoint.keySet().forEach( ( key ) -> {
-            Tools.Prt( player, ChatColor.GREEN + key + " : " + ChatColor.WHITE + GetPoint.get( key ), Utility.consoleMode.full );
+            Tools.Prt( player, ChatColor.GREEN + key + " : " + ChatColor.WHITE + GetPoint.get( key ), Tools.consoleMode.full );
         } );
     }
 
@@ -238,9 +234,9 @@ public class Config {
      * @param p
      */
     public void Status( Player p ) {
-        Utility.consoleMode consolePrintFlag = ( ( p == null ) ? Utility.consoleMode.none:Utility.consoleMode.max );
+        Tools.consoleMode consolePrintFlag = ( ( p == null ) ? Tools.consoleMode.none:Tools.consoleMode.max );
         Tools.Prt( p, ChatColor.GREEN + "=== Premises Status ===", consolePrintFlag );
-        Tools.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + DebugFlag.toString(), consolePrintFlag );
+        Tools.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + Tools.DebugFlag.toString(), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "難易度           : " + ChatColor.YELLOW + difficulty.toString(), consolePrintFlag );
         Tools.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, consolePrintFlag );
@@ -336,19 +332,5 @@ public class Config {
     public boolean CheckArea( Location loc ) {
         if ( !loc.getWorld().getName().equals( Event_World ) ) return false;
         return !( ( loc.getBlockX()<Event_X1 || loc.getBlockX()>Event_X2 ) || ( loc.getBlockY()<Event_Y1 || loc.getBlockY()>Event_Y2 ) || ( loc.getBlockZ()<Event_Z1 || loc.getBlockZ()>Event_Z2 ) );
-    }
-
-    /**
-     * 一時的にDebugModeを設定しなおす
-     * ただし、Config.ymlには反映しない
-     *
-     * @param key
-     */
-    public void setDebug( String key ) {
-        try {
-            DebugFlag = Utility.consoleMode.valueOf( key );
-        } catch( IllegalArgumentException e ) {
-            DebugFlag = Utility.consoleMode.none;
-        }
     }
 }
