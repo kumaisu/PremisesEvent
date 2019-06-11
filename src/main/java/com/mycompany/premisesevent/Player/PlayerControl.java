@@ -27,8 +27,11 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import com.mycompany.kumaisulibraries.Utility;
 import com.mycompany.kumaisulibraries.Tools;
+import com.mycompany.kumaisulibraries.Tools.consoleMode;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.config.Config;
+import static com.mycompany.premisesevent.config.Config.programCode;
+import static com.mycompany.kumaisulibraries.BukkitTool.launchFireWorks;
 
 /**
  *
@@ -171,7 +174,7 @@ public class PlayerControl {
             EntryFlag = 1;
         }
         catch ( IOException e ) {
-            Tools.Prt( ChatColor.RED + "Could not save UnknownIP File." );
+            Tools.Prt( ChatColor.RED + "Could not save UnknownIP File.", programCode );
         }
     }
 
@@ -183,24 +186,25 @@ public class PlayerControl {
      */
     public boolean JoinPlayer( Player p ) {
         if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
-            Tools.Prt( p, ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です", Tools.consoleMode.normal );
+            Tools.Prt( p, ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です", consoleMode.normal, programCode );
             return false;
         }
 
         switch ( getEntry() ) {
             case 1: //  Double registration failure.
-                Tools.Prt( p, ChatColor.RED + "既にイベントへ参加しています", Tools.consoleMode.normal );
+                Tools.Prt( p, ChatColor.RED + "既にイベントへ参加しています", consoleMode.normal, programCode );
                 for( int i = 0; i<Config.bc_command.size(); i++ ) {
+                    Tools.Prt( ChatColor.WHITE + "Command Exec : " + ChatColor.YELLOW + Config.bc_command.get( i ), programCode );
                     Tools.ExecOtherCommand( p, Config.bc_command.get( i ), p.getDisplayName() + " さんは、既にイベントに参加しています" );
                 }
                 return false;
             case 2: //  Kick registration.
-                Tools.Prt( p, ChatColor.RED + "イベントへの参加は拒否されています", Tools.consoleMode.normal );
+                Tools.Prt( p, ChatColor.RED + "イベントへの参加は拒否されています", consoleMode.normal, programCode );
                 //  ExecOtherCommand( player, player.getDisplayName() + " さんは、イベントに参加できませんでした" );
                 return false;
             default: // Registration success.
                 Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + "Registration success." );
-                Tools.Prt( p, Config.JoinMessage, Tools.consoleMode.normal );
+                Tools.Prt( p, Config.JoinMessage, consoleMode.normal, programCode );
                 for( int i = 0; i<Config.bc_command.size(); i++ ) {
                     Tools.ExecOtherCommand( p, Config.bc_command.get( i ), p.getDisplayName() + " さんが、イベントに参加しました" );
                 }
@@ -212,12 +216,12 @@ public class PlayerControl {
         EntryFlag = 1;
         save();
         ScoreBoardEntry( p );
-        Tools.Prt( p, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, Tools.consoleMode.normal );
+        Tools.Prt( p, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, consoleMode.normal, programCode );
 
         ItemControl ic = new ItemControl();
         ic.ItemPresent( p );
         for( int i = 0; i<Config.tools.size(); i++ ) {
-            Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + Config.tools.get( i ) );
+            Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + Config.tools.get( i ), programCode );
             ic.ItemUpdate( p, null, Config.EventToolName, Material.getMaterial( Config.tools.get( i ) ) );
         }
 
@@ -234,17 +238,17 @@ public class PlayerControl {
      */
     public boolean getEventItem( Player player, String Item ) {
         if ( getEntry() != 1 ) {
-            Tools.Prt( player, ChatColor.RED + "イベント参加者のみです", Tools.consoleMode.normal );
+            Tools.Prt( player, ChatColor.RED + "イベント参加者のみです", consoleMode.normal, programCode );
             return false;
         }
     
         if ( !Arrays.asList( player.getInventory().getStorageContents() ).contains( null ) ) {
-            Tools.Prt( player, ChatColor.RED + "アイテム配布用のためインベントリに空きが必要です", Tools.consoleMode.normal );
+            Tools.Prt( player, ChatColor.RED + "アイテム配布用のためインベントリに空きが必要です", consoleMode.normal, programCode );
             return false;
         }
 
         if ( !Config.tools.contains( Item ) ) {
-            Tools.Prt( player, ChatColor.RED + "再配布対象のツールではありません", Tools.consoleMode.normal );
+            Tools.Prt( player, ChatColor.RED + "再配布対象のツールではありません", consoleMode.normal, programCode );
             return false;
         }
 
@@ -253,10 +257,10 @@ public class PlayerControl {
             ItemControl ic = new ItemControl();
             ic.ItemUpdate( player, null, Config.EventToolName, Material.getMaterial( Item ) );
             addScore( null, - Rep );
-            Tools.Prt( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Material.getMaterial( Item ).name() + " tools !!", Tools.consoleMode.normal );
+            Tools.Prt( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Material.getMaterial( Item ).name() + " tools !!", consoleMode.normal, programCode );
             return true;
         } else {
-            Tools.Prt( player, ChatColor.RED + "Scoreが足りないので配布できません", Tools.consoleMode.normal );
+            Tools.Prt( player, ChatColor.RED + "Scoreが足りないので配布できません", consoleMode.normal, programCode );
             return false;
         }
     }
@@ -270,7 +274,7 @@ public class PlayerControl {
     public void ToolUpdate( Player player, boolean Force ) {
 
         if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) {
-            Tools.Prt( player, ChatColor.RED + "アップデートするアイテムを持ってください", Tools.consoleMode.full );
+            Tools.Prt( player, ChatColor.RED + "アップデートするアイテムを持ってください", consoleMode.full, programCode );
             return;
         }
 
@@ -293,12 +297,12 @@ public class PlayerControl {
                             ChatColor.YELLOW + " なので " +
                             ChatColor.WHITE + ( (int) ( item.getType().getMaxDurability() - CheckDurability ) ) +
                             ChatColor.YELLOW + " 以下にしてね",
-                            Tools.consoleMode.full
+                            consoleMode.full, programCode
                         );
                     }
-                } else Tools.Prt( player, ChatColor.YELLOW + "ツール名が違います", Tools.consoleMode.full );
-            } else Tools.Prt( player, ChatColor.YELLOW + "イベント用のツールではありません", Tools.consoleMode.full );
-        } else Tools.Prt( player, ChatColor.RED + "Scoreが足りないのでアップデートできません", Tools.consoleMode.full );
+                } else Tools.Prt( player, ChatColor.YELLOW + "ツール名が違います", consoleMode.full, programCode );
+            } else Tools.Prt( player, ChatColor.YELLOW + "イベント用のツールではありません", consoleMode.full, programCode );
+        } else Tools.Prt( player, ChatColor.RED + "Scoreが足りないのでアップデートできません", consoleMode.full, programCode );
     }
 
     /**
@@ -345,7 +349,7 @@ public class PlayerControl {
             //  不具合や他責によるスコアの未記録時の対応ログとして表示
             if ( Config.ScoreNotice > 0 ) {
                 if ( PlayerScore >= scoreNotice ) {
-                    Tools.Prt( "[Premises] " + DisplayName + " reached " + PlayerScore + " points.", Tools.consoleMode.normal );
+                    Tools.Prt( "[Premises] " + DisplayName + " reached " + PlayerScore + " points.", consoleMode.normal, programCode );
                     scoreNotice = Config.ScoreNotice * ( ( int ) Math.floor( PlayerScore / Config.ScoreNotice ) + 1 );
                 }
             }
@@ -355,7 +359,7 @@ public class PlayerControl {
                 if ( PlayerScore >= scoreBroadcast ) {
                     String SendMessage = "<イベント> " + ChatColor.AQUA + DisplayName + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + PlayerScore + ChatColor.WHITE + " 点に到達しました";
                     Bukkit.broadcastMessage( SendMessage );
-                    Tools.launchFireWorks( player.getLocation() );
+                    launchFireWorks( player.getLocation() );
                     for( int i = 0; i<Config.bc_command.size(); i++ ) {
                         Tools.ExecOtherCommand( player, Config.bc_command.get( i ), SendMessage );
                     }
@@ -422,21 +426,21 @@ public class PlayerControl {
      * @param p
      */
     public void getStatus( Player p ) {
-        Tools.Prt( null, ChatColor.RED + "Look Status: " + DisplayName, Tools.consoleMode.normal );
-        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", Tools.consoleMode.max );
-        Tools.Prt( p, ChatColor.AQUA + "Block mined by: " + DisplayName, Tools.consoleMode.max );
-        Tools.Prt( p, ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore(), Tools.consoleMode.max );
+        Tools.Prt( ChatColor.RED + "Look Status: " + DisplayName, consoleMode.normal, programCode );
+        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", consoleMode.max, programCode );
+        Tools.Prt( p, ChatColor.AQUA + "Block mined by: " + DisplayName, consoleMode.max, programCode );
+        Tools.Prt( p, ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore(), consoleMode.max, programCode );
 
         if ( p.isOp() ) {
-            Tools.Prt( p, ChatColor.GOLD + "Notice   : " + ChatColor.WHITE + scoreNotice, Tools.consoleMode.max );
-            Tools.Prt( p, ChatColor.GOLD + "Broadcast: " + ChatColor.WHITE + scoreBroadcast, Tools.consoleMode.max );
+            Tools.Prt( p, ChatColor.GOLD + "Notice   : " + ChatColor.WHITE + scoreNotice, consoleMode.max, programCode );
+            Tools.Prt( p, ChatColor.GOLD + "Broadcast: " + ChatColor.WHITE + scoreBroadcast, consoleMode.max, programCode );
         }
         
         BlockCount.entrySet().forEach( ( entry ) -> {
-            Tools.Prt( p, ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue(), Tools.consoleMode.max );
+            Tools.Prt( p, ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue(), consoleMode.max, programCode );
         } );
 
-        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", Tools.consoleMode.max );
+        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", consoleMode.max, programCode );
     }
 
     /**

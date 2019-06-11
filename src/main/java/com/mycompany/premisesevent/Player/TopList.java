@@ -22,9 +22,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import com.mycompany.kumaisulibraries.Utility;
 import com.mycompany.kumaisulibraries.Tools;
+import com.mycompany.kumaisulibraries.Tools.consoleMode;
 import com.mycompany.premisesevent.config.Config;
+import static com.mycompany.premisesevent.config.Config.programCode;
 
 /**
  *
@@ -96,11 +97,11 @@ public class TopList {
      * @param player
      * @param key
      */
-    public void Top( Player player, Tools.consoleMode key ) {
-        Tools.consoleMode debugPrint = ( ( player == null ) ? Tools.consoleMode.none:Tools.consoleMode.max );
+    public void Top( Player player, consoleMode key ) {
+        consoleMode debugPrint = ( ( player == null ) ? consoleMode.none:consoleMode.max );
         String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
-        Tools.Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング", debugPrint );
-        Tools.Prt( player, ChatColor.GREEN + "============================", debugPrint );
+        Tools.Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング", debugPrint, programCode );
+        Tools.Prt( player, ChatColor.GREEN + "============================", debugPrint, programCode );
 
         Map<String, Integer> rank = new HashMap<>();
         File folder;
@@ -128,12 +129,12 @@ public class TopList {
                     ( entry.getKey().equals( PlayerName ) ? ChatColor.AQUA:ChatColor.GRAY ) +
                     String.format( "%-15s", entry.getKey() ) + ChatColor.YELLOW +
                     String.format( "%8d", entry.getValue() ),
-                    key
+                    key, programCode
                 );
-            if ( ( i == 10 ) && lineflag ) Tools.Prt( player, ChatColor.GREEN + "============================", debugPrint );
+            if ( ( i == 10 ) && lineflag ) Tools.Prt( player, ChatColor.GREEN + "============================", debugPrint, programCode );
         }
 
-        Tools.Prt( player, ChatColor.GREEN + "============================",debugPrint );
+        Tools.Prt( player, ChatColor.GREEN + "============================",debugPrint, programCode );
     }
 
     /**
