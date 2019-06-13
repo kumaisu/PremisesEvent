@@ -79,6 +79,7 @@ public class ItemControl {
                 is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 10 );           // Efficiency
                 is.addUnsafeEnchantment( Enchantment.LURE, 10 );                // Lure
                 is.addUnsafeEnchantment( Enchantment.DURABILITY, 10 );          // Unbreaking
+                is.addUnsafeEnchantment( Enchantment.SILK_TOUCH, 1);            // SILK_TOUCH
                 is.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, 10 );      // Infinity
                 lores.add( "§7効率強化 Ⅹ" );
                 lores.add( "§7耐久力 Ⅹ" );
@@ -86,6 +87,7 @@ public class ItemControl {
                 is.addUnsafeEnchantment( Enchantment.DIG_SPEED, 6 );            // Efficiency
                 is.addUnsafeEnchantment( Enchantment.LURE, 6 );                 // Lure
                 is.addUnsafeEnchantment( Enchantment.DURABILITY, 0 );           // Unbreaking
+                is.addUnsafeEnchantment( Enchantment.SILK_TOUCH, 1);            // SILK_TOUCH
                 is.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, 0 );       // Infinity
                 lores.add( "§7効率強化 Ⅵ" );
             }
@@ -121,6 +123,7 @@ public class ItemControl {
             itemstack.addUnsafeEnchantment( Enchantment.DIG_SPEED, digs );
             itemstack.addUnsafeEnchantment( Enchantment.LURE, digs );
             itemstack.addUnsafeEnchantment( Enchantment.DURABILITY, ench );
+            itemstack.addUnsafeEnchantment( Enchantment.SILK_TOUCH, 1);
             itemstack.addUnsafeEnchantment( Enchantment.ARROW_INFINITE, ench );
             lores.add( "§7効率強化 " + stringArray[digs] );
             UpdateMessage = ChatColor.WHITE + "効率強化" + stringArray[digs];
@@ -155,6 +158,7 @@ public class ItemControl {
             Tools.Prt( player, ChatColor.GREEN + "Detect Enchant...", consoleMode.max, programCode );
             Tools.Prt( player, "効率強化 : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.DIG_SPEED ), consoleMode.max, programCode );
             Tools.Prt( player, "耐久力   : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.DURABILITY ), consoleMode.max, programCode );
+            Tools.Prt( player, "シルク   : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.SILK_TOUCH ), consoleMode.max, programCode );
             Tools.Prt( player, "入れ食い : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.LURE ), consoleMode.max, programCode );
             Tools.Prt( player, "無限     : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.ARROW_INFINITE ), consoleMode.max, programCode );
     }
