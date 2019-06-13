@@ -11,7 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import com.mycompany.kumaisulibraries.Items;
@@ -51,7 +50,7 @@ public class ItemControl {
      * @param tool          新規時のアイテム基本情報
      */
     public void ToolPresent( Player player, Material tool, String ToolName ) {
-        player.getInventory().addItem( Items.EventTool( ToolName, tool, player.isOP() ) );
+        player.getInventory().addItem( Items.EventTool( ToolName, tool, player.isOp() ) );
         Tools.Prt( player, ChatColor.GREEN + "イベント用ツール[" + tool + "]をプレゼントしました", consoleMode.full, programCode );
     }
 

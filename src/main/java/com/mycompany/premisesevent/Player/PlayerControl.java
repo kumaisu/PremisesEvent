@@ -222,7 +222,7 @@ public class PlayerControl {
         ic.ItemPresent( p );
         for( int i = 0; i<Config.tools.size(); i++ ) {
             Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + Config.tools.get( i ), programCode );
-            ic.ItemUpdate( p, null, Config.EventToolName, Material.getMaterial( Config.tools.get( i ) ) );
+            ic.ToolPresent( p, Material.getMaterial( Config.tools.get( i ) ), Config.EventToolName );
         }
 
         Bukkit.broadcastMessage( "<Premises> " + ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
@@ -255,7 +255,7 @@ public class PlayerControl {
         int Rep = Config.RePresent;
         if ( getScore() > Rep ) {
             ItemControl ic = new ItemControl();
-            ic.ItemUpdate( player, null, Config.EventToolName, Material.getMaterial( Item ) );
+            ic.ToolPresent( player, Material.getMaterial( Item ), Config.EventToolName );
             addScore( null, - Rep );
             Tools.Prt( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Material.getMaterial( Item ).name() + " tools !!", consoleMode.normal, programCode );
             return true;
@@ -288,7 +288,7 @@ public class PlayerControl {
                     if ( ( CheckDurability <= item.getDurability() ) || Force ) {
                         ItemControl ic = new ItemControl();
                         player.getInventory().setItemInMainHand( null );
-                        ic.ItemUpdate( player, item, Config.EventToolName, null );
+                        ic.ItemUpdate( player, item );
                         addScore( null, -Rep );
                     } else {
                         Tools.Prt( player,

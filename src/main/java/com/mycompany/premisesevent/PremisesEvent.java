@@ -105,7 +105,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
             Tools.Prt( p, ChatColor.YELLOW + "イベントツールの再配布", consoleMode.normal, programCode );
             for( int i = 0; i<Config.tools.size(); i++ ) {
-                ic.ItemUpdate( p, null, Config.EventToolName, Material.getMaterial( Config.tools.get( i ) ) );
+                ic.ToolPresent( p, Material.getMaterial( Config.tools.get( i ) ), Config.EventToolName );
             }
         }
     }
