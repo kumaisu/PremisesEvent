@@ -5,28 +5,10 @@ description: Premises Event Control plugin
 author: Kumaisu
 database: true
 commands:
-    pstatus:
-        description: Event System Status
-        usage: /<command>
-    toplist:
-        description: Event Players Ranking Command
-        aliases: top
-        usage: /<command>
     premises:
         description: Premises Event Control Command
         aliases: pe
-        usage: |
-            /<command> join 
-            /<command> status [PlayerName] 
-            /<command> get [Item Material] 
-            /<command> update 
-            /<command> check 
-            /<command> launch 
-            /<command> csv 
-            /<command> give PlayerName Score 
-            /<command> Console [max/full/normal/none] 
-            /<command> reload
-            /<command> stones
+        usage: /<command> help
 permissions:
     Premises.broadcast:
         description: Broadcast announce

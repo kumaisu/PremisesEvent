@@ -98,10 +98,9 @@ public class TopList {
      * @param key
      */
     public void Top( Player player, consoleMode key ) {
-        consoleMode debugPrint = ( ( player == null ) ? consoleMode.none:consoleMode.max );
         String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
-        Tools.Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング", debugPrint, programCode );
-        Tools.Prt( player, ChatColor.GREEN + "============================", debugPrint, programCode );
+        Tools.Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング", programCode );
+        Tools.Prt( player, ChatColor.GREEN + "============================", programCode );
 
         Map<String, Integer> rank = new HashMap<>();
         File folder;
@@ -129,12 +128,12 @@ public class TopList {
                     ( entry.getKey().equals( PlayerName ) ? ChatColor.AQUA:ChatColor.GRAY ) +
                     String.format( "%-15s", entry.getKey() ) + ChatColor.YELLOW +
                     String.format( "%8d", entry.getValue() ),
-                    key, programCode
+                    programCode
                 );
-            if ( ( i == 10 ) && lineflag ) Tools.Prt( player, ChatColor.GREEN + "============================", debugPrint, programCode );
+            if ( ( i == 10 ) && lineflag ) Tools.Prt( player, ChatColor.GREEN + "============================", programCode );
         }
 
-        Tools.Prt( player, ChatColor.GREEN + "============================",debugPrint, programCode );
+        Tools.Prt( player, ChatColor.GREEN + "============================", programCode );
     }
 
     /**

@@ -427,20 +427,20 @@ public class PlayerControl {
      */
     public void getStatus( Player p ) {
         Tools.Prt( ChatColor.RED + "Look Status: " + DisplayName, consoleMode.normal, programCode );
-        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", consoleMode.max, programCode );
-        Tools.Prt( p, ChatColor.AQUA + "Block mined by: " + DisplayName, consoleMode.max, programCode );
-        Tools.Prt( p, ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore(), consoleMode.max, programCode );
+        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", programCode );
+        Tools.Prt( p, ChatColor.AQUA + "Block mined by: " + DisplayName, programCode );
+        Tools.Prt( p, ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore(), programCode );
 
         if ( p.isOp() ) {
-            Tools.Prt( p, ChatColor.GOLD + "Notice   : " + ChatColor.WHITE + scoreNotice, consoleMode.max, programCode );
-            Tools.Prt( p, ChatColor.GOLD + "Broadcast: " + ChatColor.WHITE + scoreBroadcast, consoleMode.max, programCode );
+            Tools.Prt( p, ChatColor.RED + "Notice   : " + ChatColor.WHITE + scoreNotice, programCode );
+            Tools.Prt( p, ChatColor.RED + "Broadcast: " + ChatColor.WHITE + scoreBroadcast, programCode );
         }
         
         BlockCount.entrySet().forEach( ( entry ) -> {
-            Tools.Prt( p, ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue(), consoleMode.max, programCode );
+            Tools.Prt( p, ChatColor.GREEN + entry.getKey() + ": " + ChatColor.YELLOW + entry.getValue(), programCode );
         } );
 
-        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", consoleMode.max, programCode );
+        Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", programCode );
     }
 
     /**

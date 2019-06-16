@@ -5,12 +5,9 @@
  */
 package com.mycompany.premisesevent;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -18,8 +15,6 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,6 +34,7 @@ import com.mycompany.kumaisulibraries.BukkitTool;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.Player.PlayerControl;
 import com.mycompany.premisesevent.Player.TopList;
+import com.mycompany.premisesevent.command.PECommand;
 import com.mycompany.premisesevent.config.Config;
 import static com.mycompany.premisesevent.config.Config.programCode;
 
@@ -48,8 +44,9 @@ import static com.mycompany.premisesevent.config.Config.programCode;
  */
 public class PremisesEvent extends JavaPlugin implements Listener {
 
-    private Config config;
-    private final Map<UUID, PlayerControl> pc = new HashMap<>();
+    private PremisesEvent instance;
+    public static Config config;
+    public static Map<UUID, PlayerControl> pc = new HashMap<>();
 
     /**
      * 起動シーケンス
@@ -58,6 +55,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onEnable() {
         getServer().getPluginManager().registerEvents( this, this );
         config = new Config( this );
+        getCommand( "premises" ).setExecutor( new PECommand( this ) );
     }
 
     /**
@@ -345,112 +343,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     }
 
     /**
-     * コマンドの入力に対する処理
-     *
-     * @param sender
-     * @param cmd
-     * @param commandLabel
-     * @param args
-     * @return
-     */
-    @Override
-    public boolean onCommand( CommandSender sender, Command cmd, String commandLabel, String[] args ) {
-        Player player = ( sender instanceof Player ? ( Player ) sender:null );
-        boolean hasPermission = ( ( player == null ) ? true:player.hasPermission( "Premises.admin" ) );
-
-        if ( cmd.getName().equalsIgnoreCase( "toplist" ) ) {
-
-            if ( player != null && pc.get( player.getUniqueId() ).getEntry() != 0 ) pc.get( player.getUniqueId() ).save();
-
-            Bukkit.getServer().getOnlinePlayers().stream().filter( ( onPlayer ) -> ( pc.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ).forEachOrdered( ( onPlayer ) -> {
-                Tools.Prt( onPlayer.getDisplayName() + "is Online Event[" + ( ( pc.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ? "true":"false" ) + "]", programCode );
-                pc.get( onPlayer.getUniqueId() ).save();
-            } );
-
-            TopList TL = new TopList( this.getDataFolder().toString() );
-            TL.Top( player, consoleMode.max );
-            return true;
-        }
-
-        if ( cmd.getName().equalsIgnoreCase( "pstatus" ) && hasPermission ) {
-            config.Status( player );
-            return true;
-        }
-
-        if ( cmd.getName().equalsIgnoreCase( "Premises" ) ) {
-            String commandString = "";
-            String itemName = "";
-
-            if ( args.length > 0 ) commandString = args[0];
-            if ( args.length > 1 ) itemName = args[1];
-
-            if ( hasPermission ) {
-                switch ( commandString ) {
-                    case "reload":
-                        config.load();
-                        return true;
-                    case "csv":
-                        TopList TL = new TopList( this.getDataFolder().toString() );
-                        try {
-                            TL.ToCSV( Config.stones );
-                        } catch ( IOException ex ) {
-                            Logger.getLogger( PremisesEvent.class.getName() ).log( Level.SEVERE, null, ex );
-                        }
-                        return true;
-                    case "give":
-                        if ( args.length == 4 ) { return GiveScore( player, args[2], args[3] ); }
-                        return true;
-                    case "Console":
-                        Tools.setDebug( itemName, programCode );
-                        Tools.Prt( player,
-                            ChatColor.GREEN + "System Debug Mode is [ " +
-                            ChatColor.RED + Tools.consoleFlag.get( programCode ).toString() +
-                            ChatColor.GREEN + " ]",
-                            ( ( player == null ) ? consoleMode.none:consoleMode.max ), programCode
-                        );
-                        return true;
-                    case "stones":
-                        config.getStoneList( player );
-                        return true;
-                    default:
-                        break;
-                }
-            }
-
-            if ( player != null ) {
-                if ( commandString.equalsIgnoreCase( "join" ) ) return pc.get( player.getUniqueId() ).JoinPlayer( player );
-                switch ( commandString ) {
-                    case "get":
-                        return pc.get( player.getUniqueId() ).getEventItem( player, itemName );
-                    case "update":
-                        boolean force = ( itemName.equals( "force" ) );
-                        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).ToolUpdate( player, force );
-                        return true;
-                    case "status":
-                        return PlayerStatus( player, itemName );
-                    case "check":
-                        if ( hasPermission ) {
-                            ItemControl ic = new ItemControl();
-                            ic.ShowItemStatus( player );
-                            return true;
-                        } else return false;
-                    case "launch":
-                        if ( hasPermission) {
-                            BukkitTool.launchFireWorks( player.getLocation() );
-                            return true;
-                        } else return false;
-                    default:
-                        break;
-                }
-            } else Tools.Prt( player, ChatColor.RED + "コンソールからは操作できないコマンドです", consoleMode.none, programCode );
-
-            Tools.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + commandString + "]", consoleMode.full, programCode );
-            return false;
-        }
-        return false;
-    }
-
-    /**
      * イベント参加者のステータス表示する処理
      *
      * @param player
@@ -473,7 +365,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     pc.put( uuid, new PlayerControl( op, this.getDataFolder().toString() ) );
                     pc.get( uuid ).load();
                 } else {
-                    Tools.Prt( player, ChatColor.RED + "This Player is not joined to server.", consoleMode.normal, programCode );
+                    Tools.Prt( player, ChatColor.RED + "This Player is not joined to server.", programCode );
                     return false;
                 }
                 pc.get( uuid ).getStatus( player );
@@ -481,7 +373,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
             return true;
         } else {
-            Tools.Prt( player, ChatColor.RED + "イベントに参加していません", consoleMode.normal, programCode );
+            Tools.Prt( player, ChatColor.RED + "イベントに参加していません", programCode );
             return false;
         }
     }
@@ -503,7 +395,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         try {
             scoreNum = Integer.parseInt( score );
         } catch ( NumberFormatException e ) {
-            Tools.Prt( player, ChatColor.RED + "指定された値が正しくありません", consoleMode.full, programCode );
+            Tools.Prt( player, ChatColor.RED + "指定された値が正しくありません", programCode );
             return false;
         }
 
@@ -523,7 +415,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     pc.get( scorePlayer.getUniqueId() ).load();
                     createStat = true;
                 } else {
-                    Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はサーバーに存在しません", consoleMode.normal, programCode );
+                    Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はサーバーに存在しません", programCode );
                     return false;
                 }
             }
@@ -534,7 +426,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             pc.get( scorePlayer.getUniqueId() ).save();
             retStat = true;
         } else {
-            Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません", consoleMode.normal, programCode );
+            Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません", programCode );
             retStat = false;
         }
 
