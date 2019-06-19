@@ -70,6 +70,7 @@ public class PlayerControl {
      * @param DF
      */
     public PlayerControl( OfflinePlayer player, String DF ) {
+        Tools.Prt( "Initialized New Player.", Tools.consoleMode.full, programCode );
         this.DisplayName = player.getName();
         this.uuid = player.getUniqueId();
         this.PlayerScore = 0;
@@ -121,6 +122,7 @@ public class PlayerControl {
      * @return
      */
     public boolean load() {
+        Tools.Prt( "Loading Player Data.", consoleMode.full, programCode );
         // 設定ファイルを保存
         File dataFolder = new File( DataFolder + File.separator + Config.EventName + File.separator + "users" );
         File UKfile = new File( dataFolder, uuid + ".yml" );
@@ -150,6 +152,7 @@ public class PlayerControl {
      *
      */
     public void save() {
+        Tools.Prt( "Saving Player Data.", consoleMode.full, programCode );
         File dataFolder = new File( DataFolder + File.separator + Config.EventName + File.separator + "users" );
         if( !dataFolder.exists() ) { dataFolder.mkdir(); }
 
@@ -359,12 +362,15 @@ public class PlayerControl {
                 if ( PlayerScore >= scoreBroadcast ) {
                     String SendMessage = "<イベント> " + ChatColor.AQUA + DisplayName + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + PlayerScore + ChatColor.WHITE + " 点に到達しました";
                     Bukkit.broadcastMessage( SendMessage );
+                    Tools.Prt( SendMessage, consoleMode.full, programCode );
                     launchFireWorks( player.getLocation() );
                     for( int i = 0; i<Config.bc_command.size(); i++ ) {
                         Tools.ExecOtherCommand( player, Config.bc_command.get( i ), SendMessage );
                     }
                     scoreBroadcast = Config.ScoreBroadcast * ( ( int ) Math.floor( PlayerScore / Config.ScoreBroadcast ) + 1 );
                 }
+            } else {
+                Tools.Prt( ChatColor.AQUA + player.getName() + ChatColor.RED + "Premises Broadcast is no Premission", consoleMode.full, programCode);
             }
         }
     }

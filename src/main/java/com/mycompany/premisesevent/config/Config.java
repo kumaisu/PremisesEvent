@@ -240,50 +240,51 @@ public class Config {
      * @param p
      */
     public void Status( Player p ) {
-        consoleMode consolePrintFlag = ( ( p == null ) ? consoleMode.none:consoleMode.max );
-        Tools.Prt( p, ChatColor.GREEN + "=== Premises Status ===", consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + Tools.consoleFlag.get( programCode ).toString(), consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "難易度           : " + ChatColor.YELLOW + difficulty.toString(), consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( breakFree ? "許可":"不可" ), consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( breakTool ? "不可":"許可" ), consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "ブロック無限設置 : " + ChatColor.YELLOW + ( zeroPlace ? "許可":"不可" ), consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "参加者以外の設置 : " + ChatColor.YELLOW + ( placeFree ? "許可":"不可" ), consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "指定以外の設置   : " + ChatColor.YELLOW + ( placeSpecified ? "許可":"不可" ), consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "タイトル表示     : " + ChatColor.YELLOW + ( titlePrint ? "する":"しない" ), consolePrintFlag, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "イベントツール名 : " + EventToolName, consolePrintFlag, programCode );
+        Tools.Prt( p, ChatColor.GREEN + "=== Premises Status ===", programCode );
+        Tools.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + Tools.consoleFlag.get( programCode ).toString(), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "難易度           : " + ChatColor.YELLOW + difficulty.toString(), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "通知 Console     : " + ChatColor.YELLOW + ScoreNotice, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "通知 Broadcast   : " + ChatColor.YELLOW + ScoreBroadcast, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( breakFree ? "許可":"不可" ), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( breakTool ? "不可":"許可" ), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "ブロック無限設置 : " + ChatColor.YELLOW + ( zeroPlace ? "許可":"不可" ), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "参加者以外の設置 : " + ChatColor.YELLOW + ( placeFree ? "許可":"不可" ), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "指定以外の設置   : " + ChatColor.YELLOW + ( placeSpecified ? "許可":"不可" ), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "タイトル表示     : " + ChatColor.YELLOW + ( titlePrint ? "する":"しない" ), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "イベントツール名 : " + EventToolName, programCode );
 
         for( int i = 0; i<tools.size(); i++ ) {
-            Tools.Prt( p, ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ), consolePrintFlag, programCode );
+            Tools.Prt( p, ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + tools.get( i ), programCode );
         }
 
-        Tools.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ), consolePrintFlag, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ), programCode );
         if ( Field ) {
-            Tools.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World, consolePrintFlag, programCode );
+            Tools.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World, programCode );
             Tools.Prt( p,
                 ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + String.format( "%-7d", Event_X1 ) +
                 ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d",Event_Y1 ) +
                 ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z1,
-                consolePrintFlag, programCode );
+                programCode );
             Tools.Prt( p,
                 ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + String.format( "%-7d", Event_X2 ) +
                 ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d", Event_Y2 ) +
                 ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2,
-                consolePrintFlag, programCode );
+                programCode );
         }
 
-        Tools.Prt( p, ChatColor.WHITE + "参加時メッセージ : " + JoinMessage, consolePrintFlag, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "参加時メッセージ : " + JoinMessage, programCode );
 
-        Tools.Prt( p, ChatColor.WHITE + "Broadcast Command:", consolePrintFlag, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "Broadcast Command:", programCode );
         for( int i = 0; i<bc_command.size(); i++ ) {
-            Tools.Prt( p, ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ), consolePrintFlag, programCode );
+            Tools.Prt( p, ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + bc_command.get( i ), programCode );
         }
 
-        Tools.Prt( p, ChatColor.GREEN + "=======================", consolePrintFlag, programCode );
+        Tools.Prt( p, ChatColor.GREEN + "=======================", programCode );
     }
 
     /**

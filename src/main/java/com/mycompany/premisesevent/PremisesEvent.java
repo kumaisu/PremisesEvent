@@ -22,8 +22,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -37,6 +35,8 @@ import com.mycompany.premisesevent.Player.TopList;
 import com.mycompany.premisesevent.command.PECommand;
 import com.mycompany.premisesevent.config.Config;
 import static com.mycompany.premisesevent.config.Config.programCode;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
  *
@@ -45,9 +45,17 @@ import static com.mycompany.premisesevent.config.Config.programCode;
 public class PremisesEvent extends JavaPlugin implements Listener {
 
     private PremisesEvent instance;
+    
     public static Config config;
     public static Map<UUID, PlayerControl> pc = new HashMap<>();
+    public static int firstLoc_X;
+    public static int firstLoc_Y;
+    public static int firstLoc_Z;
+    public static int secondLoc_X;
+    public static int secondLoc_Y;
+    public static int secondLoc_Z;
 
+    
     /**
      * 起動シーケンス
      */
@@ -81,7 +89,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      * @param event
      */
     @EventHandler
-    public void onPlayerJoin( PlayerJoinEvent event ){
+    public void onPlayerJoin( PlayerJoinEvent event ) {
         Player p = event.getPlayer();
 
         pc.put( p.getUniqueId(), new PlayerControl( p, this.getDataFolder().toString() ) );
@@ -97,11 +105,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         ItemControl ic = new ItemControl();
         if ( pc.get( p.getUniqueId() ).getPresentFlag() ) {
-            Tools.Prt( p, ChatColor.YELLOW + "イベント装備の再配布", consoleMode.normal, programCode );
+            Tools.Prt( p, ChatColor.YELLOW + "イベント装備の再配布", Tools.consoleMode.normal, programCode );
             ic.ItemPresent( p );
         }
         if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
-            Tools.Prt( p, ChatColor.YELLOW + "イベントツールの再配布", consoleMode.normal, programCode );
+            Tools.Prt( p, ChatColor.YELLOW + "イベントツールの再配布", Tools.consoleMode.normal, programCode );
             for( int i = 0; i<Config.tools.size(); i++ ) {
                 ic.ToolPresent( p, Material.getMaterial( Config.tools.get( i ) ), Config.EventToolName );
             }
@@ -124,6 +132,60 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Tools.Prt( ChatColor.AQUA + player.getDisplayName() + ChatColor.LIGHT_PURPLE + " logged out, not Save", programCode );
         }
         pc.remove( player.getUniqueId() );
+    }
+
+    /**
+     * 経験値出し入れのメインルーチン
+     *
+     * @param event 
+     */
+    @EventHandler
+    public void onClick( PlayerInteractEvent event ) {
+        Player player = event.getPlayer();
+        Action action = event.getAction();
+        Block block = event.getClickedBlock();
+
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if ( item.getType() != Material.WOOD_AXE ) { return; }
+
+        switch ( action ) {
+            case LEFT_CLICK_BLOCK:
+                if ( !( firstLoc_X == block.getLocation().getBlockX() &&
+                        firstLoc_Y == block.getLocation().getBlockY() &&
+                        firstLoc_Z == block.getLocation().getBlockZ()
+                ) ) {
+                    firstLoc_X = block.getLocation().getBlockX();
+                    firstLoc_Y = block.getLocation().getBlockY();
+                    firstLoc_Z = block.getLocation().getBlockZ();
+                    Tools.Prt( player,
+                        ChatColor.AQUA +
+                        "First Target Location = X:" + firstLoc_X +
+                                " Y:" + firstLoc_Y +
+                                " Z:" + firstLoc_Z,
+                        Tools.consoleMode.full, programCode
+                    );
+                }
+                break;
+            case RIGHT_CLICK_BLOCK:
+                if ( !( secondLoc_X == block.getLocation().getBlockX() &&
+                        secondLoc_Y == block.getLocation().getBlockY() &&
+                        secondLoc_Z == block.getLocation().getBlockZ()
+                ) ) {
+                    secondLoc_X = block.getLocation().getBlockX();
+                    secondLoc_Y = block.getLocation().getBlockY();
+                    secondLoc_Z = block.getLocation().getBlockZ();
+                    Tools.Prt( player,
+                        ChatColor.AQUA +
+                        "Second Target Location = X:" + secondLoc_X +
+                                " Y:" + secondLoc_Y +
+                                " Z:" + secondLoc_Z,
+                        Tools.consoleMode.full, programCode
+                    );
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     /**
