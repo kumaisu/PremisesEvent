@@ -350,27 +350,25 @@ public class PlayerControl {
         if ( player != null ) {
             //  デバッグ（または保守）用、一定数到達記録をコンソールログに残す
             //  不具合や他責によるスコアの未記録時の対応ログとして表示
-            if ( Config.ScoreNotice > 0 ) {
-                if ( PlayerScore >= scoreNotice ) {
-                    Tools.Prt( "[Premises] " + DisplayName + " reached " + PlayerScore + " points.", consoleMode.normal, programCode );
-                    scoreNotice = Config.ScoreNotice * ( ( int ) Math.floor( PlayerScore / Config.ScoreNotice ) + 1 );
-                }
+            if ( ( Config.ScoreNotice > 0 ) && ( PlayerScore >= scoreNotice ) ) {
+                Tools.Prt( "[Premises] " + DisplayName + " reached " + PlayerScore + " points.", consoleMode.normal, programCode );
+                scoreNotice = Config.ScoreNotice * ( ( int ) Math.floor( PlayerScore / Config.ScoreNotice ) + 1 );
             }
 
             //  ブロードキャスト、一定スコア達成をオンラインプレイヤーに知らせる
-            if ( ( player.hasPermission( "Premises.broadcast" ) ) && ( Config.ScoreBroadcast > 0 ) ) {
-                if ( PlayerScore >= scoreBroadcast ) {
-                    String SendMessage = "<イベント> " + ChatColor.AQUA + DisplayName + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + PlayerScore + ChatColor.WHITE + " 点に到達しました";
+            if ( ( Config.ScoreBroadcast > 0 ) && ( PlayerScore >= scoreBroadcast ) ) {
+                scoreBroadcast = Config.ScoreBroadcast * ( ( int ) Math.floor( PlayerScore / Config.ScoreBroadcast ) + 1 );
+                String SendMessage = "<イベント> " + ChatColor.AQUA + DisplayName + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + PlayerScore + ChatColor.WHITE + " 点に到達しました";
+                Tools.Prt( SendMessage, consoleMode.full, programCode );
+                launchFireWorks( player.getLocation() );
+                if ( player.hasPermission( "Premises.broadcast" ) ) {
                     Bukkit.broadcastMessage( SendMessage );
-                    Tools.Prt( SendMessage, consoleMode.full, programCode );
-                    launchFireWorks( player.getLocation() );
                     for( int i = 0; i<Config.bc_command.size(); i++ ) {
                         Tools.ExecOtherCommand( player, Config.bc_command.get( i ), SendMessage );
                     }
-                    scoreBroadcast = Config.ScoreBroadcast * ( ( int ) Math.floor( PlayerScore / Config.ScoreBroadcast ) + 1 );
+                } else {
+                    Tools.Prt( ChatColor.AQUA + player.getName() + ChatColor.RED + "Premises Broadcast is no Premission", consoleMode.full, programCode);
                 }
-            } else {
-                Tools.Prt( ChatColor.AQUA + player.getName() + ChatColor.RED + "Premises Broadcast is no Premission", consoleMode.full, programCode);
             }
         }
     }
