@@ -135,7 +135,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     }
 
     /**
-     * 経験値出し入れのメインルーチン
+     * 座標の取得のメソッド
      *
      * @param event 
      */
