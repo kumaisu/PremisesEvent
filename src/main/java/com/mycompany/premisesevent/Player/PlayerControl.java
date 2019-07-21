@@ -135,8 +135,8 @@ public class PlayerControl {
         PlayerScore = UKData.getInt( "Score" );
         PresentFlag = UKData.getBoolean( "Present" );
         UpdateFlag = UKData.getBoolean( "Update" );
-        scoreNotice = UKData.getInt( "Notice", 0 );
-        scoreBroadcast = UKData.getInt( "Broadcast", 0 );
+        scoreNotice = UKData.getInt( "Notice", Config.ScoreNotice );
+        scoreBroadcast = UKData.getInt( "Broadcast", Config.ScoreBroadcast );
 
         if ( UKData.contains( "Counter" ) ) {
             UKData.getConfigurationSection( "Counter" ).getKeys( false ).forEach( ( key ) -> {
@@ -217,6 +217,8 @@ public class PlayerControl {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         FirstDate = sdf.format( new Date() );
         EntryFlag = 1;
+        scoreNotice = Config.ScoreNotice;
+        scoreBroadcast = Config.ScoreBroadcast;
         save();
         ScoreBoardEntry( p );
         Tools.Prt( p, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, consoleMode.normal, programCode );

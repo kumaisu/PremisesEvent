@@ -379,9 +379,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         Block clickedBlock = event.getClickedBlock();
         Material material = clickedBlock.getType();
-        if ( material == Material.SIGN_POST || material == Material.WALL_SIGN ) {
-            Sign sign = (Sign) clickedBlock.getState();
-            switch ( sign.getLine(0) ) {
+        Tools.Prt( "Material = " + material.name(), Tools.consoleMode.max, programCode);
+
+        try {
+            Sign sign = ( Sign ) clickedBlock.getState();
+            switch ( sign.getLine( 0 ) ) {
                 case "[P-Get]":
                     pc.get( player.getUniqueId() ).getEventItem( player, sign.getLine( 1 ) );
                     break;
@@ -401,7 +403,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     break;
                 default:
             }
-        }
+        } catch ( ClassCastException e ) {}
     }
 
     /**
