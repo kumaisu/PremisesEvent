@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -22,6 +23,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -35,8 +38,9 @@ import com.mycompany.premisesevent.Player.TopList;
 import com.mycompany.premisesevent.command.PECommand;
 import com.mycompany.premisesevent.config.Config;
 import static com.mycompany.premisesevent.config.Config.programCode;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffect;
+
+import org.bukkit.potion.PotionEffectType;
 
 /**
  *
@@ -142,13 +146,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @EventHandler
     public void onClick( PlayerInteractEvent event ) {
         Player player = event.getPlayer();
-        Action action = event.getAction();
-        Block block = event.getClickedBlock();
-
         ItemStack item = player.getInventory().getItemInMainHand();
         if ( item.getType() != Material.WOOD_AXE ) { return; }
 
-        switch ( action ) {
+        Block block = event.getClickedBlock();
+        switch ( event.getAction() ) {
             case LEFT_CLICK_BLOCK:
                 if ( !( firstLoc_X == block.getLocation().getBlockX() &&
                         firstLoc_Y == block.getLocation().getBlockY() &&
@@ -157,7 +159,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     firstLoc_X = block.getLocation().getBlockX();
                     firstLoc_Y = block.getLocation().getBlockY();
                     firstLoc_Z = block.getLocation().getBlockZ();
-                    Tools.Prt( player,
+                    Tools.Prt(
                         ChatColor.AQUA +
                         "First Target Location = X:" + firstLoc_X +
                                 " Y:" + firstLoc_Y +
@@ -174,7 +176,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     secondLoc_X = block.getLocation().getBlockX();
                     secondLoc_Y = block.getLocation().getBlockY();
                     secondLoc_Z = block.getLocation().getBlockZ();
-                    Tools.Prt( player,
+                    Tools.Prt(
                         ChatColor.AQUA +
                         "Second Target Location = X:" + secondLoc_X +
                                 " Y:" + secondLoc_Y +
@@ -250,6 +252,18 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
     }
 
+    private void WarningTitle( Player player ) {
+        if ( Config.titlePrint ) {
+            player.sendTitle(
+                    ChatColor.RED + "ルール違反しています",
+                    ChatColor.YELLOW + Config.JoinMessage,
+                    0, 50, 0
+            );
+        } else {
+            Tools.Prt( player, ChatColor.RED + "違反警告 : " + Config.JoinMessage, Tools.consoleMode.full, programCode );
+        }
+    }
+
     /**
      * ブロックが破壊された時の処理
      *
@@ -279,10 +293,28 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
 
         Block block = event.getBlock();
-        Material material = block.getType();
         String blockName = BukkitTool.getStoneName( block );
         ItemStack item = player.getInventory().getItemInMainHand();
-
+  
+        Location loc = block.getLocation();
+        loc.setY( loc.getY() + 1 );
+        Block checkBlock = loc.getBlock();
+        if ( checkBlock.getType() != Material.AIR ) {
+            switch ( config.UpperBlock ) {
+                case Block:
+                    WarningTitle( player );
+                    Tools.Prt( ChatColor.RED + player.getDisplayName() + " 違反ブロック", Tools.consoleMode.max, programCode );
+                    event.setCancelled( true );
+                    return;
+                case Warning:
+                    WarningTitle( player );
+                    Tools.Prt( ChatColor.RED + "Upper Block : " + BukkitTool.getStoneName( checkBlock ), Tools.consoleMode.max, programCode );
+                    player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 100, 2 ) );
+                    break;
+                default:
+            }
+        }
+        
         if ( Config.breakTool && ( item.getType() != Material.TORCH ) ) {
             if (
                     ( item.getType() == Material.AIR ) ||

@@ -19,6 +19,12 @@ AreaPos2: 100,2,200
 #   Hard :      ペナルティブロックの警告も無い（参加者の注意力が要求される）
 Difficulty: Normal
 
+#   下層ブロックのみの掘削制限
+#   None :      制限しない
+#   Warning :   注意喚起チャットメッセージのみ
+#   Block :     破壊不能
+UpperBlock: Warning
+
 #   参加者以外のブロック破壊を許すか/Free Block Break
 #   true = All Player
 #   false = EntryPlayer Only
@@ -68,7 +74,7 @@ BroadcastCommand:
     - give %player% BREAD 10
 
 #   イベント参加時にプレイヤーに表示されるメッセージ/Join Message
-JOIN_MESSAGE: "§eイベントルールに則って参加してください [ §ahttps://bit.ly/2Tf7tL8§b ]"
+JOIN_MESSAGE: "§eイベントルールに則って参加してください [ §ahttps://bit.ly/2Tf7tL8§e ]"
 
 #   イベント参加時に自動配布されるツールの種類/Present Tool Item Setting
 EventToolName: §bイベントツール

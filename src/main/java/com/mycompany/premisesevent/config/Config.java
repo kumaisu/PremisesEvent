@@ -35,7 +35,8 @@ public class Config {
      * Normal : NG行為を警告し、リカバリー可能
      * Hard : NG行為を警告しない
      */
-    public static enum EventMode { Easy, Normal, Hard }
+    public static enum EventMode { Easy, Normal, Hard };
+    public static enum UpperMode { None, Warning, Block };
 
     private final Map< String, Integer > GetPoint = new HashMap<>();
     private boolean OPMode;
@@ -49,73 +50,23 @@ public class Config {
     private int Event_Z1;
     private int Event_Z2;
 
-    /**
-     * 
-     */
     public static EventMode difficulty;
-    /**
-     * 
-     */
+    public static UpperMode UpperBlock;
     public static boolean placeFree;
-    /**
-     * 
-     */
     public static boolean placeSpecified;
-    /**
-     * 
-     */
     public static boolean breakFree;
-    /**
-     * 
-     */
     public static boolean breakTool;
-    /**
-     * 
-     */
     public static boolean zeroPlace;
-    /**
-     * 
-     */
     public static boolean titlePrint;
-    /**
-     * 
-     */
     public static String EventName;
-    /**
-     * 
-     */
     public static String JoinMessage;
-    /**
-     * 
-     */
     public static String EventToolName;
-    /**
-     * 
-     */
     public static int RePresent;
-    /**
-     * 
-     */
     public static int UpCost;
-    /**
-     * 
-     */
     public static int ScoreNotice;
-    /**
-     * 
-     */
     public static int ScoreBroadcast;
-    /**
-     * 
-     */
     public static List< String > bc_command;
-    /**
-     * 
-     */
     public static List< String > stones;
-    /**
-     * 
-     */
     public static List< String > tools;
 
     /**
@@ -217,8 +168,15 @@ public class Config {
         try {
             difficulty = EventMode.valueOf( config.getString( "Difficulty" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( ChatColor.RED + "Config Event 難易度が不正なので、Normal 設定にしました", consoleMode.none, programCode );
+            Tools.Prt( ChatColor.RED + "Config Eventが不正なので、Normal 設定にしました", consoleMode.none, programCode );
             difficulty = EventMode.Normal;
+        }
+
+        try {
+            UpperBlock = UpperMode.valueOf( config.getString( "UpperBlock" ) );
+        } catch ( IllegalArgumentException e ) {
+            Tools.Prt( ChatColor.RED + "Config UpperBlockが不正なので、None 設定にしました", consoleMode.none, programCode );
+            UpperBlock = UpperMode.None;
         }
     }
 
@@ -244,6 +202,7 @@ public class Config {
         Tools.Prt( p, ChatColor.WHITE + "Degub Mode : " + ChatColor.YELLOW + Tools.consoleFlag.get( programCode ).toString(), programCode );
         Tools.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + EventName, programCode );
         Tools.Prt( p, ChatColor.WHITE + "難易度           : " + ChatColor.YELLOW + difficulty.toString(), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "下層掘削制限     : " + ChatColor.YELLOW + UpperBlock.toString(), programCode );
         Tools.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + RePresent, programCode );
         Tools.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + UpCost, programCode );
         Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, programCode );
