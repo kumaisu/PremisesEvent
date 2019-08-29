@@ -27,6 +27,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.mycompany.kumaisulibraries.Tools;
@@ -38,9 +40,6 @@ import com.mycompany.premisesevent.Player.TopList;
 import com.mycompany.premisesevent.command.PECommand;
 import com.mycompany.premisesevent.config.Config;
 import static com.mycompany.premisesevent.config.Config.programCode;
-import org.bukkit.potion.PotionEffect;
-
-import org.bukkit.potion.PotionEffectType;
 
 /**
  *
@@ -49,7 +48,7 @@ import org.bukkit.potion.PotionEffectType;
 public class PremisesEvent extends JavaPlugin implements Listener {
 
     private PremisesEvent instance;
-    
+
     public static Config config;
     public static Map<UUID, PlayerControl> pc = new HashMap<>();
     public static int firstLoc_X;
@@ -59,7 +58,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public static int secondLoc_Y;
     public static int secondLoc_Z;
 
-    
     /**
      * 起動シーケンス
      */
@@ -141,7 +139,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     /**
      * 座標の取得のメソッド
      *
-     * @param event 
+     * @param event
      */
     @EventHandler
     public void onClick( PlayerInteractEvent event ) {
@@ -262,6 +260,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         } else {
             Tools.Prt( player, ChatColor.RED + "違反警告 : " + Config.JoinMessage, Tools.consoleMode.full, programCode );
         }
+        Tools.Prt( ChatColor.RED + player.getDisplayName() + " Upper Block : " + BukkitTool.getStoneName( checkBlock ), Tools.consoleMode.max, programCode );
     }
 
     /**
@@ -295,26 +294,24 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Block block = event.getBlock();
         String blockName = BukkitTool.getStoneName( block );
         ItemStack item = player.getInventory().getItemInMainHand();
-  
+
         Location loc = block.getLocation();
         loc.setY( loc.getY() + 1 );
         Block checkBlock = loc.getBlock();
-        if ( checkBlock.getType() != Material.AIR ) {
+        if ( ( !player.hasPermission( "Premises.warning" ) && ( checkBlock.getType() != Material.AIR ) ) {
             switch ( config.UpperBlock ) {
                 case Block:
                     WarningTitle( player );
-                    Tools.Prt( ChatColor.RED + player.getDisplayName() + " 違反ブロック", Tools.consoleMode.max, programCode );
                     event.setCancelled( true );
                     return;
                 case Warning:
                     WarningTitle( player );
-                    Tools.Prt( ChatColor.RED + "Upper Block : " + BukkitTool.getStoneName( checkBlock ), Tools.consoleMode.max, programCode );
                     player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 100, 2 ) );
                     break;
                 default:
             }
         }
-        
+
         if ( Config.breakTool && ( item.getType() != Material.TORCH ) ) {
             if (
                     ( item.getType() == Material.AIR ) ||

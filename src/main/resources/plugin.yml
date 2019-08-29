@@ -16,3 +16,5 @@ permissions:
     Premises.admin:
         description: Command Permission
         default: op
+    Premises.warning:
+        description: rule warning message

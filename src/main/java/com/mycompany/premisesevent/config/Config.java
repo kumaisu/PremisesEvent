@@ -183,7 +183,7 @@ public class Config {
     /**
      * ポイントブロックの一覧表示
      *
-     * @param player 
+     * @param player
      */
     public void getStoneList( Player player ) {
         Tools.Prt( player, ChatColor.GREEN + "=== Premises Stone List ===", consoleMode.full, programCode );

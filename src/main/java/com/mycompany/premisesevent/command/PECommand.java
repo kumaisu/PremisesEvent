@@ -55,7 +55,7 @@ public class PECommand implements CommandExecutor {
         if ( args.length > 1 ) itemName = args[1];
 
         switch ( commandString ) {
-            case "pstatus": 
+            case "pstatus":
                 if ( hasPermission ) {
                     instance.config.Status( player );
                     return true;
