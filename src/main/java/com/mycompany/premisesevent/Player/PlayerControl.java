@@ -206,7 +206,7 @@ public class PlayerControl {
                 //  ExecOtherCommand( player, player.getDisplayName() + " さんは、イベントに参加できませんでした" );
                 return false;
             default: // Registration success.
-                Bukkit.getServer().getConsoleSender().sendMessage( ChatColor.AQUA + "Registration success." );
+                Tools.Prt( ChatColor.AQUA + "Registration success.", programCode );
                 Tools.Prt( p, Config.JoinMessage, consoleMode.normal, programCode );
                 for( int i = 0; i<Config.bc_command.size(); i++ ) {
                     Tools.ExecOtherCommand( p, Config.bc_command.get( i ), p.getDisplayName() + " さんが、イベントに参加しました" );
@@ -386,7 +386,7 @@ public class PlayerControl {
         try {
             CD = BlockCount.get( StoneName );
         } catch( Exception e ) {
-            Bukkit.getServer().getConsoleSender().sendMessage( Utility.StringBuild( ChatColor.RED.toString(), "No Data for [", StoneName, "]" ) );
+            Tools.Prt( Utility.StringBuild( ChatColor.RED.toString(), "No Data for [", StoneName, "]" ), Tools.consoleMode.full, programCode);
             CD = 0;
         }
         return CD;

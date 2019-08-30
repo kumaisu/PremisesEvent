@@ -250,17 +250,19 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
     }
 
-    private void WarningTitle( Player player ) {
-        if ( Config.titlePrint ) {
-            player.sendTitle(
-                    ChatColor.RED + "ルール違反しています",
+    private boolean WarningCheck( Player player, Block checkBlock ) {
+        if ( config.getPoint( BukkitTool.getStoneName( checkBlock ) ) > 0 ) {
+            Tools.Prt( player, ChatColor.RED + "違反警告 : " + Config.JoinMessage, Tools.consoleMode.normal, programCode );
+            Tools.Prt( ChatColor.RED + player.getDisplayName() + " Upper Block : " + BukkitTool.getStoneName( checkBlock ), Tools.consoleMode.full, programCode );
+            if ( Config.titlePrint ) {
+                player.sendTitle(
+                    ChatColor.RED + "ルール違反の可能性があります",
                     ChatColor.YELLOW + Config.JoinMessage,
                     0, 50, 0
-            );
-        } else {
-            Tools.Prt( player, ChatColor.RED + "違反警告 : " + Config.JoinMessage, Tools.consoleMode.full, programCode );
-        }
-        Tools.Prt( ChatColor.RED + player.getDisplayName() + " Upper Block : " + BukkitTool.getStoneName( checkBlock ), Tools.consoleMode.max, programCode );
+                );
+            }
+            return true;
+        } else return false;
     }
 
     /**
@@ -298,16 +300,18 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Location loc = block.getLocation();
         loc.setY( loc.getY() + 1 );
         Block checkBlock = loc.getBlock();
-        if ( ( !player.hasPermission( "Premises.warning" ) && ( checkBlock.getType() != Material.AIR ) ) {
+        if ( !player.hasPermission( "Premises.warning" ) ) {
             switch ( config.UpperBlock ) {
                 case Block:
-                    WarningTitle( player );
-                    event.setCancelled( true );
-                    return;
-                case Warning:
-                    WarningTitle( player );
-                    player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 100, 2 ) );
+                    if ( WarningCheck( player, checkBlock ) ) {
+                        event.setCancelled( true );
+                        return;
+                    }
                     break;
+                case Warning:
+                    if ( WarningCheck( player, checkBlock ) ) {
+                        player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 200, 2 ) );
+                    }
                 default:
             }
         }
@@ -337,7 +341,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     ChatColor.AQUA + player.getDisplayName() +
                     ChatColor.RED + " broke a " +
                     ChatColor.YELLOW + blockName,
-                    consoleMode.full, programCode
+                    consoleMode.normal, programCode
                 );
 
                 switch( Config.difficulty ) {
