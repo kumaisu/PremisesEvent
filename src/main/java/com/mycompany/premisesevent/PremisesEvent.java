@@ -154,28 +154,28 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         ItemStack item = player.getInventory().getItemInMainHand();
         Block block = event.getClickedBlock();
 
-        if (
-            ( item.getItemMeta().getDisplayName() != null ) &&
-            ( item.getItemMeta().getDisplayName().equals( Config.EventToolName ) ) &&
-            ( event.getAction() == Action.RIGHT_CLICK_BLOCK )
-        ) {
-            if ( config.GetField() && !config.CheckArea( block.getLocation() ) ) return;
-            int cx = ( int )( block.getLocation().getX() - Config.Event_X1 ) / 16;
-            int cz = ( int )( block.getLocation().getZ() - Config.Event_Z1 ) / 16;
-            String CheckCode = cx + "-" + cz;
-            if ( Config.AreaName.get( CheckCode ) == null ) {
-                Tools.Prt( player,
-                    ChatColor.YELLOW + "[" + CheckCode + "] " +
-                    ChatColor.GREEN + "誰のエリアでもありません"
-                    , Tools.consoleMode.full, programCode
-                );
-            } else {
-                Tools.Prt( player,
-                    ChatColor.YELLOW + "[" + CheckCode + "] " +
-                    ChatColor.AQUA + Config.AreaName.get( CheckCode ) +
-                    ChatColor.GREEN + "さんの掘削エリアです"
-                    , Tools.consoleMode.normal, programCode
-                );
+        if ( item.hasItemMeta() && item.getItemMeta().hasDisplayName() ) {
+            if ( ( item.getItemMeta().getDisplayName().equals( Config.EventToolName ) ) &&
+                ( event.getAction() == Action.RIGHT_CLICK_BLOCK )
+            ) {
+                if ( config.GetField() && !config.CheckArea( block.getLocation() ) ) return;
+                int cx = ( int )( block.getLocation().getX() - Config.Event_X1 ) / 16;
+                int cz = ( int )( block.getLocation().getZ() - Config.Event_Z1 ) / 16;
+                String CheckCode = cx + "-" + cz;
+                if ( Config.AreaName.get( CheckCode ) == null ) {
+                    Tools.Prt( player,
+                        ChatColor.YELLOW + "[" + CheckCode + "] " +
+                        ChatColor.GREEN + "誰のエリアでもありません"
+                        , Tools.consoleMode.full, programCode
+                    );
+                } else {
+                    Tools.Prt( player,
+                        ChatColor.YELLOW + "[" + CheckCode + "] " +
+                        ChatColor.AQUA + Config.AreaName.get( CheckCode ) +
+                        ChatColor.GREEN + "さんの掘削エリアです"
+                        , Tools.consoleMode.normal, programCode
+                    );
+                }
             }
         }
 

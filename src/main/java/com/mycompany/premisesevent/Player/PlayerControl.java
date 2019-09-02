@@ -479,16 +479,19 @@ public class PlayerControl {
         if ( Config.PlayerAlarm && ( !NowArea.equals( AreaCode ) ) ) {
             String GetOwner = "不在";
             if ( Config.AreaName.get( AreaCode ) != null ) { GetOwner = Config.AreaName.get( AreaCode ); }
-            if ( !NowOwner.equals( GetOwner ) || ( GetOwner.equals( "不在" ) ) ) {
+            if ( !NowOwner.equals( GetOwner ) ) {
                 player.sendTitle(
                     ChatColor.GREEN + Utility.StringBuild( ChatColor.YELLOW.toString(), "Area : " + AreaCode ),
-                    ( GetOwner.equals( "不在" ) ? ChatColor.YELLOW : ChatColor.GOLD ) +
-                    Utility.StringBuild( ChatColor.AQUA.toString(), "Owner : " + GetOwner ),
+                    Utility.StringBuild(
+                        ChatColor.YELLOW.toString(), "Owner : ",
+                        ( GetOwner.equals( "不在" ) ? ChatColor.GOLD.toString() : ChatColor.AQUA.toString() ),
+                        GetOwner
+                    ),
                     5, 10, 5
                 );
-            }
+                NowOwner = GetOwner;
+            };
             NowArea = AreaCode;
-            NowOwner = GetOwner;
         }
     }
 
