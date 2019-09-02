@@ -47,7 +47,7 @@ public class PlayerControl {
     private final Scoreboard board = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
     private final Objective obj = board.registerNewObjective( OBJECTIVE_NAME, "dummy" );
     private Score score;
-    private final Map<String, Score> mines = new HashMap<>();
+    private final Map< String, Score > mines = new HashMap<>();
 
     /*
     プレイヤーデータ
@@ -62,6 +62,8 @@ public class PlayerControl {
     private final Map<String,Integer> BlockCount = new HashMap<>();
     private int scoreNotice;
     private int scoreBroadcast;
+    private String NowArea = "";
+    private String NowOwner = "";
 
     /**
      * プレイヤーコントロールライブラリ
@@ -466,4 +468,28 @@ public class PlayerControl {
     public boolean getUpdateFlag() {
         return UpdateFlag;
     }
+
+    /**
+     * 指定ブロックの掘削数を加算します
+     *
+     * @param player
+     * @param AreaCode
+     */
+    public void PrintArea( Player player, String AreaCode ) {
+        if ( Config.PlayerAlarm && ( !NowArea.equals( AreaCode ) ) ) {
+            String GetOwner = "不在";
+            if ( Config.AreaName.get( AreaCode ) != null ) { GetOwner = Config.AreaName.get( AreaCode ); }
+            if ( !NowOwner.equals( GetOwner ) || ( GetOwner.equals( "不在" ) ) ) {
+                player.sendTitle(
+                    ChatColor.GREEN + Utility.StringBuild( ChatColor.YELLOW.toString(), "Area : " + AreaCode ),
+                    ( GetOwner.equals( "不在" ) ? ChatColor.YELLOW : ChatColor.GOLD ) +
+                    Utility.StringBuild( ChatColor.AQUA.toString(), "Owner : " + GetOwner ),
+                    5, 10, 5
+                );
+            }
+            NowArea = AreaCode;
+            NowOwner = GetOwner;
+        }
+    }
+
 }

@@ -1,5 +1,5 @@
 name: PremisesEvent
-version: 0.4
+version: 0.5
 main: com.mycompany.premisesevent.PremisesEvent
 description: Premises Event Control plugin
 author: Kumaisu
@@ -8,6 +8,10 @@ commands:
     premises:
         description: Premises Event Control Command
         aliases: pe
+        usage: /<command> help
+    area:
+        description: Area Control Command
+        aliases: pea
         usage: /<command> help
 permissions:
     Premises.broadcast:

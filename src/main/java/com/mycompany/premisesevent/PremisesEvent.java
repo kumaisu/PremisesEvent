@@ -37,9 +37,13 @@ import com.mycompany.kumaisulibraries.BukkitTool;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.Player.PlayerControl;
 import com.mycompany.premisesevent.Player.TopList;
+import com.mycompany.premisesevent.command.AreaCommand;
 import com.mycompany.premisesevent.command.PECommand;
+import com.mycompany.premisesevent.config.AreaManager;
 import com.mycompany.premisesevent.config.Config;
+import com.mycompany.premisesevent.config.ConfigManager;
 import static com.mycompany.premisesevent.config.Config.programCode;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 /**
  *
@@ -49,7 +53,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
     private PremisesEvent instance;
 
-    public static Config config;
+    public static ConfigManager config;
     public static Map<UUID, PlayerControl> pc = new HashMap<>();
     public static int firstLoc_X;
     public static int firstLoc_Y;
@@ -64,8 +68,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents( this, this );
-        config = new Config( this );
+        config = new ConfigManager( this );
+        AreaManager.load( this.getDataFolder().toString() );
         getCommand( "premises" ).setExecutor( new PECommand( this ) );
+        getCommand( "area" ).setExecutor( new AreaCommand( this ) );
     }
 
     /**
@@ -81,6 +87,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 Tools.Prt( ChatColor.AQUA + pc.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score", programCode );
             }
         } );
+        AreaManager.save( this.getDataFolder().toString() );
     }
 
     /**
@@ -145,9 +152,34 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onClick( PlayerInteractEvent event ) {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
-        if ( item.getType() != Material.WOOD_AXE ) { return; }
-
         Block block = event.getClickedBlock();
+
+        if (
+            ( item.getItemMeta().getDisplayName() != null ) &&
+            ( item.getItemMeta().getDisplayName().equals( Config.EventToolName ) ) &&
+            ( event.getAction() == Action.RIGHT_CLICK_BLOCK )
+        ) {
+            if ( config.GetField() && !config.CheckArea( block.getLocation() ) ) return;
+            int cx = ( int )( block.getLocation().getX() - Config.Event_X1 ) / 16;
+            int cz = ( int )( block.getLocation().getZ() - Config.Event_Z1 ) / 16;
+            String CheckCode = cx + "-" + cz;
+            if ( Config.AreaName.get( CheckCode ) == null ) {
+                Tools.Prt( player,
+                    ChatColor.YELLOW + "[" + CheckCode + "] " +
+                    ChatColor.GREEN + "誰のエリアでもありません"
+                    , Tools.consoleMode.full, programCode
+                );
+            } else {
+                Tools.Prt( player,
+                    ChatColor.YELLOW + "[" + CheckCode + "] " +
+                    ChatColor.AQUA + Config.AreaName.get( CheckCode ) +
+                    ChatColor.GREEN + "さんの掘削エリアです"
+                    , Tools.consoleMode.normal, programCode
+                );
+            }
+        }
+
+        if ( item.getType() != Material.WOOD_AXE ) { return; }
         switch ( event.getAction() ) {
             case LEFT_CLICK_BLOCK:
                 if ( !( firstLoc_X == block.getLocation().getBlockX() &&
@@ -160,16 +192,16 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     Tools.Prt(
                         ChatColor.AQUA +
                         "First Target Location = X:" + firstLoc_X +
-                                " Y:" + firstLoc_Y +
-                                " Z:" + firstLoc_Z,
+                        " Y:" + firstLoc_Y +
+                        " Z:" + firstLoc_Z,
                         Tools.consoleMode.full, programCode
                     );
                 }
                 break;
             case RIGHT_CLICK_BLOCK:
                 if ( !( secondLoc_X == block.getLocation().getBlockX() &&
-                        secondLoc_Y == block.getLocation().getBlockY() &&
-                        secondLoc_Z == block.getLocation().getBlockZ()
+                    secondLoc_Y == block.getLocation().getBlockY() &&
+                    secondLoc_Z == block.getLocation().getBlockZ()
                 ) ) {
                     secondLoc_X = block.getLocation().getBlockX();
                     secondLoc_Y = block.getLocation().getBlockY();
@@ -177,14 +209,33 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     Tools.Prt(
                         ChatColor.AQUA +
                         "Second Target Location = X:" + secondLoc_X +
-                                " Y:" + secondLoc_Y +
-                                " Z:" + secondLoc_Z,
+                        " Y:" + secondLoc_Y +
+                        " Z:" + secondLoc_Z,
                         Tools.consoleMode.full, programCode
                     );
                 }
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * エリア内の移動を監視
+     *
+     * @param event 
+     */
+    @EventHandler
+    public void onPlayerMove( PlayerMoveEvent event ) {
+        Player player = event.getPlayer();
+        if ( config.GetField() && !config.CheckArea( player.getLocation() ) ) return;
+
+        //  イベント参加判定
+        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
+            int cx = ( int )( player.getLocation().getX() - Config.Event_X1 ) / 16;
+            int cz = ( int )( player.getLocation().getZ() - Config.Event_Z1 ) / 16;
+            String CheckCode = cx + "-" + cz;
+            pc.get( player.getUniqueId() ).PrintArea( player, CheckCode );
         }
     }
 
@@ -207,6 +258,41 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         Block block = event.getBlock();
         String blockName = BukkitTool.getStoneName( block );
+
+        //  イベント保護
+        if ( Config.PlayerAlarm ) {
+            String locKey = ( int ) block.getLocation().getX() + "-" + ( int ) block.getLocation().getY() + "-" + ( int ) block.getLocation().getZ();
+            int cx = ( int )( block.getLocation().getX() - Config.Event_X1 ) / 16;
+            int cz = ( int )( block.getLocation().getZ() - Config.Event_Z1 ) / 16;
+            String CheckCode = cx + "-" + cz;
+            Tools.Prt( 
+                "Place Location key : " + locKey +
+                " Area Code [ " + CheckCode + " ]",
+                Tools.consoleMode.max, programCode
+            );
+
+            //  デバッグ表示 Start
+            if ( Config.AreaName.get( CheckCode ) != null ) {
+                Tools.Prt( "Area : not null", Tools.consoleMode.max, programCode );
+                if ( Config.AreaName.get( CheckCode ).contains( player.getName() ) ) {
+                    Tools.Prt( "Name : " + Config.AreaName.get( CheckCode ), Tools.consoleMode.max, programCode );
+                }
+            }
+            if ( Config.AreaBlock.get( locKey ) != null ) {
+                Tools.Prt( "Area Block : " + locKey, Tools.consoleMode.max, programCode);
+            }
+            //  デバッグ表示 End
+
+            if ( 
+               ( Config.AreaName.get( CheckCode ) != null ) && 
+               ( Config.AreaName.get( CheckCode ).contains( player.getName() ) ) &&
+               ( Config.AreaBlock.get( locKey ) != null )
+            ) {
+                Tools.Prt( player, ChatColor.RED + "[" + CheckCode + "] " + Config.AreaName.get( CheckCode ) + "さんのエリア解放します", Tools.consoleMode.normal, programCode );
+                Config.AreaName.remove( CheckCode );
+                Config.AreaBlock.remove( locKey );
+            }
+        }
 
         //  設置したブロックであるというフラグを設定しているが、機能していない
         block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
@@ -277,6 +363,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
         if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
 
+        //  イベント参加判定
         switch ( pc.get( player.getUniqueId() ).getEntry() ) {
             case 0:
                 if ( !Config.breakFree ) {
@@ -297,11 +384,12 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         String blockName = BukkitTool.getStoneName( block );
         ItemStack item = player.getInventory().getItemInMainHand();
 
+        //  禁止判定
         Location loc = block.getLocation();
         loc.setY( loc.getY() + 1 );
         Block checkBlock = loc.getBlock();
         if ( !player.hasPermission( "Premises.warning" ) ) {
-            switch ( config.UpperBlock ) {
+            switch ( Config.UpperBlock ) {
                 case Block:
                     if ( WarningCheck( player, checkBlock ) ) {
                         event.setCancelled( true );
@@ -316,6 +404,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         }
 
+        //  ツール判定
         if ( Config.breakTool && ( item.getType() != Material.TORCH ) ) {
             if (
                     ( item.getType() == Material.AIR ) ||
@@ -328,6 +417,33 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         }
 
+        //  イベント保護
+        if ( Config.PlayerAlarm ) {
+            int cx = ( int )( loc.getX() - Config.Event_X1 ) / 16;
+            int cz = ( int )( loc.getZ() - Config.Event_Z1 ) / 16;
+            String CheckCode = cx + "-" + cz;
+            Tools.Prt( 
+                "Get Location X:" + loc.getX() + " Z:" + loc.getZ() +
+                " Area Code [ " + CheckCode + " ]",
+                Tools.consoleMode.max, programCode );
+            if ( Config.AreaName.get( CheckCode ) == null ) {
+                Config.AreaName.put( CheckCode, player.getName() );
+                String locKey = ( int ) block.getLocation().getX() + "-" + ( int ) block.getLocation().getY() + "-" + ( int ) block.getLocation().getZ();
+                Config.AreaBlock.put( locKey, blockName );
+                Tools.Prt( player, ChatColor.AQUA + "[" + CheckCode + "] " + Config.AreaName.get( CheckCode ) + "さんのエリアに設定しました", Tools.consoleMode.normal, programCode );
+                Tools.Prt( 
+                    "Break Location X:" + loc.getX() + " Y:" + loc.getY() + " Z:" + loc.getZ() +
+                    " Area Code [ " + CheckCode + " ] : " + locKey,
+                    Tools.consoleMode.max, programCode
+                );
+            } else {
+                if ( !Config.AreaName.get( CheckCode ).contains( player.getName() ) || ( player.hasPermission( "Premises.admin" ) && player.isSneaking() ) ) {
+                    Tools.Prt( player, ChatColor.RED + "[" + CheckCode + "] " + Config.AreaName.get( CheckCode ) + "さんの掘削エリアです", Tools.consoleMode.normal, programCode );
+                }
+            }
+        }
+
+        //  ブロック処理
         if ( Config.stones.contains( blockName ) ) {
             Tools.Prt(
                 player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) +

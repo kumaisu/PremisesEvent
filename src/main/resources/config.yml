@@ -21,9 +21,15 @@ Difficulty: Normal
 
 #   下層ブロックのみの掘削制限
 #   None :      制限しない
-#   Warning :   注意喚起チャットメッセージのみ
+#   Warning :   注意喚起チャットメッセージ
 #   Block :     破壊不能
+#   None 以外は、採掘速度低下１０秒のペナルティ発動
 UpperBlock: Warning
+
+#   他者エリア掘削の警告表示
+#   true :      警告する
+#   false :     警告しない
+PlayerAlarm: true
 
 #   参加者以外のブロック破壊を許すか/Free Block Break
 #   true = All Player
