@@ -489,8 +489,8 @@ public class PlayerControl {
                     ),
                     5, 10, 5
                 );
-                NowOwner = GetOwner;
-            };
+                NowOwner = ( GetOwner.equals( player.getName() ) ? GetOwner:"" );
+            }
             NowArea = AreaCode;
         }
     }

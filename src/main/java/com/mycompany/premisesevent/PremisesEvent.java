@@ -25,6 +25,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
@@ -43,7 +44,6 @@ import com.mycompany.premisesevent.config.AreaManager;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.ConfigManager;
 import static com.mycompany.premisesevent.config.Config.programCode;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 /**
  *
@@ -291,6 +291,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 Tools.Prt( player, ChatColor.RED + "[" + CheckCode + "] " + Config.AreaName.get( CheckCode ) + "さんのエリア解放します", Tools.consoleMode.normal, programCode );
                 Config.AreaName.remove( CheckCode );
                 Config.AreaBlock.remove( locKey );
+                if ( Config.OnDynmap ) {
+                    String Command = "dmarker deletearea id:" + cx + "-" + cz;
+                    Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
+                    Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
+                }
             }
         }
 
@@ -349,6 +354,36 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
             return true;
         } else return false;
+    }
+
+    private boolean SetDynmapArea( Player player, int bx, int bz ) {
+        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), "dmarker clearcors" );
+        int lx = ( ( bx * 16 ) + Config.Event_X1 );
+        int lz = ( ( bz * 16 ) + Config.Event_Z1 );
+        int hx = ( ( ( bx + 1 ) * 16 ) + Config.Event_X1 );
+        int hz = ( ( ( bz + 1 ) * 16 ) + Config.Event_Z1 );
+
+        String Command = "dmarker addcorner " + lx + " 1 " + lz + " " + Config.Event_World;
+        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
+        Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
+
+        Command = "dmarker addcorner " + lx + " 1 " + hz + " " + Config.Event_World;
+        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
+        Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
+
+        Command = "dmarker addcorner " + hx + " 1 " + hz + " " + Config.Event_World;
+        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
+        Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
+
+        Command = "dmarker addcorner " + hx + " 1 " + lz + " " + Config.Event_World;
+        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
+        Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
+
+        Command = "dmarker addarea id:" + bx + "-" + bz + " " + player.getName();
+        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
+        Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
+
+        return true;
     }
 
     /**
@@ -430,6 +465,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 Config.AreaName.put( CheckCode, player.getName() );
                 String locKey = ( int ) block.getLocation().getX() + "-" + ( int ) block.getLocation().getY() + "-" + ( int ) block.getLocation().getZ();
                 Config.AreaBlock.put( locKey, blockName );
+                if ( Config.OnDynmap ) { SetDynmapArea( player, cx, cz ); }
                 Tools.Prt( player, ChatColor.AQUA + "[" + CheckCode + "] " + Config.AreaName.get( CheckCode ) + "さんのエリアに設定しました", Tools.consoleMode.normal, programCode );
                 Tools.Prt( 
                     "Break Location X:" + loc.getX() + " Y:" + loc.getY() + " Z:" + loc.getZ() +
@@ -438,7 +474,13 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 );
             } else {
                 if ( !Config.AreaName.get( CheckCode ).contains( player.getName() ) || ( player.hasPermission( "Premises.admin" ) && player.isSneaking() ) ) {
-                    Tools.Prt( player, ChatColor.RED + "[" + CheckCode + "] " + Config.AreaName.get( CheckCode ) + "さんの掘削エリアです", Tools.consoleMode.normal, programCode );
+                    Tools.Prt( player,
+                        ChatColor.YELLOW + "[" + CheckCode + "] " +
+                        ( Config.AreaName.get( CheckCode ).equals( player.getName() ) ? ChatColor.AQUA : ChatColor.RED ) +
+                        Config.AreaName.get( CheckCode ) +
+                        ChatColor.YELLOW + "さんの掘削エリアです",
+                        Tools.consoleMode.normal, programCode
+                    );
                 }
             }
         }

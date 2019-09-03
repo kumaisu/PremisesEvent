@@ -39,6 +39,7 @@ public class Config {
 
     public static int Event_X1;
     public static int Event_Z1;
+    public static String Event_World;
 
     public static EventMode difficulty;
     public static UpperMode UpperBlock;
@@ -59,4 +60,5 @@ public class Config {
     public static List< String > bc_command;
     public static List< String > stones;
     public static List< String > tools;
+    public static boolean OnDynmap;
 }

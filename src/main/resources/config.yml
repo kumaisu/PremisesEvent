@@ -13,6 +13,9 @@ World: world
 AreaPos1: 200,50,100
 AreaPos2: 100,2,200
 
+#   Dynmap へ Marker Area 表示するか？
+OnDynmap: false
+
 #   イベント難易度 (Easy/Normal/Hard)
 #   Easy :      ペナルティブロックは破壊できない＋警告
 #   Normal :    ペナルティブロックの警告メッセージのみ表示
@@ -20,6 +23,7 @@ AreaPos2: 100,2,200
 Difficulty: Normal
 
 #   下層ブロックのみの掘削制限
+#   ルール無視で鉱石のみを掘削する方が多い場合などに利用します
 #   None :      制限しない
 #   Warning :   注意喚起チャットメッセージ
 #   Block :     破壊不能
@@ -27,24 +31,29 @@ Difficulty: Normal
 UpperBlock: Warning
 
 #   他者エリア掘削の警告表示
+#   エリアはイベントエリアの起点を元に演算してエリア名を生成しています
+#   このためイベント中にエリアの拡大を行うと、正しくエリア管理ができなくなります
 #   true :      警告する
 #   false :     警告しない
 PlayerAlarm: true
 
 #   参加者以外のブロック破壊を許すか/Free Block Break
+#   参加者をスコア加算されますが、不参加者はされません
 #   true = All Player
 #   false = EntryPlayer Only
-FreeBreak: true
+FreeBreak: false
 
 #   参加者以外のブロック設置を許すか/Allow block placement for non-participant
+#   修復や管理のためだけに不参加者が手助けできるようにする場合に利用
 #   true = All Player/全プレイヤー
 #   false = Entry Player/参加プレイヤーのみ
 FreePlace: false
 
 #   登録ブロック以外の設置を許すか/Permit installation other than registration block
+#   許可するとスコアマイナスがプラス値を越えてマイナススコアとなるケースがあります
 #   true = All Blocks
 #   false = Event Block Only
-SpecifiedPlace: true
+SpecifiedPlace: false
 
 #   イベントツールのみ破壊可能とするか/Special Tools Only Break
 ToolBreak: false

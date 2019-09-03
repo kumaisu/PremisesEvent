@@ -30,7 +30,6 @@ public class ConfigManager {
     private boolean OPMode;
     private double Repair;
     private boolean Field;
-    private String Event_World;
 
     private int Event_Y1;
     private int Event_X2;
@@ -90,8 +89,9 @@ public class ConfigManager {
         Config.breakTool = config.getBoolean( "ToolBreak", true );
         Config.zeroPlace = config.getBoolean( "ZeroPlace", false );
         Config.PlayerAlarm = config.getBoolean( "PlayerAlarm", true );
+        Config.OnDynmap = config.getBoolean( "OnDynmap", false );
 
-        Event_World = config.getString( "World" );
+        Config.Event_World = config.getString( "World" );
 
         String pos = config.getString( "AreaPos1" );
         String[] pos_param = pos.split( "," );
@@ -172,6 +172,8 @@ public class ConfigManager {
         Tools.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + Config.EventName, programCode );
         Tools.Prt( p, ChatColor.WHITE + "難易度           : " + ChatColor.YELLOW + Config.difficulty.toString(), programCode );
         Tools.Prt( p, ChatColor.WHITE + "下層掘削制限     : " + ChatColor.YELLOW + Config.UpperBlock.toString(), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "他者エリア警告   : " + ChatColor.YELLOW + ( Config.PlayerAlarm ? "あり":"なし" ), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "Dynmap Area 表示 : " + ChatColor.YELLOW + ( Config.OnDynmap ? "あり":"なし" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + Config.RePresent, programCode );
         Tools.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + Config.UpCost, programCode );
         Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, programCode );
@@ -192,7 +194,7 @@ public class ConfigManager {
 
         Tools.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ), programCode );
         if ( Field ) {
-            Tools.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Event_World, programCode );
+            Tools.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Config.Event_World, programCode );
             Tools.Prt( p,
                 ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + String.format( "%-7d", Config.Event_X1 ) +
                 ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d",Event_Y1 ) +
@@ -206,7 +208,6 @@ public class ConfigManager {
         }
 
         Tools.Prt( p, ChatColor.WHITE + "参加時メッセージ : " + Config.JoinMessage, programCode );
-
         Tools.Prt( p, ChatColor.WHITE + "Broadcast Command:", programCode );
         for( int i = 0; i<Config.bc_command.size(); i++ ) {
             Tools.Prt( p, ChatColor.WHITE + String.valueOf( i ) + ") : " + ChatColor.YELLOW + Config.bc_command.get( i ), programCode );
@@ -265,7 +266,7 @@ public class ConfigManager {
      * @return
      */
     public boolean CheckArea( Location loc ) {
-        if ( !loc.getWorld().getName().equals( Event_World ) ) return false;
+        if ( !loc.getWorld().getName().equals( Config.Event_World ) ) return false;
         return !(
             ( loc.getBlockX()<Config.Event_X1 || loc.getBlockX()>Event_X2 ) ||
             ( loc.getBlockY()<Event_Y1 || loc.getBlockY()>Event_Y2 ) ||
