@@ -94,9 +94,9 @@ JOIN_MESSAGE: "§eイベントルールに則って参加してください [ §
 #   イベント参加時に自動配布されるツールの種類/Present Tool Item Setting
 EventToolName: §bイベントツール
 Present:
-    - IRON_PICKAXE
-    - IRON_SPADE
-    - IRON_AXE
+    - IRON_PICKAXE,7
+    - IRON_SPADE,6
+    - IRON_AXE,6
 
 #   イベントに関するブロックのポイント設定/Count Stones
 #   ポイントマイナス値はペナルティブロック扱い

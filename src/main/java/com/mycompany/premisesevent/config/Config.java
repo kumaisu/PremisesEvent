@@ -17,8 +17,9 @@ public class Config {
 
     public static String programCode = "PE";
 
-    public static Map< String, String > AreaName = new TreeMap< String, String>();
-    public static Map< String, String > AreaBlock = new TreeMap< String, String>();
+    public static Map< String, String > AreaName = new TreeMap< String, String >();
+    public static Map< String, String > AreaBlock = new TreeMap< String, String >();
+    public static Map< String, Integer > tools = new TreeMap< String, Integer >();
 
     /**
      * イベント参加モード用のenum
@@ -59,6 +60,5 @@ public class Config {
     public static int ScoreBroadcast;
     public static List< String > bc_command;
     public static List< String > stones;
-    public static List< String > tools;
     public static boolean OnDynmap;
 }

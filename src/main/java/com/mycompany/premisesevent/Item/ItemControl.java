@@ -47,10 +47,11 @@ public class ItemControl {
      *
      * @param player        操作プレイヤー情報
      * @param ToolName      イベントツール判定用文字列
+     * @param Digs          効率強化の値
      * @param tool          新規時のアイテム基本情報
      */
-    public void ToolPresent( Player player, Material tool, String ToolName ) {
-        player.getInventory().addItem( Items.EventTool( ToolName, tool, player.isOp() ) );
+    public void ToolPresent( Player player, Material tool, int Digs, String ToolName ) {
+        player.getInventory().addItem( Items.EventTool( ToolName, tool, Digs, player.isOp() ) );
         Tools.Prt( player, ChatColor.GREEN + "イベント用ツール[" + tool + "]をプレゼントしました", consoleMode.full, programCode );
     }
 

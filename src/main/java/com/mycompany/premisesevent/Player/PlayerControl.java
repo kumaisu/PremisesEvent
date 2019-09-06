@@ -227,10 +227,10 @@ public class PlayerControl {
 
         ItemControl ic = new ItemControl();
         ic.ItemPresent( p );
-        for( int i = 0; i<Config.tools.size(); i++ ) {
-            Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + Config.tools.get( i ), programCode );
-            ic.ToolPresent( p, Material.getMaterial( Config.tools.get( i ) ), Config.EventToolName );
-        }
+        Config.tools.keySet().forEach( ( key ) -> {
+            Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + key, programCode );
+            ic.ToolPresent( p, Material.getMaterial( key ), Config.tools.get( key ), Config.EventToolName );
+        } );
 
         Bukkit.broadcastMessage( "<Premises> " + ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
         return true;
@@ -254,7 +254,7 @@ public class PlayerControl {
             return false;
         }
 
-        if ( !Config.tools.contains( Item ) ) {
+        if ( !Config.tools.keySet().contains( Item ) ) {
             Tools.Prt( player, ChatColor.RED + "再配布対象のツールではありません", consoleMode.normal, programCode );
             return false;
         }
@@ -262,7 +262,7 @@ public class PlayerControl {
         int Rep = Config.RePresent;
         if ( getScore() > Rep ) {
             ItemControl ic = new ItemControl();
-            ic.ToolPresent( player, Material.getMaterial( Item ), Config.EventToolName );
+            ic.ToolPresent( player, Material.getMaterial( Item ), 6, Config.EventToolName );
             addScore( null, - Rep );
             Tools.Prt( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Material.getMaterial( Item ).name() + " tools !!", consoleMode.normal, programCode );
             return true;

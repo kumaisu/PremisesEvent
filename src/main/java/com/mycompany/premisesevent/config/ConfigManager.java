@@ -70,7 +70,12 @@ public class ConfigManager {
             Config.stones.add( param[0] );
         }
 
-        Config.tools = ( List< String > )config.getList( "Present" );
+        List< String > getTool = ( List< String > ) config.getList( "Present" );
+        for( int i = 0; i<getTool.size(); i++ ) {
+            String[] param = getTool.get( i ).split(",");
+            if ( param[1] == null ) { param[1] = "5"; }
+            Config.tools.put( param[0], Integer.valueOf( param[1] ) );
+        }
 
         Config.EventName = config.getString( "EventName" );
         Field = config.getBoolean( "Field", false );
@@ -188,9 +193,9 @@ public class ConfigManager {
         Tools.Prt( p, ChatColor.WHITE + "タイトル表示     : " + ChatColor.YELLOW + ( Config.titlePrint ? "する":"しない" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "イベントツール名 : " + Config.EventToolName, programCode );
 
-        for( int i = 0; i<Config.tools.size(); i++ ) {
-            Tools.Prt( p, ChatColor.WHITE + "Tools (" + i + ") : " + ChatColor.YELLOW + Config.tools.get( i ), programCode );
-        }
+        Config.tools.keySet().forEach ( ( gn ) -> {
+            Tools.Prt( p, ChatColor.WHITE + "Tools : " + ChatColor.YELLOW + gn + "(" + Config.tools.get( gn ) + ")", programCode );
+        } );
 
         Tools.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ), programCode );
         if ( Field ) {

@@ -61,6 +61,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public static int secondLoc_X;
     public static int secondLoc_Y;
     public static int secondLoc_Z;
+    public static boolean ClickFlag = true;
 
     /**
      * 起動シーケンス
@@ -114,14 +115,15 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         ItemControl ic = new ItemControl();
         if ( pc.get( p.getUniqueId() ).getPresentFlag() ) {
-            Tools.Prt( p, ChatColor.YELLOW + "イベント装備の再配布", Tools.consoleMode.normal, programCode );
+            Tools.Prt( p, ChatColor.YELLOW + "イベント装備の配布", Tools.consoleMode.normal, programCode );
             ic.ItemPresent( p );
         }
         if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
-            Tools.Prt( p, ChatColor.YELLOW + "イベントツールの再配布", Tools.consoleMode.normal, programCode );
-            for( int i = 0; i<Config.tools.size(); i++ ) {
-                ic.ToolPresent( p, Material.getMaterial( Config.tools.get( i ) ), Config.EventToolName );
-            }
+            Tools.Prt( p, ChatColor.YELLOW + "イベントツールの配布", Tools.consoleMode.normal, programCode );
+            Config.tools.keySet().forEach( ( key ) -> {
+                Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + key, programCode );
+                ic.ToolPresent( p, Material.getMaterial( key ), Config.tools.get( key ), Config.EventToolName );
+            } );
         }
     }
 
@@ -150,31 +152,47 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      */
     @EventHandler
     public void onClick( PlayerInteractEvent event ) {
-        Player player = event.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand();
-        Block block = event.getClickedBlock();
+        if ( event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_AIR ) { return; }
 
-        if ( item.hasItemMeta() && item.getItemMeta().hasDisplayName() ) {
-            if ( ( item.getItemMeta().getDisplayName().equals( Config.EventToolName ) ) &&
-                ( event.getAction() == Action.RIGHT_CLICK_BLOCK )
-            ) {
-                if ( config.GetField() && !config.CheckArea( block.getLocation() ) ) return;
-                int cx = ( int )( block.getLocation().getX() - Config.Event_X1 ) / 16;
-                int cz = ( int )( block.getLocation().getZ() - Config.Event_Z1 ) / 16;
-                String CheckCode = cx + "-" + cz;
-                if ( Config.AreaName.get( CheckCode ) == null ) {
-                    Tools.Prt( player,
-                        ChatColor.YELLOW + "[" + CheckCode + "] " +
-                        ChatColor.GREEN + "誰のエリアでもありません"
-                        , Tools.consoleMode.full, programCode
-                    );
-                } else {
-                    Tools.Prt( player,
-                        ChatColor.YELLOW + "[" + CheckCode + "] " +
-                        ChatColor.AQUA + Config.AreaName.get( CheckCode ) +
-                        ChatColor.GREEN + "さんの掘削エリアです"
-                        , Tools.consoleMode.normal, programCode
-                    );
+        Player player = event.getPlayer();
+        Block block = event.getClickedBlock();
+        ItemStack item = player.getInventory().getItemInMainHand();
+        Material material = block.getType();
+        Tools.Prt( "Material = " + material.name(), Tools.consoleMode.max, programCode );
+
+        try {
+            Sign sign = ( Sign ) block.getState();
+            switch ( sign.getLine( 0 ) ) {
+                case "[P-Get]":
+                    pc.get( player.getUniqueId() ).getEventItem( player, sign.getLine( 1 ) );
+                    break;
+                case "[P-Join]":
+                    pc.get( player.getUniqueId() ).JoinPlayer( player );
+                    break;
+                case "[P-Status]":
+                    PlayerStatus( player, "" );
+                    break;
+                case "[P-Update]":
+                    if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).ToolUpdate( player, false );
+                    break;
+                case "[P-TOP]":
+                    if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).save();
+                    TopList TL = new TopList( this.getDataFolder().toString() );
+                    TL.Top( player, consoleMode.max );
+                    break;
+                default:
+            }
+        } catch ( ClassCastException e ) {}
+
+        if ( player.isSneaking() ) {
+            if ( item.hasItemMeta() && item.getItemMeta().hasDisplayName() ) {
+                if ( ( item.getItemMeta().getDisplayName().equals( Config.EventToolName ) ) &&
+                    ( event.getAction() == Action.RIGHT_CLICK_BLOCK )
+                ) {
+                    if ( ClickFlag ) {
+                        AreaManager.AreaGet( player, block );
+                    }
+                    ClickFlag = !ClickFlag;
                 }
             }
         }
@@ -260,44 +278,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         String blockName = BukkitTool.getStoneName( block );
 
         //  イベント保護
-        if ( Config.PlayerAlarm ) {
-            String locKey = ( int ) block.getLocation().getX() + "-" + ( int ) block.getLocation().getY() + "-" + ( int ) block.getLocation().getZ();
-            int cx = ( int )( block.getLocation().getX() - Config.Event_X1 ) / 16;
-            int cz = ( int )( block.getLocation().getZ() - Config.Event_Z1 ) / 16;
-            String CheckCode = cx + "-" + cz;
-            Tools.Prt( 
-                "Place Location key : " + locKey +
-                " Area Code [ " + CheckCode + " ]",
-                Tools.consoleMode.max, programCode
-            );
-
-            //  デバッグ表示 Start
-            if ( Config.AreaName.get( CheckCode ) != null ) {
-                Tools.Prt( "Area : not null", Tools.consoleMode.max, programCode );
-                if ( Config.AreaName.get( CheckCode ).contains( player.getName() ) ) {
-                    Tools.Prt( "Name : " + Config.AreaName.get( CheckCode ), Tools.consoleMode.max, programCode );
-                }
-            }
-            if ( Config.AreaBlock.get( locKey ) != null ) {
-                Tools.Prt( "Area Block : " + locKey, Tools.consoleMode.max, programCode);
-            }
-            //  デバッグ表示 End
-
-            if ( 
-               ( Config.AreaName.get( CheckCode ) != null ) && 
-               ( Config.AreaName.get( CheckCode ).contains( player.getName() ) ) &&
-               ( Config.AreaBlock.get( locKey ) != null )
-            ) {
-                Tools.Prt( player, ChatColor.RED + "[" + CheckCode + "] " + Config.AreaName.get( CheckCode ) + "さんのエリア解放します", Tools.consoleMode.normal, programCode );
-                Config.AreaName.remove( CheckCode );
-                Config.AreaBlock.remove( locKey );
-                if ( Config.OnDynmap ) {
-                    String Command = "dmarker deletearea id:" + cx + "-" + cz;
-                    Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
-                    Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
-                }
-            }
-        }
+        if ( Config.PlayerAlarm ) { AreaManager.AreaRelease( player, block ); }
 
         //  設置したブロックであるというフラグを設定しているが、機能していない
         block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
@@ -341,51 +322,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
     }
 
-    private boolean WarningCheck( Player player, Block checkBlock ) {
-        if ( config.getPoint( BukkitTool.getStoneName( checkBlock ) ) > 0 ) {
-            Tools.Prt( player, ChatColor.RED + "違反警告 : " + Config.JoinMessage, Tools.consoleMode.normal, programCode );
-            Tools.Prt( ChatColor.RED + player.getDisplayName() + " Upper Block : " + BukkitTool.getStoneName( checkBlock ), Tools.consoleMode.full, programCode );
-            if ( Config.titlePrint ) {
-                player.sendTitle(
-                    ChatColor.RED + "ルール違反の可能性があります",
-                    ChatColor.YELLOW + Config.JoinMessage,
-                    0, 50, 0
-                );
-            }
-            return true;
-        } else return false;
-    }
-
-    private boolean SetDynmapArea( Player player, int bx, int bz ) {
-        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), "dmarker clearcors" );
-        int lx = ( ( bx * 16 ) + Config.Event_X1 );
-        int lz = ( ( bz * 16 ) + Config.Event_Z1 );
-        int hx = ( ( ( bx + 1 ) * 16 ) + Config.Event_X1 );
-        int hz = ( ( ( bz + 1 ) * 16 ) + Config.Event_Z1 );
-
-        String Command = "dmarker addcorner " + lx + " 1 " + lz + " " + Config.Event_World;
-        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
-        Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
-
-        Command = "dmarker addcorner " + lx + " 1 " + hz + " " + Config.Event_World;
-        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
-        Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
-
-        Command = "dmarker addcorner " + hx + " 1 " + hz + " " + Config.Event_World;
-        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
-        Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
-
-        Command = "dmarker addcorner " + hx + " 1 " + lz + " " + Config.Event_World;
-        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
-        Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
-
-        Command = "dmarker addarea id:" + bx + "-" + bz + " " + player.getName();
-        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
-        Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
-
-        return true;
-    }
-
     /**
      * ブロックが破壊された時の処理
      *
@@ -426,13 +362,13 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( !player.hasPermission( "Premises.warning" ) ) {
             switch ( Config.UpperBlock ) {
                 case Block:
-                    if ( WarningCheck( player, checkBlock ) ) {
+                    if ( AreaManager.WarningCheck( player, checkBlock ) ) {
                         event.setCancelled( true );
                         return;
                     }
                     break;
                 case Warning:
-                    if ( WarningCheck( player, checkBlock ) ) {
+                    if ( AreaManager.WarningCheck( player, checkBlock ) ) {
                         player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 200, 2 ) );
                     }
                 default:
@@ -452,38 +388,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         }
 
-        //  イベント保護
-        if ( Config.PlayerAlarm ) {
-            int cx = ( int )( loc.getX() - Config.Event_X1 ) / 16;
-            int cz = ( int )( loc.getZ() - Config.Event_Z1 ) / 16;
-            String CheckCode = cx + "-" + cz;
-            Tools.Prt( 
-                "Get Location X:" + loc.getX() + " Z:" + loc.getZ() +
-                " Area Code [ " + CheckCode + " ]",
-                Tools.consoleMode.max, programCode );
-            if ( Config.AreaName.get( CheckCode ) == null ) {
-                Config.AreaName.put( CheckCode, player.getName() );
-                String locKey = ( int ) block.getLocation().getX() + "-" + ( int ) block.getLocation().getY() + "-" + ( int ) block.getLocation().getZ();
-                Config.AreaBlock.put( locKey, blockName );
-                if ( Config.OnDynmap ) { SetDynmapArea( player, cx, cz ); }
-                Tools.Prt( player, ChatColor.AQUA + "[" + CheckCode + "] " + Config.AreaName.get( CheckCode ) + "さんのエリアに設定しました", Tools.consoleMode.normal, programCode );
-                Tools.Prt( 
-                    "Break Location X:" + loc.getX() + " Y:" + loc.getY() + " Z:" + loc.getZ() +
-                    " Area Code [ " + CheckCode + " ] : " + locKey,
-                    Tools.consoleMode.max, programCode
-                );
-            } else {
-                if ( !Config.AreaName.get( CheckCode ).contains( player.getName() ) || ( player.hasPermission( "Premises.admin" ) && player.isSneaking() ) ) {
-                    Tools.Prt( player,
-                        ChatColor.YELLOW + "[" + CheckCode + "] " +
-                        ( Config.AreaName.get( CheckCode ).equals( player.getName() ) ? ChatColor.AQUA : ChatColor.RED ) +
-                        Config.AreaName.get( CheckCode ) +
-                        ChatColor.YELLOW + "さんの掘削エリアです",
-                        Tools.consoleMode.normal, programCode
-                    );
-                }
-            }
-        }
+        //  エリア関連チェック
+        if ( Config.PlayerAlarm ) { AreaManager.AreaCheck( player, block ); }
 
         //  ブロック処理
         if ( Config.stones.contains( blockName ) ) {
@@ -558,46 +464,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     }
 
     /**
-     * 看板ブロックを右クリック
-     *
-     * @param event
-     */
-    @EventHandler
-    public void onSignClick( PlayerInteractEvent event ) {
-
-        if ( event.getAction() != Action.RIGHT_CLICK_BLOCK ) return;
-
-        Player player = event.getPlayer();
-        Block clickedBlock = event.getClickedBlock();
-        Material material = clickedBlock.getType();
-        Tools.Prt( "Material = " + material.name(), Tools.consoleMode.max, programCode);
-
-        try {
-            Sign sign = ( Sign ) clickedBlock.getState();
-            switch ( sign.getLine( 0 ) ) {
-                case "[P-Get]":
-                    pc.get( player.getUniqueId() ).getEventItem( player, sign.getLine( 1 ) );
-                    break;
-                case "[P-Join]":
-                    pc.get( player.getUniqueId() ).JoinPlayer( player );
-                    break;
-                case "[P-Status]":
-                    PlayerStatus( player, "" );
-                    break;
-                case "[P-Update]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).ToolUpdate( player, false );
-                    break;
-                case "[P-TOP]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).save();
-                    TopList TL = new TopList( this.getDataFolder().toString() );
-                    TL.Top( player, consoleMode.max );
-                    break;
-                default:
-            }
-        } catch ( ClassCastException e ) {}
-    }
-
-    /**
      * イベント参加者のステータス表示する処理
      *
      * @param player
@@ -631,61 +497,5 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Tools.Prt( player, ChatColor.RED + "イベントに参加していません", programCode );
             return false;
         }
-    }
-
-    /**
-     * 参加者のスコアーを操作する処理
-     *
-     * @param player
-     * @param name
-     * @param score
-     * @return
-     */
-    public boolean GiveScore( Player player, String name, String score ) {
-        int scoreNum;
-        Player scorePlayer;
-        boolean createStat = false;
-        boolean retStat;
-
-        try {
-            scoreNum = Integer.parseInt( score );
-        } catch ( NumberFormatException e ) {
-            Tools.Prt( player, ChatColor.RED + "指定された値が正しくありません", programCode );
-            return false;
-        }
-
-        if ( player.getName().equals( name ) ) {
-            scorePlayer = player;
-        } else {
-            Player checkPlayer = Bukkit.getServer().getPlayer( name );
-            if ( checkPlayer != null ) {
-                //  online
-                scorePlayer = checkPlayer;
-            } else {
-                //  offline
-                OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( name );
-                if ( op.hasPlayedBefore() ) {
-                    scorePlayer = op.getPlayer();
-                    pc.put( scorePlayer.getUniqueId(), new PlayerControl( player, this.getDataFolder().toString() ) );
-                    pc.get( scorePlayer.getUniqueId() ).load();
-                    createStat = true;
-                } else {
-                    Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はサーバーに存在しません", programCode );
-                    return false;
-                }
-            }
-        }
-
-        if ( pc.get( scorePlayer.getUniqueId() ).getEntry() == 1 ) {
-            pc.get( scorePlayer.getUniqueId() ).addScore( null, scoreNum );
-            pc.get( scorePlayer.getUniqueId() ).save();
-            retStat = true;
-        } else {
-            Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません", programCode );
-            retStat = false;
-        }
-
-        if ( createStat ) pc.remove( scorePlayer.getUniqueId() );
-        return retStat;
     }
 }

@@ -5,21 +5,20 @@
  */
 package com.mycompany.premisesevent.listener;
 
-import com.mycompany.kumaisulibraries.Tools;
-import com.mycompany.premisesevent.Item.ItemControl;
-import com.mycompany.premisesevent.Player.PlayerControl;
-import com.mycompany.premisesevent.PremisesEvent;
-import static com.mycompany.premisesevent.PremisesEvent.pc;
-import com.mycompany.premisesevent.config.Config;
-import static com.mycompany.premisesevent.config.Config.programCode;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
+import com.mycompany.kumaisulibraries.Tools;
+import com.mycompany.premisesevent.Item.ItemControl;
+import com.mycompany.premisesevent.Player.PlayerControl;
+import com.mycompany.premisesevent.PremisesEvent;
+import com.mycompany.premisesevent.config.Config;
+import static com.mycompany.premisesevent.PremisesEvent.pc;
+import static com.mycompany.premisesevent.config.Config.programCode;
 
 /**
  *
@@ -64,7 +63,6 @@ public class PlayerListener implements Listener {
         if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
             Tools.Prt( p, ChatColor.YELLOW + "イベントツールの再配布", Tools.consoleMode.normal, programCode );
             for( int i = 0; i<Config.tools.size(); i++ ) {
-                ic.ToolPresent( p, Material.getMaterial( Config.tools.get( i ) ), Config.EventToolName );
             }
         }
     }

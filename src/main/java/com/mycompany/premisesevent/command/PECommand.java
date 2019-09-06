@@ -5,14 +5,6 @@
  */
 package com.mycompany.premisesevent.command;
 
-import com.mycompany.kumaisulibraries.BukkitTool;
-import com.mycompany.kumaisulibraries.Tools;
-import com.mycompany.premisesevent.Item.ItemControl;
-import com.mycompany.premisesevent.Player.TopList;
-import com.mycompany.premisesevent.PremisesEvent;
-import com.mycompany.premisesevent.config.Config;
-import static com.mycompany.premisesevent.PremisesEvent.pc;
-import static com.mycompany.premisesevent.config.Config.programCode;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +14,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
+import com.mycompany.kumaisulibraries.BukkitTool;
+import com.mycompany.kumaisulibraries.Tools;
+import com.mycompany.premisesevent.Item.ItemControl;
+import com.mycompany.premisesevent.Player.PlayerControl;
+import com.mycompany.premisesevent.Player.TopList;
+import com.mycompany.premisesevent.PremisesEvent;
+import com.mycompany.premisesevent.config.Config;
+import static com.mycompany.premisesevent.config.Config.programCode;
+import static com.mycompany.premisesevent.PremisesEvent.pc;
 
 /**
  *
@@ -77,7 +79,7 @@ public class PECommand implements CommandExecutor {
                 } else return false;
             case "give":
                 if ( hasPermission ) {
-                    if ( args.length == 4 ) { return instance.GiveScore( player, args[2], args[3] ); }
+                    if ( args.length == 4 ) { return GiveScore( player, args[2], args[3] ); }
                     return true;
                 } else return false;
             case "Console":
@@ -166,5 +168,61 @@ public class PECommand implements CommandExecutor {
 
         Tools.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + commandString + "]", Tools.consoleMode.full, programCode );
         return false;
+    }
+
+    /**
+     * 参加者のスコアーを操作する処理
+     *
+     * @param player
+     * @param name
+     * @param score
+     * @return
+     */
+    private boolean GiveScore( Player player, String name, String score ) {
+        int scoreNum;
+        Player scorePlayer;
+        boolean createStat = false;
+        boolean retStat;
+
+        try {
+            scoreNum = Integer.parseInt( score );
+        } catch ( NumberFormatException e ) {
+            Tools.Prt( player, ChatColor.RED + "指定された値が正しくありません", programCode );
+            return false;
+        }
+
+        if ( player.getName().equals( name ) ) {
+            scorePlayer = player;
+        } else {
+            Player checkPlayer = Bukkit.getServer().getPlayer( name );
+            if ( checkPlayer != null ) {
+                //  online
+                scorePlayer = checkPlayer;
+            } else {
+                //  offline
+                OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( name );
+                if ( op.hasPlayedBefore() ) {
+                    scorePlayer = op.getPlayer();
+                    pc.put( scorePlayer.getUniqueId(), new PlayerControl( player, instance.getDataFolder().toString() ) );
+                    pc.get( scorePlayer.getUniqueId() ).load();
+                    createStat = true;
+                } else {
+                    Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はサーバーに存在しません", programCode );
+                    return false;
+                }
+            }
+        }
+
+        if ( pc.get( scorePlayer.getUniqueId() ).getEntry() == 1 ) {
+            pc.get( scorePlayer.getUniqueId() ).addScore( null, scoreNum );
+            pc.get( scorePlayer.getUniqueId() ).save();
+            retStat = true;
+        } else {
+            Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません", programCode );
+            retStat = false;
+        }
+
+        if ( createStat ) pc.remove( scorePlayer.getUniqueId() );
+        return retStat;
     }
 }
