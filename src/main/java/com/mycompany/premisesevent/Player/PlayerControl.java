@@ -262,7 +262,7 @@ public class PlayerControl {
         int Rep = Config.RePresent;
         if ( getScore() > Rep ) {
             ItemControl ic = new ItemControl();
-            ic.ToolPresent( player, Material.getMaterial( Item ), 6, Config.EventToolName );
+            ic.ToolPresent( player, Material.getMaterial( Item ), Config.MinDigSpeed, Config.EventToolName );
             addScore( null, - Rep );
             Tools.Prt( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Material.getMaterial( Item ).name() + " tools !!", consoleMode.normal, programCode );
             return true;

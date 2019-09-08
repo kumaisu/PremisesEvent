@@ -93,6 +93,7 @@ JOIN_MESSAGE: "§eイベントルールに則って参加してください [ §
 
 #   イベント参加時に自動配布されるツールの種類/Present Tool Item Setting
 EventToolName: §bイベントツール
+MinDigSpeed: 6
 Present:
     - IRON_PICKAXE,7
     - IRON_SPADE,6
@@ -131,3 +132,9 @@ PointStone:
     - SMOOTH_BRICK,-10000
     - NETHER_BRICK,-10000
     - BONE_BLOCK,-10000
+
+#   直上ブロックの判定を回避するブロック
+#   イベントエリアの区切り等に利用するブロックを数種設定できる
+IgnoreStone:
+    - SEA_LANTERN
+    

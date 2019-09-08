@@ -62,6 +62,8 @@ public class ConfigManager {
         }
         config = plugin.getConfig();
 
+        Config.ignoreStone = ( List< String > ) config.getList( "IgnoreStone" );
+        
         Config.stones = new ArrayList<>();
         List< String > getstr = ( List< String > ) config.getList( "PointStone" );
         for( int i = 0; i<getstr.size(); i++ ) {
@@ -83,6 +85,7 @@ public class ConfigManager {
         Config.ScoreBroadcast = config.getInt( "ScoreBroadcast", 0 );
         Config.bc_command = ( List< String > )config.getList( "BroadcastCommand" );
         Config.RePresent = config.getInt( "RePresent", 0 );
+        Config.MinDigSpeed = config.getInt( "MinDigSpeed", 5 );
         Config.UpCost = config.getInt( "UpdateCost", 0 );
         Repair = 1 - config.getDouble( "Repair", 0 );
         Config.titlePrint  = config.getBoolean( "sendTitle", true );
@@ -180,6 +183,7 @@ public class ConfigManager {
         Tools.Prt( p, ChatColor.WHITE + "他者エリア警告   : " + ChatColor.YELLOW + ( Config.PlayerAlarm ? "あり":"なし" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "Dynmap Area 表示 : " + ChatColor.YELLOW + ( Config.OnDynmap ? "あり":"なし" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + Config.RePresent, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "最小効率強化     : " + ChatColor.YELLOW + Config.MinDigSpeed, programCode );
         Tools.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + Config.UpCost, programCode );
         Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, programCode );
         Tools.Prt( p, ChatColor.WHITE + "通知 Console     : " + ChatColor.YELLOW + Config.ScoreNotice, programCode );

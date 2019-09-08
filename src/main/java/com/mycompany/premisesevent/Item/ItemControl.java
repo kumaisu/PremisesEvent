@@ -52,7 +52,7 @@ public class ItemControl {
      */
     public void ToolPresent( Player player, Material tool, int Digs, String ToolName ) {
         player.getInventory().addItem( Items.EventTool( ToolName, tool, Digs, player.isOp() ) );
-        Tools.Prt( player, ChatColor.GREEN + "イベント用ツール[" + tool + "]をプレゼントしました", consoleMode.full, programCode );
+        Tools.Prt( player, ChatColor.GREEN + "イベント用ツール[" + tool.name() + "(" + Digs + ")]をプレゼントしました", consoleMode.full, programCode );
     }
 
     /**

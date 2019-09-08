@@ -55,10 +55,12 @@ public class Config {
     public static String JoinMessage;
     public static String EventToolName;
     public static int RePresent;
+    public static int MinDigSpeed;
     public static int UpCost;
     public static int ScoreNotice;
     public static int ScoreBroadcast;
     public static List< String > bc_command;
     public static List< String > stones;
+    public static List< String > ignoreStone;
     public static boolean OnDynmap;
 }

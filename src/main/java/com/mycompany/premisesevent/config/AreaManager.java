@@ -238,7 +238,7 @@ public class AreaManager {
     }
 
     public static boolean WarningCheck( Player player, Block checkBlock ) {
-        if ( config.getPoint( BukkitTool.getStoneName( checkBlock ) ) > 0 ) {
+        if ( ( config.getPoint( BukkitTool.getStoneName( checkBlock ) ) > 0 ) && ( !Config.ignoreStone.contains( BukkitTool.getStoneName( checkBlock ) ) ) ) {
             Tools.Prt( player, ChatColor.RED + "違反警告 : " + Config.JoinMessage, Tools.consoleMode.normal, programCode );
             Tools.Prt( ChatColor.RED + player.getDisplayName() + " Upper Block : " + BukkitTool.getStoneName( checkBlock ), Tools.consoleMode.full, programCode );
             if ( Config.titlePrint ) {
@@ -251,5 +251,4 @@ public class AreaManager {
             return true;
         } else return false;
     }
-
 }
