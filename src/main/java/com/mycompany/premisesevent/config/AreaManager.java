@@ -176,8 +176,11 @@ public class AreaManager {
             Config.AreaName.put( CheckCode, player.getName() );
             String locKey = ( int ) block.getLocation().getX() + "-" + ( int ) block.getLocation().getY() + "-" + ( int ) block.getLocation().getZ();
             Config.AreaBlock.put( locKey, BukkitTool.getStoneName( block ) );
-            if ( Config.OnDynmap ) { DynmapControl.SetDynmapArea( player, cx, cz ); }
-            Tools.Prt( player, ChatColor.AQUA + "[" + CheckCode + "] " + Config.AreaName.get( CheckCode ) + "さんのエリアに設定しました", Tools.consoleMode.normal, programCode );
+            if ( Config.OnDynmap ) { DynmapControl.SetDynmapArea( player, cx, cz, block ); }
+            String getMessage = ChatColor.YELLOW + "[" + CheckCode + "] ";
+            String getSubMessage = ChatColor.AQUA + Config.AreaName.get( CheckCode ) + "さんのエリアに設定しました";
+            Tools.Prt( player, getMessage + getSubMessage, Tools.consoleMode.normal, programCode );
+            if ( Config.titlePrint ) { player.sendTitle( getMessage + "を確保", getSubMessage, 0, 50, 0 ); }
             Tools.Prt( 
                 "Break Location X:" + block.getLocation().getX() + " Y:" + block.getLocation().getY() + " Z:" + block.getLocation().getZ() +
                 " Area Code [ " + CheckCode + " ] : " + locKey,

@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.premisesevent.config.Config;
 import static com.mycompany.premisesevent.config.Config.programCode;
+import org.bukkit.block.Block;
 
 /**
  *
@@ -23,8 +24,9 @@ public class DynmapControl {
      * @param player
      * @param bx
      * @param bz 
+     * @param block 
      */
-    public static void SetDynmapArea( Player player, int bx, int bz ) {
+    public static void SetDynmapArea( Player player, int bx, int bz, Block block ) {
         Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), "dmarker clearcors" );
         int lx = ( ( bx * 16 ) + Config.Event_X1 );
         int lz = ( ( bz * 16 ) + Config.Event_Z1 );
@@ -47,7 +49,11 @@ public class DynmapControl {
         Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
         Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
 
-        Command = "dmarker addarea id:" + bx + "-" + bz + " " + player.getName();
+        String locKey = "\"[" + bx + "-" + bz + "] " +
+                player.getName() + " (" +
+                ( int ) block.getLocation().getX() + "," + ( int ) block.getLocation().getY() + "," + ( int ) block.getLocation().getZ() + ")\"";
+
+        Command = "dmarker addarea id:" + bx + "-" + bz + " " + locKey;
         Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
         Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
     }
