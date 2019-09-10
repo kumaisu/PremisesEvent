@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.kumaisulibraries.Tools.consoleMode;
 import com.mycompany.premisesevent.config.Config;
+import com.mycompany.premisesevent.config.Messages;
 import static com.mycompany.premisesevent.config.Config.programCode;
 
 /**
@@ -99,7 +100,7 @@ public class TopList {
      */
     public void Top( Player player, consoleMode key ) {
         String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
-        Tools.Prt( player, ChatColor.GREEN + "イベントプレイヤーランキング", programCode );
+        Tools.Prt( player, ChatColor.GREEN + Messages.ReplaceString( "EventList" ), programCode );
         Tools.Prt( player, ChatColor.GREEN + "============================", programCode );
 
         Map<String, Integer> rank = new HashMap<>();

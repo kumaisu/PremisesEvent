@@ -34,9 +34,9 @@ public class AreaCommand implements CommandExecutor {
       */
      private void help( Player player ) {
         Tools.Prt( player, ChatColor.GREEN + "/Area Command List", programCode );
-        Tools.Prt( player, ChatColor.YELLOW + "list  : " + ChatColor.WHITE + "保有エリアリスト", programCode );
-        Tools.Prt( player, ChatColor.YELLOW + "block : " + ChatColor.WHITE + "キーブロックリスト", programCode );
-        Tools.Prt( player, ChatColor.YELLOW + "help  : " + ChatColor.WHITE + "ヘルプ", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "list  : " + ChatColor.WHITE + "Holding Area List", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "block : " + ChatColor.WHITE + "Key Block List", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "help  : " + ChatColor.WHITE + "Command List", programCode );
      }
 
     /**

@@ -141,20 +141,12 @@ public class AreaManager {
         if ( config.GetField() && !config.CheckArea( block.getLocation() ) ) return;
         int cx = ( int )( block.getLocation().getX() - Config.Event_X1 ) / 16;
         int cz = ( int )( block.getLocation().getZ() - Config.Event_Z1 ) / 16;
-        String CheckCode = cx + "-" + cz;
-        if ( Config.AreaName.get( CheckCode ) == null ) {
-            Tools.Prt( player,
-                ChatColor.YELLOW + "[" + CheckCode + "] " +
-                ChatColor.GREEN + "誰のエリアでもありません",
-                Tools.consoleMode.full, programCode
-            );
+        Messages.AreaCode = cx + "-" + cz;
+        if ( Config.AreaName.get( Messages.AreaCode ) == null ) {
+            Tools.Prt( player, Messages.ReplaceString( "NoOwnerArea" ), Tools.consoleMode.full, programCode );
         } else {
-            Tools.Prt( player,
-                ChatColor.YELLOW + "[" + CheckCode + "] " +
-                ChatColor.AQUA + Config.AreaName.get( CheckCode ) +
-                ChatColor.GREEN + "さんの掘削エリアです",
-                Tools.consoleMode.normal, programCode
-            );
+            Messages.RepNames = Config.AreaName.get( Messages.AreaCode );
+            Tools.Prt( player, Messages.ReplaceString( "OwnerArea" ), Tools.consoleMode.normal, programCode );
         }
     }
 
@@ -167,34 +159,30 @@ public class AreaManager {
     public static void AreaCheck( Player player, Block block ) {
         int cx = ( int )( block.getLocation().getX() - Config.Event_X1 ) / 16;
         int cz = ( int )( block.getLocation().getZ() - Config.Event_Z1 ) / 16;
-        String CheckCode = cx + "-" + cz;
+        Messages.AreaCode = cx + "-" + cz;
         Tools.Prt( 
             "Get Location X:" + block.getLocation().getX() + " Z:" + block.getLocation().getZ() +
-            " Area Code [ " + CheckCode + " ]",
+            " Area Code [ " + Messages.AreaCode + " ]",
             Tools.consoleMode.max, programCode );
-        if ( Config.AreaName.get( CheckCode ) == null ) {
-            Config.AreaName.put( CheckCode, player.getName() );
+        if ( Config.AreaName.get( Messages.AreaCode ) == null ) {
+            Config.AreaName.put( Messages.AreaCode, player.getName() );
             String locKey = ( int ) block.getLocation().getX() + "-" + ( int ) block.getLocation().getY() + "-" + ( int ) block.getLocation().getZ();
             Config.AreaBlock.put( locKey, BukkitTool.getStoneName( block ) );
             if ( Config.OnDynmap ) { DynmapControl.SetDynmapArea( player, cx, cz, block ); }
-            String getMessage = ChatColor.YELLOW + "[" + CheckCode + "] ";
-            String getSubMessage = ChatColor.AQUA + Config.AreaName.get( CheckCode ) + "さんのエリアに設定しました";
+            String getMessage = Messages.ReplaceString( "GetAreaM" );
+            Messages.RepNames = Config.AreaName.get( Messages.AreaCode );
+            String getSubMessage = Messages.ReplaceString( "GetAreaS" );
             Tools.Prt( player, getMessage + getSubMessage, Tools.consoleMode.normal, programCode );
-            if ( Config.titlePrint ) { player.sendTitle( getMessage + "を確保", getSubMessage, 0, 50, 0 ); }
+            if ( Config.titlePrint ) { player.sendTitle( getMessage + Messages.ReplaceString( "GetAreaM2" ), getSubMessage, 0, 50, 0 ); }
             Tools.Prt( 
                 "Break Location X:" + block.getLocation().getX() + " Y:" + block.getLocation().getY() + " Z:" + block.getLocation().getZ() +
-                " Area Code [ " + CheckCode + " ] : " + locKey,
+                " Area Code [ " + Messages.AreaCode + " ] : " + locKey,
                 Tools.consoleMode.max, programCode
             );
         } else {
-            if ( !Config.AreaName.get( CheckCode ).contains( player.getName() ) || ( player.hasPermission( "Premises.admin" ) && player.isSneaking() ) ) {
-                Tools.Prt( player,
-                    ChatColor.YELLOW + "[" + CheckCode + "] " +
-                    ( Config.AreaName.get( CheckCode ).equals( player.getName() ) ? ChatColor.AQUA : ChatColor.RED ) +
-                    Config.AreaName.get( CheckCode ) +
-                    ChatColor.YELLOW + "さんの掘削エリアです",
-                    Tools.consoleMode.normal, programCode
-                );
+            if ( !Config.AreaName.get( Messages.AreaCode ).contains( player.getName() ) || ( player.hasPermission( "Premises.admin" ) && player.isSneaking() ) ) {
+                Messages.RepNames = ( Config.AreaName.get( Messages.AreaCode ).equals( player.getName() ) ? ChatColor.AQUA : ChatColor.RED ) + Config.AreaName.get( Messages.AreaCode );
+                Tools.Prt( player, Messages.ReplaceString( "OwnerArea" ), Tools.consoleMode.normal, programCode );
             }
         }
     }
@@ -209,18 +197,18 @@ public class AreaManager {
         String locKey = ( int ) block.getLocation().getX() + "-" + ( int ) block.getLocation().getY() + "-" + ( int ) block.getLocation().getZ();
         int cx = ( int )( block.getLocation().getX() - Config.Event_X1 ) / 16;
         int cz = ( int )( block.getLocation().getZ() - Config.Event_Z1 ) / 16;
-        String CheckCode = cx + "-" + cz;
+        Messages.AreaCode = cx + "-" + cz;
         Tools.Prt( 
             "Place Location key : " + locKey +
-            " Area Code [ " + CheckCode + " ]",
+            " Area Code [ " + Messages.AreaCode + " ]",
             Tools.consoleMode.max, programCode
         );
 
         //  デバッグ表示 Start
-        if ( Config.AreaName.get( CheckCode ) != null ) {
+        if ( Config.AreaName.get( Messages.AreaCode ) != null ) {
             Tools.Prt( "Area : not null", Tools.consoleMode.max, programCode );
-            if ( Config.AreaName.get( CheckCode ).contains( player.getName() ) ) {
-                Tools.Prt( "Name : " + Config.AreaName.get( CheckCode ), Tools.consoleMode.max, programCode );
+            if ( Config.AreaName.get( Messages.AreaCode ).contains( player.getName() ) ) {
+                Tools.Prt( "Name : " + Config.AreaName.get( Messages.AreaCode ), Tools.consoleMode.max, programCode );
             }
         }
         if ( Config.AreaBlock.get( locKey ) != null ) {
@@ -229,25 +217,27 @@ public class AreaManager {
         //  デバッグ表示 End
 
         if ( 
-           ( Config.AreaName.get( CheckCode ) != null ) && 
-           ( Config.AreaName.get( CheckCode ).contains( player.getName() ) ) &&
+           ( Config.AreaName.get( Messages.AreaCode ) != null ) && 
+           ( Config.AreaName.get( Messages.AreaCode ).contains( player.getName() ) ) &&
            ( Config.AreaBlock.get( locKey ) != null )
         ) {
-            Tools.Prt( player, ChatColor.RED + "[" + CheckCode + "] " + Config.AreaName.get( CheckCode ) + "さんのエリア解放します", Tools.consoleMode.normal, programCode );
-            Config.AreaName.remove( CheckCode );
+            Messages.RepNames = Config.AreaName.get( Messages.AreaCode );
+            Tools.Prt( player, Messages.ReplaceString( "FreeArea" ), Tools.consoleMode.normal, programCode );
+            Config.AreaName.remove( Messages.AreaCode );
             Config.AreaBlock.remove( locKey );
-            DynmapControl.DelDynmapArea( CheckCode );
+            DynmapControl.DelDynmapArea( Messages.AreaCode );
         }
     }
 
     public static boolean WarningCheck( Player player, Block checkBlock ) {
         if ( ( config.getPoint( BukkitTool.getStoneName( checkBlock ) ) > 0 ) && ( !Config.ignoreStone.contains( BukkitTool.getStoneName( checkBlock ) ) ) ) {
-            Tools.Prt( player, ChatColor.RED + "違反警告 : " + Config.JoinMessage, Tools.consoleMode.normal, programCode );
+            Messages.RepMessage = Config.JoinMessage;
+            Tools.Prt( player, Messages.ReplaceString( "WarningMsg" ), Tools.consoleMode.normal, programCode );
             Tools.Prt( ChatColor.RED + player.getDisplayName() + " Upper Block : " + BukkitTool.getStoneName( checkBlock ), Tools.consoleMode.full, programCode );
             if ( Config.titlePrint ) {
                 player.sendTitle(
-                    ChatColor.RED + "ルール違反の可能性があります",
-                    ChatColor.YELLOW + Config.JoinMessage,
+                    Messages.ReplaceString( "WarnTitleM" ),
+                    Messages.ReplaceString( "WarnTitleS" ),
                     0, 50, 0
                 );
             }

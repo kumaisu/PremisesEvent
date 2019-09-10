@@ -1,0 +1,63 @@
+#カラーコードのみ変換　%$ → §
+ConsoleOnly: "%$4コンソールからは操作できないコマンドです"
+DistArmor: "%$eイベント装備の配布"
+DistTool: "%$eイベントツールの配布"
+NGBlockPlace: "このブロックは設置できません"
+NoMorePlace: "%$4これ以上このブロックは設置できません"
+NoMoreTitleM: "%$4ブロックは設置できません"
+NoMoreTitleS: "%$eイベントルールを確認してください"
+RequestJoin: "%$4イベントに参加してください"
+OmitPlayer: "%$4イベントエリアの操作はできません"
+RequestTool: "%$4指定ツールで行ってください"
+NoBreak: "%$4そのブロックは破壊できません"
+DontBreak: "%$4壊してはいけないブロックです"
+NoBreakTitleM: "%$4破壊不可なブロックです"
+NoBreakTitleS: "%$e元に戻してくださいね"
+ToolWarning: "%$4ツールの耐久値がヤバイですよ"
+ToolWarningTitleM: "%$4耐久値がヤバイですよ"
+ToolWarningTitleS: "%$eアップデートして成長させましょう"
+OnlyJoin: "%$4イベント参加者のみです"
+NoInventory: "%$4アイテム配布のためインベントリに空きが必要です"
+HaveTool: "%$4アップデートするアイテムを持ってください"
+NotToolName: "%$eツール名が違います"
+NoEventTool: "%$eイベント用のツールではありません"
+ValueIncorrect: "%$4指定された値が正しくありません"
+FraudMode: "%$4Config Debugモードの指定値が不正なので、normal設定にしました"
+FraudEvent: "%$4Config Eventが不正なので、Normal 設定にしました"
+FraudUpper: "%$4Config UpperBlockが不正なので、None 設定にしました"
+EventList: "%$2イベントプレイヤーランキング"
+
+#特殊コード
+#   %player%            : player.getName()
+#   %message%           : Unique Message
+#   %tool%              : Tool Name
+#   %digs%              : Tool DigSpeed
+#   %nowDurability%     : now Durability
+#   %targetDurability%  : mini Durability
+#   %score%             : Player Score
+#   %name%              : Other Player.getName()
+#   %AreaCode%          : AreaCode
+AlreadyJoin: "%$4既にイベントへ参加しています"
+AlreadyJoinBroadcast: "%player% さんは、既にイベントに参加しています"
+RefusalJoin: "%$4イベントへの参加は拒否されています"
+RefusalJoinBroadcast: "%player% さんは、イベントに参加できませんでした"
+Join: "%player% さんが、イベントに参加しました"
+JoinBroadcast: "<Premises> %$f%player%%$2さんが、イベントに参加しました"
+PresentArmor: "%$2イベント用装備をプレゼントしました"
+PresentTool: "%$2イベント用ツール[%tool%(%digs%)]をプレゼントしました"
+UpdateTool: "%$bイベント用ツールを[%$2%message%%$b]にアップデートしました"
+NoEnoughScore: "%$4Scoreが足りないので配布できません"
+NowDurable: "%$eツール耐久値は %$f%nowDurability%%$e なので %$f%targetDurability%%$e 以下にしてね"
+NotUpdate: "%$4Scoreが足りないのでアップデートできません"
+Achievement: "<イベント> %$b%player%%$f さんが %$e%score%%$f 点に到達しました"
+NoPlayer: "%$4[ %$e%names%%$4 ] はサーバーに存在しません"
+NoJoin: "%$4[ %$e%names%%$4 ] はイベントに参加していません"
+NoOwnerArea: "%$e[%AreaCode%] %$2誰のエリアでもありません"
+OwnerArea: "%$e[%AreaCode%] %$b%name%%$2 さんの掘削エリアです"
+GetAreaM: "%$e[%AreaCode%] "
+GetAreaM2: "を確保"
+GetAreaS: "%$b%name% さんのエリアに設定しました"
+FreeArea: "%$4[%AreaCode%] %name% さんのエリアから解放しました"
+WarningMsg: "%$4違反警告 : %message%"
+WarnTitleM: "%$4ルール違反の可能性があります"
+WarnTitleS: "%$e%message%"

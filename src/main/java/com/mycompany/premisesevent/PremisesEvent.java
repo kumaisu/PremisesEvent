@@ -43,6 +43,8 @@ import com.mycompany.premisesevent.command.PECommand;
 import com.mycompany.premisesevent.config.AreaManager;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.ConfigManager;
+import com.mycompany.premisesevent.config.Messages;
+import com.mycompany.premisesevent.config.MessagesManager;
 import static com.mycompany.premisesevent.config.Config.programCode;
 
 /**
@@ -54,6 +56,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     private PremisesEvent instance;
 
     public static ConfigManager config;
+    public static MessagesManager messe;
     public static Map<UUID, PlayerControl> pc = new HashMap<>();
     public static int firstLoc_X;
     public static int firstLoc_Y;
@@ -70,6 +73,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onEnable() {
         getServer().getPluginManager().registerEvents( this, this );
         config = new ConfigManager( this );
+        messe = new MessagesManager( this );
         AreaManager.load( this.getDataFolder().toString() );
         getCommand( "premises" ).setExecutor( new PECommand( this ) );
         getCommand( "area" ).setExecutor( new AreaCommand( this ) );
@@ -115,11 +119,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         ItemControl ic = new ItemControl();
         if ( pc.get( p.getUniqueId() ).getPresentFlag() ) {
-            Tools.Prt( p, ChatColor.YELLOW + "イベント装備の配布", Tools.consoleMode.normal, programCode );
+            Tools.Prt( p, Messages.ReplaceString( "DistArmor" ), Tools.consoleMode.normal, programCode );
             ic.ItemPresent( p );
         }
         if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
-            Tools.Prt( p, ChatColor.YELLOW + "イベントツールの配布", Tools.consoleMode.normal, programCode );
+            Tools.Prt( p, Messages.ReplaceString( "DistTool" ), Tools.consoleMode.normal, programCode );
             Config.tools.keySet().forEach( ( key ) -> {
                 Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + key, programCode );
                 ic.ToolPresent( p, Material.getMaterial( key ), Config.tools.get( key ), Config.EventToolName );
@@ -252,8 +256,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
             int cx = ( int )( player.getLocation().getX() - Config.Event_X1 ) / 16;
             int cz = ( int )( player.getLocation().getZ() - Config.Event_Z1 ) / 16;
-            String CheckCode = cx + "-" + cz;
-            pc.get( player.getUniqueId() ).PrintArea( player, CheckCode );
+            Messages.AreaCode = cx + "-" + cz;
+            pc.get( player.getUniqueId() ).PrintArea( player, Messages.AreaCode );
         }
     }
 
@@ -283,9 +287,9 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         //  設置したブロックであるというフラグを設定しているが、機能していない
         block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
 
-        if ( !Config.stones.contains( blockName ) ) {
+        if ( Config.stones.contains( blockName ) == false ) {
             if ( !Config.placeSpecified ) {
-                Tools.Prt( player, "このブロックは設置できません", consoleMode.full, programCode );
+                Tools.Prt( player, Messages.ReplaceString( "NGBlockPlace" ), consoleMode.full, programCode );
                 event.setCancelled( true );
             }
             Tools.Prt(
@@ -310,11 +314,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         } else {
             if ( !Config.placeFree ) {
-                Tools.Prt( player, ChatColor.RED + "これ以上このブロックは設置できません", consoleMode.full, programCode );
+                Tools.Prt( player, Messages.ReplaceString( "NoMorePlace" ), consoleMode.full, programCode );
                 if ( Config.titlePrint ) {
                     player.sendTitle(
-                        ChatColor.RED + "ブロックは設置できません",
-                        ChatColor.YELLOW + "イベントルールを確認してください",
+                        Messages.ReplaceString( "NoMoreTitleM" ),
+                        Messages.ReplaceString( "NoMoreTitleS" ),
                         0, 100, 0 );
                 }
                 event.setCancelled( true );
@@ -338,7 +342,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         switch ( pc.get( player.getUniqueId() ).getEntry() ) {
             case 0:
                 if ( !Config.breakFree ) {
-                    Tools.Prt( player, ChatColor.RED + "イベントに参加してください", consoleMode.normal, programCode );
+                    Tools.Prt( player, Messages.ReplaceString( "RequestJoin" ), consoleMode.normal, programCode );
                     event.setCancelled( true );
                 }
                 return;
@@ -346,7 +350,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 // 参加者なので、スルー
                 break;
             case 2:
-                Tools.Prt( player, ChatColor.RED + "イベントエリアの操作はできません", consoleMode.normal, programCode );
+                Tools.Prt( player, Messages.ReplaceString( "OmitPlayer" ), consoleMode.normal, programCode );
                 event.setCancelled( true );
                 return;
         }
@@ -382,7 +386,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     ( !item.getItemMeta().hasDisplayName() ) ||
                     ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) )
                ) {
-                Tools.Prt( player, ChatColor.RED + "指定ツールで行ってください", consoleMode.full, programCode );
+                Tools.Prt( player, Messages.ReplaceString( "NoEventTool" ), consoleMode.full, programCode );
                 event.setCancelled( true );
                 return;
             }
@@ -410,15 +414,15 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
                 switch( Config.difficulty ) {
                     case Easy:
-                        Tools.Prt( player, ChatColor.RED + "そのブロックは破壊できません", consoleMode.full, programCode );
+                        Tools.Prt( player, Messages.ReplaceString( "NoBreak" ), consoleMode.full, programCode );
                         event.setCancelled( true );
                         return;
                     case Normal:
-                        Tools.Prt( player, ChatColor.RED + "壊してはいけないブロックです", consoleMode.full, programCode );
+                        Tools.Prt( player, Messages.ReplaceString( "DontBreak" ), consoleMode.full, programCode );
                         if ( Config.titlePrint ) {
                             player.sendTitle(
-                                ChatColor.RED + "破壊不可なブロックです",
-                                ChatColor.YELLOW + "元に戻してくださいね",
+                                Messages.ReplaceString( "NoBreakTitleM" ),
+                                Messages.ReplaceString( "NoBreakTitleS" ),
                                 0, 100, 0 );
                         }
                         break;
@@ -450,11 +454,11 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( item.getItemMeta().hasDisplayName() ) {
             if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) ) {
                 if ( ( item.getType().getMaxDurability() * config.getRepair() ) <= item.getDurability() ) {
-                    Tools.Prt( player, ChatColor.RED + "ツールの耐久値がヤバイですよ", consoleMode.max, programCode );
+                    Tools.Prt( player, Messages.ReplaceString( "ToolWarning" ), consoleMode.max, programCode );
                     if ( Config.titlePrint ) {
                         player.sendTitle(
-                            ChatColor.RED + "耐久値がヤバイですよ",
-                            ChatColor.YELLOW + "アップデートして成長させましょう",
+                            Messages.ReplaceString( "ToolWarningTitleM" ),
+                            Messages.ReplaceString( "ToolWarningTitleS" ),
                             0, 50, 0
                         );
                     }
@@ -494,7 +498,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
             return true;
         } else {
-            Tools.Prt( player, ChatColor.RED + "イベントに参加していません", programCode );
+            Messages.RepNames = player.getName();
+            Tools.Prt( player, Messages.ReplaceString( "NoJoin" ), programCode );
             return false;
         }
     }

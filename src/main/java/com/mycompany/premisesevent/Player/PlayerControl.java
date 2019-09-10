@@ -30,6 +30,7 @@ import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.kumaisulibraries.Tools.consoleMode;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.config.Config;
+import com.mycompany.premisesevent.config.Messages;
 import static com.mycompany.premisesevent.config.Config.programCode;
 import static com.mycompany.kumaisulibraries.BukkitTool.launchFireWorks;
 
@@ -191,27 +192,29 @@ public class PlayerControl {
      */
     public boolean JoinPlayer( Player p ) {
         if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
-            Tools.Prt( p, ChatColor.RED + "参加アイテム配布用のためインベントリに空きが必要です", consoleMode.normal, programCode );
+            Tools.Prt( p, Messages.ReplaceString( "NoInventory" ), consoleMode.normal, programCode );
             return false;
         }
 
+        Messages.RepPlayer = p.getName();
+
         switch ( getEntry() ) {
             case 1: //  Double registration failure.
-                Tools.Prt( p, ChatColor.RED + "既にイベントへ参加しています", consoleMode.normal, programCode );
+                Tools.Prt( p, Messages.ReplaceString( "AlreadyJoin" ), consoleMode.normal, programCode );
                 for( int i = 0; i<Config.bc_command.size(); i++ ) {
                     Tools.Prt( ChatColor.WHITE + "Command Exec : " + ChatColor.YELLOW + Config.bc_command.get( i ), programCode );
-                    Tools.ExecOtherCommand( p, Config.bc_command.get( i ), p.getDisplayName() + " さんは、既にイベントに参加しています" );
+                    Tools.ExecOtherCommand( p, Config.bc_command.get( i ), Messages.ReplaceString( "AlreadyJoinBroadcast" ) );
                 }
                 return false;
             case 2: //  Kick registration.
-                Tools.Prt( p, ChatColor.RED + "イベントへの参加は拒否されています", consoleMode.normal, programCode );
+                Tools.Prt( p, Messages.ReplaceString( "RefusalJoin" ), consoleMode.normal, programCode );
                 //  ExecOtherCommand( player, player.getDisplayName() + " さんは、イベントに参加できませんでした" );
                 return false;
             default: // Registration success.
                 Tools.Prt( ChatColor.AQUA + "Registration success.", programCode );
                 Tools.Prt( p, Config.JoinMessage, consoleMode.normal, programCode );
                 for( int i = 0; i<Config.bc_command.size(); i++ ) {
-                    Tools.ExecOtherCommand( p, Config.bc_command.get( i ), p.getDisplayName() + " さんが、イベントに参加しました" );
+                    Tools.ExecOtherCommand( p, Config.bc_command.get( i ), Messages.ReplaceString( "Join" ) );
                 }
                 break;
         }
@@ -232,7 +235,7 @@ public class PlayerControl {
             ic.ToolPresent( p, Material.getMaterial( key ), Config.tools.get( key ), Config.EventToolName );
         } );
 
-        Bukkit.broadcastMessage( "<Premises> " + ChatColor.WHITE + p.getDisplayName() + ChatColor.GREEN + "さんが、イベントに参加しました" );
+        Bukkit.broadcastMessage( Messages.ReplaceString( "JoinBroadcast" ) );
         return true;
     }
 
@@ -245,17 +248,17 @@ public class PlayerControl {
      */
     public boolean getEventItem( Player player, String Item ) {
         if ( getEntry() != 1 ) {
-            Tools.Prt( player, ChatColor.RED + "イベント参加者のみです", consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.ReplaceString( "OnlyJoin" ), consoleMode.normal, programCode );
             return false;
         }
     
         if ( !Arrays.asList( player.getInventory().getStorageContents() ).contains( null ) ) {
-            Tools.Prt( player, ChatColor.RED + "アイテム配布用のためインベントリに空きが必要です", consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.ReplaceString( "NoInventory" ), consoleMode.normal, programCode );
             return false;
         }
 
         if ( !Config.tools.keySet().contains( Item ) ) {
-            Tools.Prt( player, ChatColor.RED + "再配布対象のツールではありません", consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.ReplaceString( "NoEventTool" ), consoleMode.normal, programCode );
             return false;
         }
 
@@ -267,7 +270,7 @@ public class PlayerControl {
             Tools.Prt( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Material.getMaterial( Item ).name() + " tools !!", consoleMode.normal, programCode );
             return true;
         } else {
-            Tools.Prt( player, ChatColor.RED + "Scoreが足りないので配布できません", consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.ReplaceString( "NoEnoughScore" ), consoleMode.normal, programCode );
             return false;
         }
     }
@@ -281,7 +284,7 @@ public class PlayerControl {
     public void ToolUpdate( Player player, boolean Force ) {
 
         if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) {
-            Tools.Prt( player, ChatColor.RED + "アップデートするアイテムを持ってください", consoleMode.full, programCode );
+            Tools.Prt( player, Messages.ReplaceString( "HaveTool" ), consoleMode.full, programCode );
             return;
         }
 
@@ -298,18 +301,14 @@ public class PlayerControl {
                         ic.ItemUpdate( player, item );
                         addScore( null, -Rep );
                     } else {
-                        Tools.Prt( player,
-                            ChatColor.YELLOW + "ツール耐久値は " +
-                            ChatColor.WHITE + ( item.getType().getMaxDurability() - item.getDurability() ) +
-                            ChatColor.YELLOW + " なので " +
-                            ChatColor.WHITE + ( (int) ( item.getType().getMaxDurability() - CheckDurability ) ) +
-                            ChatColor.YELLOW + " 以下にしてね",
-                            consoleMode.full, programCode
+                        Messages.RepNDura = String.valueOf( item.getType().getMaxDurability() - item.getDurability() );
+                        Messages.RepTDura = String.valueOf( (int) ( item.getType().getMaxDurability() - CheckDurability ) );
+                        Tools.Prt( player, Messages.ReplaceString( "NowDurable" ), consoleMode.full, programCode
                         );
                     }
-                } else Tools.Prt( player, ChatColor.YELLOW + "ツール名が違います", consoleMode.full, programCode );
-            } else Tools.Prt( player, ChatColor.YELLOW + "イベント用のツールではありません", consoleMode.full, programCode );
-        } else Tools.Prt( player, ChatColor.RED + "Scoreが足りないのでアップデートできません", consoleMode.full, programCode );
+                } else Tools.Prt( player, Messages.ReplaceString( "NotToolName" ), consoleMode.full, programCode );
+            } else Tools.Prt( player, Messages.ReplaceString( "NoEventTool" ), consoleMode.full, programCode );
+        } else Tools.Prt( player, Messages.ReplaceString( "NotUpdate" ), consoleMode.full, programCode );
     }
 
     /**
@@ -362,7 +361,8 @@ public class PlayerControl {
             //  ブロードキャスト、一定スコア達成をオンラインプレイヤーに知らせる
             if ( ( Config.ScoreBroadcast > 0 ) && ( PlayerScore >= scoreBroadcast ) ) {
                 scoreBroadcast = Config.ScoreBroadcast * ( ( int ) Math.floor( PlayerScore / Config.ScoreBroadcast ) + 1 );
-                String SendMessage = "<イベント> " + ChatColor.AQUA + DisplayName + ChatColor.WHITE + " さんが " + ChatColor.YELLOW + PlayerScore + ChatColor.WHITE + " 点に到達しました";
+                Messages.RepScore = String.valueOf( PlayerScore );
+                String SendMessage = Messages.ReplaceString( "Achievement" );
                 Tools.Prt( SendMessage, consoleMode.full, programCode );
                 launchFireWorks( player.getLocation() );
                 if ( player.hasPermission( "Premises.broadcast" ) ) {

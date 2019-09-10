@@ -137,7 +137,7 @@ public class ConfigManager {
         try {
             DebugFlag = consoleMode.valueOf( config.getString( "Debug" ) );
         } catch( IllegalArgumentException e ) {
-            Tools.Prt( ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", programCode );
+            Tools.Prt( Messages.ReplaceString( "FraudMode" ), programCode );
             DebugFlag = consoleMode.normal;
         }
         Tools.entryDebugFlag( programCode, DebugFlag );
@@ -145,14 +145,14 @@ public class ConfigManager {
         try {
             Config.difficulty = Config.EventMode.valueOf( config.getString( "Difficulty" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( ChatColor.RED + "Config Eventが不正なので、Normal 設定にしました", consoleMode.none, programCode );
+            Tools.Prt( Messages.ReplaceString( "FraudEvent" ), consoleMode.none, programCode );
             Config.difficulty = Config.EventMode.Normal;
         }
 
         try {
             Config.UpperBlock = Config.UpperMode.valueOf( config.getString( "UpperBlock" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( ChatColor.RED + "Config UpperBlockが不正なので、None 設定にしました", consoleMode.none, programCode );
+            Tools.Prt( Messages.ReplaceString( "FraudUpper" ), consoleMode.none, programCode );
             Config.UpperBlock = Config.UpperMode.None;
         }
     }

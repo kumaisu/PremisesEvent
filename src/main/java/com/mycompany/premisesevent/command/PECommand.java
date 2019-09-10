@@ -22,6 +22,8 @@ import com.mycompany.premisesevent.Player.PlayerControl;
 import com.mycompany.premisesevent.Player.TopList;
 import com.mycompany.premisesevent.PremisesEvent;
 import com.mycompany.premisesevent.config.Config;
+import com.mycompany.premisesevent.config.Messages;
+import com.mycompany.premisesevent.config.MessagesManager;
 import static com.mycompany.premisesevent.config.Config.programCode;
 import static com.mycompany.premisesevent.PremisesEvent.pc;
 
@@ -62,9 +64,17 @@ public class PECommand implements CommandExecutor {
                     instance.config.Status( player );
                     return true;
                 } else return false;
+            case "message":
+                MessagesManager.getStatus( player );
+                return true;
             case "reload":
                 if ( hasPermission ) {
                     instance.config.load();
+                    return true;
+                } else return false;
+            case "messagereload":
+                if ( hasPermission ) {
+                    instance.messe.load();
                     return true;
                 } else return false;
             case "csv":
@@ -132,6 +142,7 @@ public class PECommand implements CommandExecutor {
                     Tools.Prt( player, ChatColor.AQUA + "reload             : " + ChatColor.WHITE + "Configリロード", programCode );
                     Tools.Prt( player, ChatColor.AQUA + "stones             : " + ChatColor.WHITE + "ストーンスコア", programCode );
                     Tools.Prt( player, ChatColor.AQUA + "pstatus            : " + ChatColor.WHITE + "Configステータス", programCode );
+                    Tools.Prt( player, ChatColor.AQUA + "message            : " + ChatColor.WHITE + "Message一覧", programCode );
                 }
                 return true;
             default:
@@ -164,7 +175,7 @@ public class PECommand implements CommandExecutor {
                 default:
                     break;
             }
-        } else Tools.Prt( player, ChatColor.RED + "コンソールからは操作できないコマンドです", programCode );
+        } else Tools.Prt( player, Messages.ReplaceString( "ConsoleOnly" ), programCode );
 
         Tools.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + commandString + "]", Tools.consoleMode.full, programCode );
         return false;
@@ -183,11 +194,12 @@ public class PECommand implements CommandExecutor {
         Player scorePlayer;
         boolean createStat = false;
         boolean retStat;
+        Messages.RepNames = name;
 
         try {
             scoreNum = Integer.parseInt( score );
         } catch ( NumberFormatException e ) {
-            Tools.Prt( player, ChatColor.RED + "指定された値が正しくありません", programCode );
+            Tools.Prt( player, Messages.ReplaceString( "ValueIncorrect" ), programCode );
             return false;
         }
 
@@ -207,7 +219,7 @@ public class PECommand implements CommandExecutor {
                     pc.get( scorePlayer.getUniqueId() ).load();
                     createStat = true;
                 } else {
-                    Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はサーバーに存在しません", programCode );
+                    Tools.Prt( player, Messages.ReplaceString( "NoPlayer" ), programCode );
                     return false;
                 }
             }
@@ -218,7 +230,7 @@ public class PECommand implements CommandExecutor {
             pc.get( scorePlayer.getUniqueId() ).save();
             retStat = true;
         } else {
-            Tools.Prt( player, ChatColor.RED + "[ " + ChatColor.YELLOW + name + ChatColor.RED + " ] はイベントに参加していません", programCode );
+            Tools.Prt( player, Messages.ReplaceString( "NoJoin" ), programCode );
             retStat = false;
         }
 

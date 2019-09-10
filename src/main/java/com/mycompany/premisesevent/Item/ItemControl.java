@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.mycompany.kumaisulibraries.Items;
 import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.kumaisulibraries.Tools.consoleMode;
+import com.mycompany.premisesevent.config.Messages;
 import static com.mycompany.premisesevent.config.Config.programCode;
 
 /**
@@ -39,7 +40,7 @@ public class ItemControl {
      */
     public void ItemPresent( Player player ) {
         player.getInventory().addItem( Items.PresentArmor() );
-        Tools.Prt( player, ChatColor.GREEN + "イベント用装備をプレゼントしました", consoleMode.full, programCode );
+        Tools.Prt( player, Messages.ReplaceString( "PresentTool" ), consoleMode.full, programCode );
     }
 
     /**
@@ -52,7 +53,9 @@ public class ItemControl {
      */
     public void ToolPresent( Player player, Material tool, int Digs, String ToolName ) {
         player.getInventory().addItem( Items.EventTool( ToolName, tool, Digs, player.isOp() ) );
-        Tools.Prt( player, ChatColor.GREEN + "イベント用ツール[" + tool.name() + "(" + Digs + ")]をプレゼントしました", consoleMode.full, programCode );
+        Messages.RepTool = tool.name();
+        Messages.RepDigs = String.valueOf( Digs );
+        Tools.Prt( player, Messages.ReplaceString( "PresentTool" ), consoleMode.full, programCode );
     }
 
     /**
@@ -101,11 +104,8 @@ public class ItemControl {
         itemstack.setDurability( (short) 0 );
 
         player.getInventory().addItem( itemstack );
-        Tools.Prt( player, 
-                ChatColor.AQUA + "イベント用ツールを[" + 
-                ChatColor.GREEN + UpdateMessage +
-                ChatColor.AQUA + "]にアップデートしました",
-                consoleMode.full, programCode );
+        Messages.RepMessage = UpdateMessage;
+        Tools.Prt( player, Messages.ReplaceString( "UpdateTool" ), consoleMode.full, programCode );
     }
 
     /**
