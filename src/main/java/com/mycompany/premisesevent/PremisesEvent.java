@@ -498,7 +498,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
             return true;
         } else {
-            Messages.RepNames = player.getName();
+            Messages.RepPlayer = player.getName();
             Tools.Prt( player, Messages.ReplaceString( "NoJoin" ), programCode );
             return false;
         }

@@ -362,6 +362,7 @@ public class PlayerControl {
             if ( ( Config.ScoreBroadcast > 0 ) && ( PlayerScore >= scoreBroadcast ) ) {
                 scoreBroadcast = Config.ScoreBroadcast * ( ( int ) Math.floor( PlayerScore / Config.ScoreBroadcast ) + 1 );
                 Messages.RepScore = String.valueOf( PlayerScore );
+                Messages.RepPlayer = player.getName();
                 String SendMessage = Messages.ReplaceString( "Achievement" );
                 Tools.Prt( SendMessage, consoleMode.full, programCode );
                 launchFireWorks( player.getLocation() );

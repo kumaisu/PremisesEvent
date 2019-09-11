@@ -194,7 +194,7 @@ public class PECommand implements CommandExecutor {
         Player scorePlayer;
         boolean createStat = false;
         boolean retStat;
-        Messages.RepNames = name;
+        Messages.RepPlayer = name;
 
         try {
             scoreNum = Integer.parseInt( score );

@@ -145,7 +145,7 @@ public class AreaManager {
         if ( Config.AreaName.get( Messages.AreaCode ) == null ) {
             Tools.Prt( player, Messages.ReplaceString( "NoOwnerArea" ), Tools.consoleMode.full, programCode );
         } else {
-            Messages.RepNames = Config.AreaName.get( Messages.AreaCode );
+            Messages.RepPlayer = Config.AreaName.get( Messages.AreaCode );
             Tools.Prt( player, Messages.ReplaceString( "OwnerArea" ), Tools.consoleMode.normal, programCode );
         }
     }
@@ -170,7 +170,7 @@ public class AreaManager {
             Config.AreaBlock.put( locKey, BukkitTool.getStoneName( block ) );
             if ( Config.OnDynmap ) { DynmapControl.SetDynmapArea( player, cx, cz, block ); }
             String getMessage = Messages.ReplaceString( "GetAreaM" );
-            Messages.RepNames = Config.AreaName.get( Messages.AreaCode );
+            Messages.RepPlayer = Config.AreaName.get( Messages.AreaCode );
             String getSubMessage = Messages.ReplaceString( "GetAreaS" );
             Tools.Prt( player, getMessage + getSubMessage, Tools.consoleMode.normal, programCode );
             if ( Config.titlePrint ) { player.sendTitle( getMessage + Messages.ReplaceString( "GetAreaM2" ), getSubMessage, 0, 50, 0 ); }
@@ -181,7 +181,7 @@ public class AreaManager {
             );
         } else {
             if ( !Config.AreaName.get( Messages.AreaCode ).contains( player.getName() ) || ( player.hasPermission( "Premises.admin" ) && player.isSneaking() ) ) {
-                Messages.RepNames = ( Config.AreaName.get( Messages.AreaCode ).equals( player.getName() ) ? ChatColor.AQUA : ChatColor.RED ) + Config.AreaName.get( Messages.AreaCode );
+                Messages.RepPlayer = ( Config.AreaName.get( Messages.AreaCode ).equals( player.getName() ) ? ChatColor.AQUA : ChatColor.RED ) + Config.AreaName.get( Messages.AreaCode );
                 Tools.Prt( player, Messages.ReplaceString( "OwnerArea" ), Tools.consoleMode.normal, programCode );
             }
         }
@@ -221,7 +221,7 @@ public class AreaManager {
            ( Config.AreaName.get( Messages.AreaCode ).contains( player.getName() ) ) &&
            ( Config.AreaBlock.get( locKey ) != null )
         ) {
-            Messages.RepNames = Config.AreaName.get( Messages.AreaCode );
+            Messages.RepPlayer = Config.AreaName.get( Messages.AreaCode );
             Tools.Prt( player, Messages.ReplaceString( "FreeArea" ), Tools.consoleMode.normal, programCode );
             Config.AreaName.remove( Messages.AreaCode );
             Config.AreaBlock.remove( locKey );

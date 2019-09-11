@@ -35,7 +35,6 @@ EventList: "%$2イベントプレイヤーランキング"
 #   %nowDurability%     : now Durability
 #   %targetDurability%  : mini Durability
 #   %score%             : Player Score
-#   %name%              : Other Player.getName()
 #   %AreaCode%          : AreaCode
 AlreadyJoin: "%$4既にイベントへ参加しています"
 AlreadyJoinBroadcast: "%player% さんは、既にイベントに参加しています"
@@ -50,14 +49,14 @@ NoEnoughScore: "%$4Scoreが足りないので配布できません"
 NowDurable: "%$eツール耐久値は %$f%nowDurability%%$e なので %$f%targetDurability%%$e 以下にしてね"
 NotUpdate: "%$4Scoreが足りないのでアップデートできません"
 Achievement: "<イベント> %$b%player%%$f さんが %$e%score%%$f 点に到達しました"
-NoPlayer: "%$4[ %$e%names%%$4 ] はサーバーに存在しません"
-NoJoin: "%$4[ %$e%names%%$4 ] はイベントに参加していません"
+NoPlayer: "%$4[ %$e%player%%$4 ] はサーバーに存在しません"
+NoJoin: "%$4[ %$e%player%%$4 ] はイベントに参加していません"
 NoOwnerArea: "%$e[%AreaCode%] %$2誰のエリアでもありません"
-OwnerArea: "%$e[%AreaCode%] %$b%name%%$2 さんの掘削エリアです"
+OwnerArea: "%$e[%AreaCode%] %$b%player%%$2 さんの掘削エリアです"
 GetAreaM: "%$e[%AreaCode%] "
 GetAreaM2: "を確保"
-GetAreaS: "%$b%name% さんのエリアに設定しました"
-FreeArea: "%$4[%AreaCode%] %name% さんのエリアから解放しました"
+GetAreaS: "%$b%player% さんのエリアに設定しました"
+FreeArea: "%$4[%AreaCode%] %player% さんのエリアから解放しました"
 WarningMsg: "%$4違反警告 : %message%"
 WarnTitleM: "%$4ルール違反の可能性があります"
 WarnTitleS: "%$e%message%"
