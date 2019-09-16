@@ -372,7 +372,7 @@ public class PlayerControl {
                         Tools.ExecOtherCommand( player, Config.bc_command.get( i ), SendMessage );
                     }
                 } else {
-                    Tools.Prt( ChatColor.AQUA + player.getName() + ChatColor.RED + "Premises Broadcast is no Premission", consoleMode.full, programCode);
+                    Tools.Prt( Messages.ReplaceString( "NoBCAchive" ), consoleMode.full, programCode );
                 }
             }
         }

@@ -4,6 +4,7 @@ main: com.mycompany.premisesevent.PremisesEvent
 description: Premises Event Control plugin
 author: Kumaisu
 database: true
+api-version: 1.14
 commands:
     premises:
         description: Premises Event Control Command
