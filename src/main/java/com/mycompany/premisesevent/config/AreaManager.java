@@ -7,6 +7,9 @@ package com.mycompany.premisesevent.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.TreeMap;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import org.bukkit.block.Block;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -75,7 +78,10 @@ public class AreaManager {
         if( !dataFolder.exists() ) { dataFolder.mkdir(); }
 
         File UKfile = new File( dataFolder, "AreaData.yml" );
-        FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
+        //  FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
+        FileConfiguration UKData = new YamlConfiguration();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        UKData.set( "AreaData", sdf.format( new Date() ) );
 
         Config.AreaName.entrySet().forEach( ( entry ) -> {
             UKData.set( "Area." + entry.getKey(), entry.getValue() );
@@ -104,6 +110,7 @@ public class AreaManager {
      * @param player 
      */
     public static void List( Player player ) {
+        Tools.Prt( player, ChatColor.GREEN + "List for AreaCode...", programCode );
         Config.AreaName.entrySet().forEach( ( entry ) -> {
             Tools.Prt( player,
                 ChatColor.YELLOW + "Area [" +
@@ -121,6 +128,7 @@ public class AreaManager {
      * @param player
      */
     public static void LocList( Player player ) {
+        Tools.Prt( player, ChatColor.GREEN + "List for KeyBlock Locations...", programCode );
         Config.AreaBlock.entrySet().forEach( ( entry ) -> {
             Tools.Prt( player,
                 ChatColor.YELLOW + "Location [" +
@@ -243,5 +251,36 @@ public class AreaManager {
             }
             return true;
         } else return false;
+    }
+
+    public static void AllClear( Player player ) {
+        Tools.Prt( player, ChatColor.GREEN + "Clear All Area Markings", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "Clearing from KeyLocation...", Tools.consoleMode.normal, programCode );
+        Config.AreaBlock.entrySet().forEach( ( entry ) -> {
+            String[] param = entry.getKey().split( "-" );
+            int gx = ( int ) ( Integer.valueOf( param[0] ) - Config.Event_X1 ) / 16;
+            int gz = ( int ) ( Integer.valueOf( param[2] ) - Config.Event_Z1 ) / 16;
+            Messages.AreaCode = gx + "-" + gz;
+            Tools.Prt( player, ChatColor.GOLD + "Remove AreaCode : " + Messages.AreaCode, Tools.consoleMode.max, programCode );
+            Config.AreaName.remove( Messages.AreaCode );
+            DynmapControl.DelDynmapArea( Messages.AreaCode );
+        } );
+        Tools.Prt( player, ChatColor.GOLD + "Remove KeyBlocks", Tools.consoleMode.max, programCode );
+        Config.AreaBlock = new TreeMap<>();
+
+        Tools.Prt( player, ChatColor.YELLOW + "Clearing from AreaCode...", Tools.consoleMode.normal, programCode );
+        Config.AreaName.entrySet().forEach( ( entry ) -> {
+            Tools.Prt( player,
+                ChatColor.YELLOW + "Area [" +
+                ChatColor.WHITE + entry.getKey() +
+                ChatColor.YELLOW + "] Owner : " +
+                ChatColor.AQUA + entry.getValue()
+                , Tools.consoleMode.max
+                , programCode
+            );
+            DynmapControl.DelDynmapArea( entry.getKey() );
+        } );
+        Tools.Prt( player, ChatColor.GOLD + "Remove AreaCodes", Tools.consoleMode.max, programCode );
+        Config.AreaName = new TreeMap<>();
     }
 }

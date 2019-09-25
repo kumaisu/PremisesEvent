@@ -162,7 +162,52 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Block block = event.getClickedBlock();
         ItemStack item = player.getInventory().getItemInMainHand();
         Material material = block.getType();
-        Tools.Prt( "Material = " + material.name(), Tools.consoleMode.max, programCode );
+        Tools.Prt( "HandTool = " + item.getType().toString() + ", Material = " + material.name(), Tools.consoleMode.max, programCode );
+
+        if (
+            ( "WOOD_AXE".equals( item.getType().toString() ) )
+            ||
+            ( "WOODEN_AXE".equals( item.getType().toString() ) )
+        ) {
+            switch ( event.getAction() ) {
+                case LEFT_CLICK_BLOCK:
+                    if ( !( firstLoc_X == block.getLocation().getBlockX() &&
+                            firstLoc_Y == block.getLocation().getBlockY() &&
+                            firstLoc_Z == block.getLocation().getBlockZ()
+                    ) ) {
+                        firstLoc_X = block.getLocation().getBlockX();
+                        firstLoc_Y = block.getLocation().getBlockY();
+                        firstLoc_Z = block.getLocation().getBlockZ();
+                        Tools.Prt(
+                            ChatColor.AQUA +
+                            "First Target Location = X:" + firstLoc_X +
+                            " Y:" + firstLoc_Y +
+                            " Z:" + firstLoc_Z,
+                            Tools.consoleMode.full, programCode
+                        );
+                    }
+                    break;
+                case RIGHT_CLICK_BLOCK:
+                    if ( !( secondLoc_X == block.getLocation().getBlockX() &&
+                        secondLoc_Y == block.getLocation().getBlockY() &&
+                        secondLoc_Z == block.getLocation().getBlockZ()
+                    ) ) {
+                        secondLoc_X = block.getLocation().getBlockX();
+                        secondLoc_Y = block.getLocation().getBlockY();
+                        secondLoc_Z = block.getLocation().getBlockZ();
+                        Tools.Prt(
+                            ChatColor.AQUA +
+                            "Second Target Location = X:" + secondLoc_X +
+                            " Y:" + secondLoc_Y +
+                            " Z:" + secondLoc_Z,
+                            Tools.consoleMode.full, programCode
+                        );
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
 
         try {
             Sign sign = ( Sign ) block.getState();
@@ -199,46 +244,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     ClickFlag = !ClickFlag;
                 }
             }
-        }
-
-        if ( item.getType() != Material.WOOD_AXE ) { return; }
-        switch ( event.getAction() ) {
-            case LEFT_CLICK_BLOCK:
-                if ( !( firstLoc_X == block.getLocation().getBlockX() &&
-                        firstLoc_Y == block.getLocation().getBlockY() &&
-                        firstLoc_Z == block.getLocation().getBlockZ()
-                ) ) {
-                    firstLoc_X = block.getLocation().getBlockX();
-                    firstLoc_Y = block.getLocation().getBlockY();
-                    firstLoc_Z = block.getLocation().getBlockZ();
-                    Tools.Prt(
-                        ChatColor.AQUA +
-                        "First Target Location = X:" + firstLoc_X +
-                        " Y:" + firstLoc_Y +
-                        " Z:" + firstLoc_Z,
-                        Tools.consoleMode.full, programCode
-                    );
-                }
-                break;
-            case RIGHT_CLICK_BLOCK:
-                if ( !( secondLoc_X == block.getLocation().getBlockX() &&
-                    secondLoc_Y == block.getLocation().getBlockY() &&
-                    secondLoc_Z == block.getLocation().getBlockZ()
-                ) ) {
-                    secondLoc_X = block.getLocation().getBlockX();
-                    secondLoc_Y = block.getLocation().getBlockY();
-                    secondLoc_Z = block.getLocation().getBlockZ();
-                    Tools.Prt(
-                        ChatColor.AQUA +
-                        "Second Target Location = X:" + secondLoc_X +
-                        " Y:" + secondLoc_Y +
-                        " Z:" + secondLoc_Z,
-                        Tools.consoleMode.full, programCode
-                    );
-                }
-                break;
-            default:
-                break;
         }
     }
 

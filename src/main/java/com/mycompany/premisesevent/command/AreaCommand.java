@@ -34,9 +34,11 @@ public class AreaCommand implements CommandExecutor {
       */
      private void help( Player player ) {
         Tools.Prt( player, ChatColor.GREEN + "/Area Command List", programCode );
-        Tools.Prt( player, ChatColor.YELLOW + "list  : " + ChatColor.WHITE + "Holding Area List", programCode );
-        Tools.Prt( player, ChatColor.YELLOW + "block : " + ChatColor.WHITE + "Key Block List", programCode );
-        Tools.Prt( player, ChatColor.YELLOW + "help  : " + ChatColor.WHITE + "Command List", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "list     : " + ChatColor.WHITE + "Holding Area List", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "block    : " + ChatColor.WHITE + "Key Block List", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "save     : " + ChatColor.WHITE + "AreaData Save", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "AllClear : " + ChatColor.WHITE + "Clear All AreaData", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "help     : " + ChatColor.WHITE + "Command List", programCode );
      }
 
     /**
@@ -66,6 +68,12 @@ public class AreaCommand implements CommandExecutor {
                 return true;
             case "help":
                 help( player );
+                return true;
+            case "save":
+                AreaManager.save( instance.getDataFolder().toString() );
+                return true;
+            case "AllClear":
+                AreaManager.AllClear( player );
                 return true;
             default:
                 break;
