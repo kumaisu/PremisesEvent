@@ -17,8 +17,6 @@ public class Config {
 
     public static String programCode = "PE";
 
-    public static Map< String, String > AreaName = new TreeMap< String, String >();
-    public static Map< String, String > AreaBlock = new TreeMap< String, String >();
     public static Map< String, Integer > tools = new TreeMap< String, Integer >();
 
     /**
@@ -38,8 +36,16 @@ public class Config {
      */
     public static enum UpperMode { None, Warning, Block };
 
+    public static String DataFolder;
+    public static boolean CreativeCount;
+    public static double Repair;
+    public static boolean Field;
     public static int Event_X1;
+    public static int Event_Y1;
     public static int Event_Z1;
+    public static int Event_X2;
+    public static int Event_Z2;
+    public static int Event_Y2;
     public static String Event_World;
 
     public static EventMode difficulty;
@@ -51,6 +57,7 @@ public class Config {
     public static boolean breakTool;
     public static boolean zeroPlace;
     public static boolean titlePrint;
+    public static String databaseName;
     public static String EventName;
     public static String JoinMessage;
     public static String EventToolName;

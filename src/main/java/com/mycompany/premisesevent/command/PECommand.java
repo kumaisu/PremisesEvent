@@ -215,7 +215,7 @@ public class PECommand implements CommandExecutor {
                 OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( name );
                 if ( op.hasPlayedBefore() ) {
                     scorePlayer = op.getPlayer();
-                    pc.put( scorePlayer.getUniqueId(), new PlayerControl( player, instance.getDataFolder().toString() ) );
+                    pc.put( scorePlayer.getUniqueId(), new PlayerControl( player ) );
                     pc.get( scorePlayer.getUniqueId() ).load();
                     createStat = true;
                 } else {

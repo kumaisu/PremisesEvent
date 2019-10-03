@@ -31,15 +31,16 @@ import com.mycompany.kumaisulibraries.Tools.consoleMode;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.Messages;
+import com.mycompany.premisesevent.database.Database;
 import static com.mycompany.premisesevent.config.Config.programCode;
 import static com.mycompany.kumaisulibraries.BukkitTool.launchFireWorks;
+import static com.mycompany.premisesevent.database.AreaManager.GetSQL;
 
 /**
  *
  * @author sugichan
  */
 public class PlayerControl {
-    private final String DataFolder;
     
     /*
     スコアボードコントロール
@@ -64,20 +65,18 @@ public class PlayerControl {
     private int scoreNotice;
     private int scoreBroadcast;
     private String NowArea = "";
-    private String NowOwner = "";
+    private String NowOwner = "none";
 
     /**
      * プレイヤーコントロールライブラリ
      *
      * @param player
-     * @param DF
      */
-    public PlayerControl( OfflinePlayer player, String DF ) {
+    public PlayerControl( OfflinePlayer player ) {
         Tools.Prt( "Initialized New Player.", Tools.consoleMode.full, programCode );
         this.DisplayName = player.getName();
         this.uuid = player.getUniqueId();
         this.PlayerScore = 0;
-        this.DataFolder = DF;
     }
 
     /**
@@ -127,8 +126,9 @@ public class PlayerControl {
     public boolean load() {
         Tools.Prt( "Loading Player Data.", consoleMode.full, programCode );
         // 設定ファイルを保存
-        File dataFolder = new File( DataFolder + File.separator + Config.EventName + File.separator + "users" );
+        File dataFolder = new File( Config.DataFolder + File.separator + Config.EventName + File.separator + "users" );
         File UKfile = new File( dataFolder, uuid + ".yml" );
+        Tools.Prt( "UserFile = " + UKfile.toString(), Tools.consoleMode.max, programCode );
         FileConfiguration UKData = YamlConfiguration.loadConfiguration( UKfile );
 
         if( !UKfile.exists() ) { return false; }
@@ -156,7 +156,7 @@ public class PlayerControl {
      */
     public void save() {
         Tools.Prt( "Saving Player Data.", consoleMode.full, programCode );
-        File dataFolder = new File( DataFolder + File.separator + Config.EventName + File.separator + "users" );
+        File dataFolder = new File( Config.DataFolder + File.separator + Config.EventName + File.separator + "users" );
         if( !dataFolder.exists() ) { dataFolder.mkdir(); }
 
         File UKfile = new File( dataFolder, uuid + ".yml" );
@@ -479,7 +479,8 @@ public class PlayerControl {
     public void PrintArea( Player player, String AreaCode ) {
         if ( Config.PlayerAlarm && ( !NowArea.equals( AreaCode ) ) ) {
             String GetOwner = "不在";
-            if ( Config.AreaName.get( AreaCode ) != null ) { GetOwner = Config.AreaName.get( AreaCode ); }
+            if ( GetSQL( AreaCode ) ) { GetOwner = Database.Owner; }
+            Tools.Prt( "[" + NowOwner + "] x [" + GetOwner + "]", Tools.consoleMode.max, programCode);
             if ( !NowOwner.equals( GetOwner ) ) {
                 player.sendTitle(
                     ChatColor.GREEN + Utility.StringBuild( ChatColor.YELLOW.toString(), "Area : " + AreaCode ),
@@ -490,8 +491,8 @@ public class PlayerControl {
                     ),
                     5, 10, 5
                 );
-                NowOwner = ( GetOwner.equals( player.getName() ) ? GetOwner:"" );
             }
+            NowOwner = ( GetOwner.equals( player.getName() ) ? GetOwner:"None" );
             NowArea = AreaCode;
         }
     }

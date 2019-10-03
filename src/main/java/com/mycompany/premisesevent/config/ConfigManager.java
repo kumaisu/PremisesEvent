@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -27,14 +26,6 @@ public class ConfigManager {
     private FileConfiguration config = null;
 
     private final Map< String, Integer > GetPoint = new HashMap<>();
-    private boolean OPMode;
-    private double Repair;
-    private boolean Field;
-
-    private int Event_Y1;
-    private int Event_X2;
-    private int Event_Z2;
-    private int Event_Y2;
     
     /**
      * 設定読み込みライブラリ
@@ -80,16 +71,16 @@ public class ConfigManager {
         }
 
         Config.EventName = config.getString( "EventName" );
-        Field = config.getBoolean( "Field", false );
+        Config.Field = config.getBoolean( "Field", false );
         Config.ScoreNotice = config.getInt( "ScoreNotice", 0 );
         Config.ScoreBroadcast = config.getInt( "ScoreBroadcast", 0 );
         Config.bc_command = ( List< String > )config.getList( "BroadcastCommand" );
         Config.RePresent = config.getInt( "RePresent", 0 );
         Config.MinDigSpeed = config.getInt( "MinDigSpeed", 5 );
         Config.UpCost = config.getInt( "UpdateCost", 0 );
-        Repair = 1 - config.getDouble( "Repair", 0 );
+        Config.Repair = 1 - config.getDouble( "Repair", 0 );
         Config.titlePrint  = config.getBoolean( "sendTitle", true );
-        OPMode = config.getBoolean( "CreativeCount", true );
+        Config.CreativeCount = config.getBoolean( "CreativeCount", true );
         Config.EventToolName = config.getString( "EventToolName" );
         Config.placeFree = config.getBoolean( "FreePlace", false );
         Config.placeSpecified = config.getBoolean( "SpecifiedPlace",true );
@@ -104,31 +95,31 @@ public class ConfigManager {
         String pos = config.getString( "AreaPos1" );
         String[] pos_param = pos.split( "," );
         Config.Event_X1 = Integer.parseInt( pos_param[0] );
-        Event_Y1 = Integer.parseInt( pos_param[1] );
+        Config.Event_Y1 = Integer.parseInt( pos_param[1] );
         Config.Event_Z1 = Integer.parseInt( pos_param[2] );
 
         pos = config.getString( "AreaPos2" );
         String[] pos_param2 = pos.split( "," );
-        Event_X2 = Integer.parseInt( pos_param2[0] );
-        Event_Y2 = Integer.parseInt( pos_param2[1] );
-        Event_Z2 = Integer.parseInt( pos_param2[2] );
+        Config.Event_X2 = Integer.parseInt( pos_param2[0] );
+        Config.Event_Y2 = Integer.parseInt( pos_param2[1] );
+        Config.Event_Z2 = Integer.parseInt( pos_param2[2] );
 
-        if ( Config.Event_X1>Event_X2 ) {
+        if ( Config.Event_X1>Config.Event_X2 ) {
             int temp = Config.Event_X1;
-            Config.Event_X1 = Event_X2;
-            Event_X2 = temp;
+            Config.Event_X1 = Config.Event_X2;
+            Config.Event_X2 = temp;
         }
 
-        if ( Event_Y1>Event_Y2 ) {
-            int temp = Event_Y1;
-            Event_Y1 = Event_Y2;
-            Event_Y2 = temp;
+        if ( Config.Event_Y1>Config.Event_Y2 ) {
+            int temp = Config.Event_Y1;
+            Config.Event_Y1 = Config.Event_Y2;
+            Config.Event_Y2 = temp;
         }
 
-        if ( Config.Event_Z1>Event_Z2 ) {
+        if ( Config.Event_Z1>Config.Event_Z2 ) {
             int temp = Config.Event_Z1;
-            Config.Event_Z1 = Event_Z2;
-            Event_Z2 = temp;
+            Config.Event_Z1 = Config.Event_Z2;
+            Config.Event_Z2 = temp;
         }
 
         Config.JoinMessage = config.getString( "JOIN_MESSAGE" );
@@ -158,18 +149,6 @@ public class ConfigManager {
     }
 
     /**
-     * ポイントブロックの一覧表示
-     *
-     * @param player
-     */
-    public void getStoneList( Player player ) {
-        Tools.Prt( player, ChatColor.GREEN + "=== Premises Stone List ===", consoleMode.full, programCode );
-        GetPoint.keySet().forEach( ( key ) -> {
-            Tools.Prt( player, ChatColor.GREEN + key + " : " + ChatColor.WHITE + GetPoint.get( key ), consoleMode.full, programCode );
-        } );
-    }
-
-    /**
      * 設定内容を表示する
      *
      * @param p
@@ -185,13 +164,13 @@ public class ConfigManager {
         Tools.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + Config.RePresent, programCode );
         Tools.Prt( p, ChatColor.WHITE + "最小効率強化     : " + ChatColor.YELLOW + Config.MinDigSpeed, programCode );
         Tools.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + Config.UpCost, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Repair, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Config.Repair, programCode );
         Tools.Prt( p, ChatColor.WHITE + "通知 Console     : " + ChatColor.YELLOW + Config.ScoreNotice, programCode );
         Tools.Prt( p, ChatColor.WHITE + "通知 Broadcast   : " + ChatColor.YELLOW + Config.ScoreBroadcast, programCode );
         Tools.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( Config.breakFree ? "許可":"不可" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( Config.breakTool ? "不可":"許可" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "ブロック無限設置 : " + ChatColor.YELLOW + ( Config.zeroPlace ? "許可":"不可" ), programCode );
-        Tools.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( OPMode ? "しない":"する" ), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( Config.CreativeCount ? "しない":"する" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "参加者以外の設置 : " + ChatColor.YELLOW + ( Config.placeFree ? "許可":"不可" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "指定以外の設置   : " + ChatColor.YELLOW + ( Config.placeSpecified ? "許可":"不可" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "タイトル表示     : " + ChatColor.YELLOW + ( Config.titlePrint ? "する":"しない" ), programCode );
@@ -201,18 +180,18 @@ public class ConfigManager {
             Tools.Prt( p, ChatColor.WHITE + "Tools : " + ChatColor.YELLOW + gn + "(" + Config.tools.get( gn ) + ")", programCode );
         } );
 
-        Tools.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Field ? "あり":"なし" ), programCode );
-        if ( Field ) {
+        Tools.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Config.Field ? "あり":"なし" ), programCode );
+        if ( Config.Field ) {
             Tools.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Config.Event_World, programCode );
             Tools.Prt( p,
                 ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + String.format( "%-7d", Config.Event_X1 ) +
-                ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d",Event_Y1 ) +
+                ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d", Config.Event_Y1 ) +
                 ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Config.Event_Z1,
                 programCode );
             Tools.Prt( p,
-                ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + String.format( "%-7d", Event_X2 ) +
-                ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d", Event_Y2 ) +
-                ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Event_Z2,
+                ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + String.format( "%-7d", Config.Event_X2 ) +
+                ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d", Config.Event_Y2 ) +
+                ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Config.Event_Z2,
                 programCode );
         }
 
@@ -226,6 +205,18 @@ public class ConfigManager {
     }
 
     /**
+     * ポイントブロックの一覧表示
+     *
+     * @param player
+     */
+    public void getStoneList( Player player ) {
+        Tools.Prt( player, ChatColor.GREEN + "=== Premises Stone List ===", consoleMode.full, programCode );
+        GetPoint.keySet().forEach( ( key ) -> {
+            Tools.Prt( player, ChatColor.GREEN + key + " : " + ChatColor.WHITE + GetPoint.get( key ), consoleMode.full, programCode );
+        } );
+    }
+
+    /**
      * 石に設定されているポイントを取得
      *
      * @param sd    判定する石の名称（コードではない）
@@ -236,50 +227,5 @@ public class ConfigManager {
             return GetPoint.get( sd );
         }
         return 0;
-    }
-
-    /**
-     * ツールの耐久度警告を行うタイミング
-     * 0.1 = 耐久度残り10%
-     *
-     * @return
-     */
-    public double getRepair() {
-        return Repair;
-    }
-
-    /**
-     * 掘削エリア指定
-     * True:あり False:なし
-     *
-     * @return
-     */
-    public boolean GetField() {
-        return Field;
-    }
-
-    /**
-     * CreativeMode時のスコアカウント
-     * True:する False:しない
-     *
-     * @return
-     */
-    public boolean CreativeCount() {
-        return OPMode;
-    }
-
-    /**
-     * 指定範囲内かの判定
-     *
-     * @param loc   現在位置
-     * @return
-     */
-    public boolean CheckArea( Location loc ) {
-        if ( !loc.getWorld().getName().equals( Config.Event_World ) ) return false;
-        return !(
-            ( loc.getBlockX()<Config.Event_X1 || loc.getBlockX()>Event_X2 ) ||
-            ( loc.getBlockY()<Event_Y1 || loc.getBlockY()>Event_Y2 ) ||
-            ( loc.getBlockZ()<Config.Event_Z1 || loc.getBlockZ()>Event_Z2 )
-        );
     }
 }

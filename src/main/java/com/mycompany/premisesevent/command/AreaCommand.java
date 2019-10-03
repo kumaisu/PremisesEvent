@@ -12,7 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.premisesevent.PremisesEvent;
-import com.mycompany.premisesevent.config.AreaManager;
+import com.mycompany.premisesevent.database.AreaManager;
 import static com.mycompany.premisesevent.config.Config.programCode;
 
 /**
@@ -35,8 +35,6 @@ public class AreaCommand implements CommandExecutor {
      private void help( Player player ) {
         Tools.Prt( player, ChatColor.GREEN + "/Area Command List", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "list     : " + ChatColor.WHITE + "Holding Area List", programCode );
-        Tools.Prt( player, ChatColor.YELLOW + "block    : " + ChatColor.WHITE + "Key Block List", programCode );
-        Tools.Prt( player, ChatColor.YELLOW + "save     : " + ChatColor.WHITE + "AreaData Save", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "AllClear : " + ChatColor.WHITE + "Clear All AreaData", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "help     : " + ChatColor.WHITE + "Command List", programCode );
      }
@@ -61,16 +59,10 @@ public class AreaCommand implements CommandExecutor {
 
         switch ( commandString ) {
             case "list":
-                AreaManager.List( player );
-                return true;
-            case "block":
-                AreaManager.LocList( player );
+                AreaManager.AreaList( player );
                 return true;
             case "help":
                 help( player );
-                return true;
-            case "save":
-                AreaManager.save( instance.getDataFolder().toString() );
                 return true;
             case "AllClear":
                 AreaManager.AllClear( player );

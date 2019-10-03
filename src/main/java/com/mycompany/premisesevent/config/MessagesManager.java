@@ -23,13 +23,14 @@ import static com.mycompany.premisesevent.config.Config.programCode;
 public class MessagesManager {
     private final Plugin plugin;
 
-    private final String resourceFile = "message.yml";
+    private final String resourceFile;
     private final File UKfile;
     private FileConfiguration UKData; // = new YamlConfiguration();
 
     public MessagesManager( Plugin plugin ) {
         this.plugin = plugin;
-        UKfile = new File( plugin.getDataFolder(), resourceFile );
+        resourceFile = Config.DataFolder + File.separator + "message.yml";
+        UKfile = new File( resourceFile );
         load();
     }
 

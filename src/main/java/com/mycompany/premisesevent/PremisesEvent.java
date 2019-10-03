@@ -5,6 +5,7 @@
  */
 package com.mycompany.premisesevent;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -14,17 +15,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -40,12 +41,14 @@ import com.mycompany.premisesevent.Player.PlayerControl;
 import com.mycompany.premisesevent.Player.TopList;
 import com.mycompany.premisesevent.command.AreaCommand;
 import com.mycompany.premisesevent.command.PECommand;
-import com.mycompany.premisesevent.config.AreaManager;
 import com.mycompany.premisesevent.config.Config;
+import static com.mycompany.premisesevent.config.Config.programCode;
 import com.mycompany.premisesevent.config.ConfigManager;
 import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.config.MessagesManager;
-import static com.mycompany.premisesevent.config.Config.programCode;
+import com.mycompany.premisesevent.database.AreaManager;
+import com.mycompany.premisesevent.database.SQLControl;
+import static com.mycompany.premisesevent.database.AreaManager.PackAreaCode;
 
 /**
  *
@@ -72,9 +75,13 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents( this, this );
+        Config.DataFolder = this.getDataFolder().toString();
         config = new ConfigManager( this );
         messe = new MessagesManager( this );
-        AreaManager.load( this.getDataFolder().toString() );
+        Config.databaseName = this.getDataFolder().toString() + File.separator + Config.EventName + File.separator + "AreaData.db";
+        Tools.Prt( "Open SQLite Database : " + Config.databaseName, Tools.consoleMode.max, programCode );
+        SQLControl.connect();
+        SQLControl.TableUpdate();
         getCommand( "premises" ).setExecutor( new PECommand( this ) );
         getCommand( "area" ).setExecutor( new AreaCommand( this ) );
     }
@@ -92,7 +99,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 Tools.Prt( ChatColor.AQUA + pc.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score", programCode );
             }
         } );
-        AreaManager.save( this.getDataFolder().toString() );
+        SQLControl.disconnect();
     }
 
     /**
@@ -106,7 +113,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onPlayerJoin( PlayerJoinEvent event ) {
         Player p = event.getPlayer();
 
-        pc.put( p.getUniqueId(), new PlayerControl( p, this.getDataFolder().toString() ) );
+        pc.put( p.getUniqueId(), new PlayerControl( p ) );
         pc.get( p.getUniqueId() ).load();
 
         if ( pc.get( p.getUniqueId() ).getEntry() != 1 ) {
@@ -147,6 +154,23 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             Tools.Prt( ChatColor.AQUA + player.getDisplayName() + ChatColor.LIGHT_PURPLE + " logged out, not Save", programCode );
         }
         pc.remove( player.getUniqueId() );
+    }
+
+    /**
+     * エリア内の移動を監視
+     *
+     * @param event 
+     */
+    @EventHandler
+    public void onPlayerMove( PlayerMoveEvent event ) {
+        Player player = event.getPlayer();
+        if ( Config.Field && !AreaManager.CheckArea( player.getLocation() ) ) return;
+
+        //  イベント参加判定
+        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
+            PackAreaCode( player.getLocation() );
+            pc.get( player.getUniqueId() ).PrintArea( player, Messages.AreaCode );
+        }
     }
 
     /**
@@ -227,7 +251,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 case "[P-TOP]":
                     if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).save();
                     TopList TL = new TopList( this.getDataFolder().toString() );
-                    TL.Top( player, consoleMode.max );
+                    TL.Top( player, Tools.consoleMode.max );
                     break;
                 default:
             }
@@ -248,25 +272,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     }
 
     /**
-     * エリア内の移動を監視
-     *
-     * @param event 
-     */
-    @EventHandler
-    public void onPlayerMove( PlayerMoveEvent event ) {
-        Player player = event.getPlayer();
-        if ( config.GetField() && !config.CheckArea( player.getLocation() ) ) return;
-
-        //  イベント参加判定
-        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
-            int cx = ( int )( player.getLocation().getX() - Config.Event_X1 ) / 16;
-            int cz = ( int )( player.getLocation().getZ() - Config.Event_Z1 ) / 16;
-            Messages.AreaCode = cx + "-" + cz;
-            pc.get( player.getUniqueId() ).PrintArea( player, Messages.AreaCode );
-        }
-    }
-
-    /**
      * ブロックを設置した時の処理
      * ポイントブロックを置いた場合は、スコアからポイントをマイナスする
      * ※自然生成か設置かを判断するための試作をしているが機能していない
@@ -276,18 +281,22 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @EventHandler
     public void onBlockPlace( BlockPlaceEvent event ) {
         Player player = event.getPlayer();
-        if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
-        if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
+        Block block = event.getBlock();
+        String blockName = BukkitTool.getStoneName( block );
+
+        if ( Config.CreativeCount && player.getGameMode() == GameMode.CREATIVE ) return;
+
+        if ( Config.Field && !AreaManager.CheckArea( block.getLocation() ) ) return;
+
         if ( pc.get( player.getUniqueId() ).getEntry() != 1 ) {
             if ( !Config.placeFree ) event.setCancelled( true );
             return;
         }
 
-        Block block = event.getBlock();
-        String blockName = BukkitTool.getStoneName( block );
-
         //  イベント保護
-        if ( Config.PlayerAlarm ) { AreaManager.AreaRelease( player, block ); }
+        if ( Config.PlayerAlarm ) {
+            AreaManager.AreaRelease( player, block );
+        }
 
         //  設置したブロックであるというフラグを設定しているが、機能していない
         block.setMetadata( "PLACED", new FixedMetadataValue( ( Plugin ) this, true ) );
@@ -340,8 +349,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onBlockBreak( BlockBreakEvent event ) {
         Player player = event.getPlayer();
 
-        if ( config.CreativeCount() && player.getGameMode() == GameMode.CREATIVE ) return;
-        if ( config.GetField() && !config.CheckArea( event.getBlock().getLocation() ) ) return;
+        if ( Config.CreativeCount && player.getGameMode() == GameMode.CREATIVE ) return;
+        if ( Config.Field && !AreaManager.CheckArea( event.getBlock().getLocation() ) ) return;
 
         //  イベント参加判定
         switch ( pc.get( player.getUniqueId() ).getEntry() ) {
@@ -458,7 +467,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         if ( item.getItemMeta().hasDisplayName() ) {
             if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) ) {
-                if ( ( item.getType().getMaxDurability() * config.getRepair() ) <= item.getDurability() ) {
+                if ( ( item.getType().getMaxDurability() * Config.Repair ) <= item.getDurability() ) {
                     Tools.Prt( player, Messages.ReplaceString( "ToolWarning" ), consoleMode.max, programCode );
                     if ( Config.titlePrint ) {
                         player.sendTitle(
@@ -492,7 +501,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( Other );
                 if ( op.hasPlayedBefore() ) {
                     uuid = op.getUniqueId();
-                    pc.put( uuid, new PlayerControl( op, this.getDataFolder().toString() ) );
+                    pc.put( uuid, new PlayerControl( op ) );
                     pc.get( uuid ).load();
                 } else {
                     Tools.Prt( player, ChatColor.RED + "This Player is not joined to server.", programCode );

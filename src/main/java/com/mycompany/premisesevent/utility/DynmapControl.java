@@ -22,16 +22,20 @@ public class DynmapControl {
      * Dynmap へ MarkerArea を登録する
      *
      * @param player
-     * @param bx
-     * @param bz 
+     * @param AreaCode
      * @param block 
      */
-    public static void SetDynmapArea( Player player, int bx, int bz, Block block ) {
+    public static void SetDynmapArea( Player player, String AreaCode, Block block ) {
         Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), "dmarker clearcors" );
-        int lx = ( ( bx * 16 ) + Config.Event_X1 );
-        int lz = ( ( bz * 16 ) + Config.Event_Z1 );
-        int hx = ( ( ( bx + 1 ) * 16 ) + Config.Event_X1 );
-        int hz = ( ( ( bz + 1 ) * 16 ) + Config.Event_Z1 );
+        String[] param = AreaCode.split( "-" );
+        int bx = Integer.valueOf( param[0] );
+        int bz = Integer.valueOf( param[1] );
+        Tools.Prt( "Location(X) : [" + bx + "]", Tools.consoleMode.max, programCode );
+        Tools.Prt( "Location(Z) : [" + bz + "]", Tools.consoleMode.max, programCode );
+        int lx = ( bx * 16 ) + Config.Event_X1;
+        int lz = ( bz * 16 ) + Config.Event_Z1;
+        int hx = ( ( bx + 1 ) * 16 ) + Config.Event_X1;
+        int hz = ( ( bz + 1 ) * 16 ) + Config.Event_Z1;
 
         String Command = "dmarker addcorner " + lx + " 1 " + lz + " " + Config.Event_World;
         Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
