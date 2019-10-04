@@ -45,31 +45,32 @@ public class AreaManager {
     /**
      * プレイヤー情報を新規追加する
      *
-     * @param player
+     * @param Owner
+     * @param Loc
      * @param block
      * @param AreaCode
      */
-    public static void AddSQL( Player player, Block block, String AreaCode ) {
+    public static void AddSQL( String Owner, Location Loc, String block, String AreaCode ) {
         try ( Connection con = Database.dataSource.getConnection() ) {
             String sql = "INSERT INTO area (AreaCode, Owner, World, x, y, z, Block, Date) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
             Tools.Prt( "SQL : " + sql, Tools.consoleMode.max , programCode );
             PreparedStatement preparedStatement = con.prepareStatement( sql );
             preparedStatement.setString( 1, AreaCode );
-            preparedStatement.setString( 2, player.getName() );
-            preparedStatement.setString( 3, block.getLocation().getWorld().getName() );
-            preparedStatement.setInt( 4, block.getLocation().getBlockX() );
-            preparedStatement.setInt( 5, block.getLocation().getBlockY() );
-            preparedStatement.setInt( 6, block.getLocation().getBlockZ() );
-            preparedStatement.setString( 7, BukkitTool.getStoneName( block ) );
+            preparedStatement.setString( 2, Owner );
+            preparedStatement.setString( 3, Loc.getWorld().getName() );
+            preparedStatement.setInt( 4, Loc.getBlockX() );
+            preparedStatement.setInt( 5, Loc.getBlockY() );
+            preparedStatement.setInt( 6, Loc.getBlockZ() );
+            preparedStatement.setString( 7, block );
             preparedStatement.setString( 8, sdf.format( new Date() ) );
 
             preparedStatement.executeUpdate();
             con.close();
 
             Database.AreaCode = AreaCode;
-            Database.Owner = player.getName();
-            Database.Location = block.getLocation();
-            Database.Block = BukkitTool.getStoneName( block );
+            Database.Owner = Owner;
+            Database.Location = Loc;
+            Database.Block = block;
             Database.GetDate = sdf.format( new Date() );
 
             Tools.Prt( "Add Data to SQL Success.", Tools.consoleMode.full , programCode );
@@ -215,6 +216,46 @@ public class AreaManager {
     }
 
     /**
+     * 手動登録
+     *
+     * @param player
+     * @param Owner
+     */
+    public static void AddRegister( Player player, String Owner ) {
+        String[] param = Messages.AreaCode.split( "-" );
+        int bx = ( Integer.valueOf( param[0] ) * 16 ) + Config.Event_X1;
+        int by = 1;
+        int bz = ( Integer.valueOf( param[1] ) * 16 ) + Config.Event_Z1;
+        Tools.Prt( "Location(X) : [" + bx + "]", Tools.consoleMode.max, programCode );
+        Tools.Prt( "Location(Y) : [" + by + "]", Tools.consoleMode.max, programCode );
+        Tools.Prt( "Location(Z) : [" + bz + "]", Tools.consoleMode.max, programCode );
+        Location Loc = new Location( player.getLocation().getWorld(), bx, by, bz );
+        if ( !GetSQL( Messages.AreaCode ) ) {
+            AddSQL( Owner, Loc, "STONE", Messages.AreaCode );
+            if ( Config.OnDynmap ) {
+                DynmapControl.SetDynmapArea( Owner, Messages.AreaCode, Loc );
+            }
+            Tools.Prt( player, "Manual Regist X:" + bx + " Y:" + by + " Z:" + bz + " Area Code [ " + Messages.AreaCode + " ]", Tools.consoleMode.full, programCode );
+        } else {
+            Tools.Prt( player, "既に所有者が居ます", Tools.consoleMode.full, programCode );
+        }
+    }
+
+    /**
+     * 手動削除
+     *
+     * @param player
+     * @param AreaCode
+     */
+    public static void DelRegister( Player player, String AreaCode ) {
+        DelSQL( AreaCode );
+        if ( Config.OnDynmap ) {
+            DynmapControl.DelDynmapArea( AreaCode );
+        }
+        Tools.Prt( player, "Manual UnRegist Area Code [ " + Messages.AreaCode + " ]", Tools.consoleMode.full, programCode );
+    }
+
+    /**
      * 保護エリアの状態チェック＆新規登録
      *
      * @param player
@@ -227,10 +268,10 @@ public class AreaManager {
             " Area Code [ " + Messages.AreaCode + " ]",
             Tools.consoleMode.max, programCode );
         if ( !GetSQL( Messages.AreaCode ) ) {
-            AddSQL( player, block, Messages.AreaCode );
+            AddSQL( player.getName(), block.getLocation(), block.getType().name(), Messages.AreaCode );
 
             if ( Config.OnDynmap ) {
-                DynmapControl.SetDynmapArea( player, Messages.AreaCode, block );
+                DynmapControl.SetDynmapArea( player.getName(), Messages.AreaCode, block.getLocation() );
             }
 
             String getMessage = Messages.ReplaceString( "GetAreaM" );

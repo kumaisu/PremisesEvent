@@ -14,6 +14,7 @@ import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.premisesevent.PremisesEvent;
 import com.mycompany.premisesevent.database.AreaManager;
 import static com.mycompany.premisesevent.config.Config.programCode;
+import com.mycompany.premisesevent.config.Messages;
 
 /**
  *
@@ -34,6 +35,8 @@ public class AreaCommand implements CommandExecutor {
       */
      private void help( Player player ) {
         Tools.Prt( player, ChatColor.GREEN + "/Area Command List", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "add [AreaCode] [PlayerName] : " + ChatColor.WHITE + "Registration", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "del [AreaCode]              : " + ChatColor.WHITE + "Delete Owner", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "list     : " + ChatColor.WHITE + "Holding Area List", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "AllClear : " + ChatColor.WHITE + "Clear All AreaData", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "help     : " + ChatColor.WHITE + "Command List", programCode );
@@ -58,6 +61,17 @@ public class AreaCommand implements CommandExecutor {
         if ( args.length > 0 ) commandString = args[0];
 
         switch ( commandString ) {
+            case "add":
+                if ( args.length > 2 ) {
+                    Messages.AreaCode = args[1];
+                    AreaManager.AddRegister( player, args[2] );
+                }
+                return true;
+            case "del":
+                if ( args.length > 1 ) {
+                    AreaManager.DelRegister( player, args[1] );
+                }
+                return true;
             case "list":
                 AreaManager.AreaList( player );
                 return true;

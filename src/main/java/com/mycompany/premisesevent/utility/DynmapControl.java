@@ -6,11 +6,10 @@
 package com.mycompany.premisesevent.utility;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.Location;
 import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.premisesevent.config.Config;
 import static com.mycompany.premisesevent.config.Config.programCode;
-import org.bukkit.block.Block;
 
 /**
  *
@@ -21,11 +20,11 @@ public class DynmapControl {
     /**
      * Dynmap へ MarkerArea を登録する
      *
-     * @param player
+     * @param Owner
      * @param AreaCode
-     * @param block 
+     * @param Loc
      */
-    public static void SetDynmapArea( Player player, String AreaCode, Block block ) {
+    public static void SetDynmapArea( String Owner, String AreaCode, Location Loc ) {
         Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), "dmarker clearcors" );
         String[] param = AreaCode.split( "-" );
         int bx = Integer.valueOf( param[0] );
@@ -53,9 +52,8 @@ public class DynmapControl {
         Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
         Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
 
-        String locKey = "\"[" + bx + "-" + bz + "] " +
-                player.getName() + " (" +
-                ( int ) block.getLocation().getX() + "," + ( int ) block.getLocation().getY() + "," + ( int ) block.getLocation().getZ() + ")\"";
+        String locKey = "\"[" + bx + "-" + bz + "] " + Owner + " (" +
+                ( int ) Loc.getX() + "," + ( int ) Loc.getY() + "," + ( int ) Loc.getZ() + ")\"";
 
         Command = "dmarker addarea id:" + bx + "-" + bz + " " + locKey;
         Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
