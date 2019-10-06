@@ -187,13 +187,17 @@ public class AreaManager {
      * エリア保護者リスト
      *
      * @param player 
+     * @param Key 
      */
-    public static void AreaList( Player player ) {
+    public static void AreaList( Player player, String Key ) {
         Tools.Prt( player, ChatColor.GREEN + "List for AreaCode...", programCode );
 
         try ( Connection con = dataSource.getConnection() ) {
             Statement stmt = con.createStatement();
-            String sql = "SELECT * FROM area ORDER BY AreaCode ASC;";
+            String sql = "SELECT * FROM area";
+            if ( !"".equals( Key ) ) { sql += " WHERE Owner = '" + Key + "'"; }
+            sql += " ORDER BY AreaCode ASC;";
+            Tools.Prt( "SQL : " + sql, Tools.consoleMode.max , programCode );
             ResultSet rs = stmt.executeQuery( sql );
             while( rs.next() ) {
                 Tools.Prt( player,

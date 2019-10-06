@@ -73,7 +73,7 @@ public class AreaCommand implements CommandExecutor {
                 }
                 return true;
             case "list":
-                AreaManager.AreaList( player );
+                AreaManager.AreaList( player, ( ( args.length > 1 ) ? args[1] : "" ) );
                 return true;
             case "help":
                 help( player );
