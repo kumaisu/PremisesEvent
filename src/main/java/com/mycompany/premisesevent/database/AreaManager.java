@@ -73,7 +73,7 @@ public class AreaManager {
             Database.Block = block;
             Database.GetDate = sdf.format( new Date() );
 
-            Tools.Prt( "Add Data to SQL Success.", Tools.consoleMode.full , programCode );
+            Tools.Prt( "Add Data to SQL Success.", Tools.consoleMode.full, programCode );
         } catch ( SQLException e ) {
             Tools.Prt( ChatColor.RED + "Error AddToSQL" + e.getMessage(), programCode );
         }
@@ -123,7 +123,7 @@ public class AreaManager {
                                         rs.getInt( "z" ) );
                 Database.Block      = rs.getString( "Block" );
                 Database.GetDate    = rs.getString( "Date" );
-                Tools.Prt( "Get Data from SQL Success.", Tools.consoleMode.full , programCode );
+                Tools.Prt( "Get Data from SQL Success.", Tools.consoleMode.max , programCode );
                 retStat = true;
             }
             con.close();
@@ -161,7 +161,7 @@ public class AreaManager {
         PackAreaCode( block.getLocation() );
         if ( GetSQL( Messages.AreaCode ) ) {
             Messages.RepPlayer = Database.Owner;
-            Tools.Prt( player, Messages.ReplaceString( "OwnerArea" ), Tools.consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.ReplaceString( "OwnerArea" ), Tools.consoleMode.full, programCode );
         } else {
             Tools.Prt( player, Messages.ReplaceString( "NoOwnerArea" ), Tools.consoleMode.full, programCode );
         }

@@ -1,7 +1,7 @@
-name: PremisesEvent
-version: 0.7.1
 main: com.mycompany.premisesevent.PremisesEvent
-description: Premises Event Control plugin
+name: PremisesEvent
+version: ${project.version}
+description: ${project.description}
 author: Kumaisu
 database: true
 api-version: 1.14
