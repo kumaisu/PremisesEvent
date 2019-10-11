@@ -34,6 +34,7 @@ import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.database.Database;
 import static com.mycompany.premisesevent.config.Config.programCode;
 import static com.mycompany.kumaisulibraries.BukkitTool.launchFireWorks;
+import static com.mycompany.premisesevent.config.Messages.PlayerMessage;
 import static com.mycompany.premisesevent.database.AreaManager.GetSQL;
 
 /**
@@ -184,6 +185,18 @@ public class PlayerControl {
         }
     }
 
+    private void BroadcastMessage( Player player, String Key ) {
+        if ( !"".equals( PlayerMessage.get( Key ) ) ) {
+            String Msg = Messages.ReplaceString( Key );
+            Bukkit.broadcastMessage( Msg );
+            for( int i = 0; i<Config.bc_command.size(); i++ ) {
+                Tools.Prt( ChatColor.WHITE + "Command Exec : " + ChatColor.YELLOW + Config.bc_command.get( i ), programCode );
+                Tools.ExecOtherCommand( player, Config.bc_command.get( i ), Msg );
+            }
+        }
+        
+    }
+
     /**
      * プレイヤーの参加処理をします
      *
@@ -201,22 +214,15 @@ public class PlayerControl {
         switch ( getEntry() ) {
             case 1: //  Double registration failure.
                 Tools.Prt( p, Messages.ReplaceString( "AlreadyJoin" ), consoleMode.normal, programCode );
-                for( int i = 0; i<Config.bc_command.size(); i++ ) {
-                    Tools.Prt( ChatColor.WHITE + "Command Exec : " + ChatColor.YELLOW + Config.bc_command.get( i ), programCode );
-                    Tools.ExecOtherCommand( p, Config.bc_command.get( i ), Messages.ReplaceString( "AlreadyJoinBroadcast" ) );
-                }
+                BroadcastMessage( p, "AlreadyJoinBroadcast" );
                 return false;
             case 2: //  Kick registration.
                 Tools.Prt( p, Messages.ReplaceString( "RefusalJoin" ), consoleMode.normal, programCode );
-                //  ExecOtherCommand( player, player.getDisplayName() + " さんは、イベントに参加できませんでした" );
+                BroadcastMessage( p, "RefusalJoinBroadcast" );
                 return false;
             default: // Registration success.
                 Tools.Prt( ChatColor.AQUA + "Registration success.", programCode );
                 Tools.Prt( p, Config.JoinMessage, consoleMode.normal, programCode );
-                for( int i = 0; i<Config.bc_command.size(); i++ ) {
-                    Tools.ExecOtherCommand( p, Config.bc_command.get( i ), Messages.ReplaceString( "Join" ) );
-                }
-                break;
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -235,7 +241,7 @@ public class PlayerControl {
             ic.ToolPresent( p, Material.getMaterial( key ), Config.tools.get( key ), Config.EventToolName );
         } );
 
-        Bukkit.broadcastMessage( Messages.ReplaceString( "JoinBroadcast" ) );
+        BroadcastMessage( p, "JoinBroadcast" );
         return true;
     }
 
