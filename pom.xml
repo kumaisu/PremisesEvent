@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mycompany</groupId>
     <artifactId>PremisesEvent</artifactId>
-    <version>0.7.1</version>
+    <version>0.7.2</version>
     <description>Premises Event Control plugin</description>
     <packaging>jar</packaging>
     <properties>
@@ -36,10 +36,11 @@
             <version>1.12.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+    <!--Kumaisu Original Libraries API-->
         <dependency>
             <groupId>com.mycompany</groupId>
             <artifactId>KumaisuLibraries</artifactId>
-            <version>0.1</version>
+            <version>0.2</version>
             <type>jar</type>
         </dependency>
     <!--HikariCP-->
@@ -113,6 +114,6 @@
                 </configuration>
             </plugin>    
         </plugins>
-        <finalName>${project.artifactId}-${project.version}.${buildNumber}</finalName>
+        <finalName>${project.artifactId}-${project.version}.b${buildNumber}</finalName>
     </build>
 </project>

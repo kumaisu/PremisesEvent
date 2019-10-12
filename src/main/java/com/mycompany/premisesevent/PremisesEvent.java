@@ -496,7 +496,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             } else {
                 UUID uuid;
 
-                Tools.Prt( player, ChatColor.RED + "Look other Player : " + Other, consoleMode.none, programCode );
+                Tools.Prt( player, ChatColor.RED + "Look other Player : " + Other, consoleMode.print, programCode );
 
                 OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( Other );
                 if ( op.hasPlayedBefore() ) {

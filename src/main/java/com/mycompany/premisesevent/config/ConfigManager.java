@@ -35,7 +35,7 @@ public class ConfigManager {
     public ConfigManager( Plugin plugin ) {
         Config.stones = new ArrayList<>();
         this.plugin = plugin;
-        Tools.entryDebugFlag( programCode, consoleMode.none );
+        Tools.entryDebugFlag( programCode, consoleMode.print );
         Tools.Prt( "Config Loading now...", programCode );
         load();
     }
@@ -136,14 +136,14 @@ public class ConfigManager {
         try {
             Config.difficulty = Config.EventMode.valueOf( config.getString( "Difficulty" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( Messages.ReplaceString( "FraudEvent" ), consoleMode.none, programCode );
+            Tools.Prt( Messages.ReplaceString( "FraudEvent" ), consoleMode.print, programCode );
             Config.difficulty = Config.EventMode.Normal;
         }
 
         try {
             Config.UpperBlock = Config.UpperMode.valueOf( config.getString( "UpperBlock" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( Messages.ReplaceString( "FraudUpper" ), consoleMode.none, programCode );
+            Tools.Prt( Messages.ReplaceString( "FraudUpper" ), consoleMode.print, programCode );
             Config.UpperBlock = Config.UpperMode.None;
         }
     }
