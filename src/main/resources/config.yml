@@ -1,6 +1,6 @@
 #   Premises Event Configuration File
 
-#   Debug ( max / full / Default:normal / none )
+#   Debug ( max / full / Default:normal / stop )
 Debug: normal
 
 #   イベントエリアを限定する場合設定
