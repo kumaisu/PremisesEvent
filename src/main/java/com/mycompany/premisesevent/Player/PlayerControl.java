@@ -360,18 +360,17 @@ public class PlayerControl {
             //  デバッグ（または保守）用、一定数到達記録をコンソールログに残す
             //  不具合や他責によるスコアの未記録時の対応ログとして表示
             if ( ( Config.ScoreNotice > 0 ) && ( PlayerScore >= scoreNotice ) ) {
-                Tools.Prt( "[Premises] " + DisplayName + " reached " + PlayerScore + " points.", consoleMode.full, programCode );
+                Tools.Prt( "[Premises Notice] " + DisplayName + " reached " + PlayerScore + " points.", consoleMode.full, programCode );
                 scoreNotice = Config.ScoreNotice * ( ( int ) Math.floor( PlayerScore / Config.ScoreNotice ) + 1 );
             }
 
             //  ブロードキャスト、一定スコア達成をオンラインプレイヤーに知らせる
             if ( ( Config.ScoreBroadcast > 0 ) && ( PlayerScore >= scoreBroadcast ) ) {
-                Tools.Prt( "[Premises] " + DisplayName + " reached " + PlayerScore + " points.", consoleMode.full, programCode );
+                Tools.Prt( "[Premises Broadcast] " + DisplayName + " reached " + PlayerScore + " points.", consoleMode.full, programCode );
                 Messages.RepScore = String.valueOf( scoreBroadcast );
                 Messages.RepPlayer = player.getName();
                 scoreBroadcast = Config.ScoreBroadcast * ( ( int ) Math.floor( PlayerScore / Config.ScoreBroadcast ) + 1 );
                 String SendMessage = Messages.ReplaceString( "Achievement" );
-                Tools.Prt( SendMessage, consoleMode.full, programCode );
                 launchFireWorks( player.getLocation() );
                 if ( player.hasPermission( "Premises.broadcast" ) ) {
                     Bukkit.broadcastMessage( SendMessage );

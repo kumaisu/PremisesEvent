@@ -69,7 +69,7 @@ public class DynmapControl {
         if ( Config.OnDynmap ) {
             String Command = "dmarker deletearea id:" + Code;
             Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
-            Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
+            Tools.Prt( "Dynmap del : " + Command, Tools.consoleMode.max, programCode );
         }
     }
 }
