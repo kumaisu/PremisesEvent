@@ -94,10 +94,13 @@ public class PECommand implements CommandExecutor {
                 } else return false;
             case "Console":
                 if ( hasPermission ) {
-                    Tools.setDebug( itemName, programCode );
+                    if ( !Tools.setDebug( itemName, programCode ) ) {
+                        Tools.entryDebugFlag( programCode, Tools.consoleMode.normal );
+                        Tools.Prt( ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", programCode );
+                    }
                     Tools.Prt( player,
                         ChatColor.GREEN + "System Debug Mode is [ " +
-                        ChatColor.RED + Tools.consoleFlag.get( programCode ).toString() +
+                        ChatColor.RED + Tools.consoleFlag.get( programCode ) +
                         ChatColor.GREEN + " ]",
                         programCode
                     );

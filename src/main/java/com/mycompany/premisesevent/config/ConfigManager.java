@@ -124,15 +124,6 @@ public class ConfigManager {
 
         Config.JoinMessage = config.getString( "JOIN_MESSAGE" );
 
-        consoleMode DebugFlag;
-        try {
-            DebugFlag = consoleMode.valueOf( config.getString( "Debug" ) );
-        } catch( IllegalArgumentException e ) {
-            Tools.Prt( Messages.ReplaceString( "FraudMode" ), programCode );
-            DebugFlag = consoleMode.normal;
-        }
-        Tools.entryDebugFlag( programCode, DebugFlag );
-
         try {
             Config.difficulty = Config.EventMode.valueOf( config.getString( "Difficulty" ) );
         } catch ( IllegalArgumentException e ) {
@@ -145,6 +136,11 @@ public class ConfigManager {
         } catch ( IllegalArgumentException e ) {
             Tools.Prt( Messages.ReplaceString( "FraudUpper" ), consoleMode.print, programCode );
             Config.UpperBlock = Config.UpperMode.None;
+        }
+
+        if ( !Tools.setDebug( config.getString( "Debug" ), programCode ) ) {
+            Tools.entryDebugFlag( programCode, Tools.consoleMode.normal );
+            Tools.Prt( ChatColor.RED + "Config Debugモードの指定値が不正なので、normal設定にしました", programCode );
         }
     }
 
