@@ -23,7 +23,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import com.mycompany.kumaisulibraries.Tools;
-import com.mycompany.kumaisulibraries.Tools.consoleMode;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.Messages;
 import static com.mycompany.premisesevent.config.Config.programCode;
@@ -98,7 +97,7 @@ public class TopList {
      * @param player
      * @param key
      */
-    public void Top( Player player, consoleMode key ) {
+    public void Top( Player player, Tools.consoleMode key ) {
         String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
         Tools.Prt( player, ChatColor.GREEN + Messages.ReplaceString( "EventList" ), programCode );
         Tools.Prt( player, ChatColor.GREEN + "============================", programCode );
@@ -109,7 +108,9 @@ public class TopList {
         File files[] = folder.listFiles();
 
         // 1.File からスコアの取り出しし、マッピングする
-        for ( File file : files ) { rank.put( Bukkit.getOfflinePlayer( UUID.fromString( getPreffix( file.getName() ) ) ).getName(), getScore( file.getName() ) ); }
+        for ( File file : files ) {
+            rank.put( Bukkit.getOfflinePlayer( UUID.fromString( getPreffix( file.getName() ) ) ).getName(), getScore( file.getName() ) );
+        }
 
         // 2.Map.Entryのリストを作成する
         List<Entry<String, Integer>> list_entries = new ArrayList<>( rank.entrySet() );

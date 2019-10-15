@@ -8,7 +8,6 @@ package com.mycompany.premisesevent.config;
 import java.util.Map;
 import java.util.TreeMap;
 import com.mycompany.kumaisulibraries.Tools;
-import com.mycompany.kumaisulibraries.Tools.consoleMode;
 import static com.mycompany.premisesevent.config.Config.programCode;
 
 /**
@@ -28,7 +27,7 @@ public class Messages {
     public static String AreaCode = "%$4#-#(error)";        //  %AreaCode%          : AreaCode
 
     public static String ReplaceString( String key ) {
-        Tools.Prt( "Message Key : " + key, consoleMode.max, programCode );
+        Tools.Prt( "Message Key : " + key, Tools.consoleMode.max, programCode );
         String mainStr = PlayerMessage.get( key );
         mainStr = mainStr.replace( "%player%", RepPlayer );
         mainStr = mainStr.replace( "%message%", RepMessage );

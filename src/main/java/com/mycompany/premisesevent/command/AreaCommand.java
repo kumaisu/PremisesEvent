@@ -12,9 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.premisesevent.PremisesEvent;
+import com.mycompany.premisesevent.config.Config;
+import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.database.AreaManager;
 import static com.mycompany.premisesevent.config.Config.programCode;
-import com.mycompany.premisesevent.config.Messages;
 
 /**
  *
@@ -56,6 +57,10 @@ public class AreaCommand implements CommandExecutor {
         Player player = ( sender instanceof Player ? ( Player ) sender:null );
 
         if ( ( player != null ) && ( !player.hasPermission( "Premises.admin" ) ) ) { return false; }
+        if ( !Config.Field ) {
+            Tools.Prt( player, ChatColor.RED + "Missing field specification", Tools.consoleMode.max, programCode );
+            return false;
+        }
 
         String commandString = "help";
         if ( args.length > 0 ) commandString = args[0];

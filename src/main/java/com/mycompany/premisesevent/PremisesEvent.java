@@ -34,7 +34,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.mycompany.kumaisulibraries.Tools;
-import com.mycompany.kumaisulibraries.Tools.consoleMode;
 import com.mycompany.kumaisulibraries.BukkitTool;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.Player.PlayerControl;
@@ -42,13 +41,12 @@ import com.mycompany.premisesevent.Player.TopList;
 import com.mycompany.premisesevent.command.AreaCommand;
 import com.mycompany.premisesevent.command.PECommand;
 import com.mycompany.premisesevent.config.Config;
-import static com.mycompany.premisesevent.config.Config.programCode;
 import com.mycompany.premisesevent.config.ConfigManager;
 import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.config.MessagesManager;
 import com.mycompany.premisesevent.database.AreaManager;
 import com.mycompany.premisesevent.database.SQLControl;
-import static com.mycompany.premisesevent.database.AreaManager.PackAreaCode;
+import static com.mycompany.premisesevent.config.Config.programCode;
 
 /**
  *
@@ -76,12 +74,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onEnable() {
         getServer().getPluginManager().registerEvents( this, this );
         Config.DataFolder = this.getDataFolder().toString();
+        Config.databaseName = Config.DataFolder + File.separator + Config.EventName + File.separator + "AreaData.db";
         config = new ConfigManager( this );
         messe = new MessagesManager( this );
-        Config.databaseName = this.getDataFolder().toString() + File.separator + Config.EventName + File.separator + "AreaData.db";
-        Tools.Prt( "Open SQLite Database : " + Config.databaseName, Tools.consoleMode.max, programCode );
-        SQLControl.connect();
-        SQLControl.TableUpdate();
+        if ( Config.Field ) {
+            Tools.Prt( "Open SQLite Database : " + Config.databaseName, Tools.consoleMode.max, programCode );
+            SQLControl.connect();
+            SQLControl.TableUpdate();
+        }
         getCommand( "premises" ).setExecutor( new PECommand( this ) );
         getCommand( "area" ).setExecutor( new AreaCommand( this ) );
     }
@@ -111,6 +111,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      */
     @EventHandler
     public void onPlayerJoin( PlayerJoinEvent event ) {
+        if ( Config.EventName.equals( "none" ) ) return;
+
         Player p = event.getPlayer();
 
         pc.put( p.getUniqueId(), new PlayerControl( p ) );
@@ -145,6 +147,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      */
     @EventHandler
     public void onPlayerQuit( PlayerQuitEvent event ) {
+        if ( Config.EventName.equals( "none" ) ) return;
+
         Player player = event.getPlayer();
         if ( pc.get( player.getUniqueId() ).getEntry() != 0 ) {
             Tools.Prt( ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " logged out, Saved the Score", programCode );
@@ -163,12 +167,14 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      */
     @EventHandler
     public void onPlayerMove( PlayerMoveEvent event ) {
+        if ( Config.EventName.equals( "none" ) ) return;
+
         Player player = event.getPlayer();
         if ( Config.Field && !AreaManager.CheckArea( player.getLocation() ) ) return;
 
         //  イベント参加判定
         if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
-            PackAreaCode( player.getLocation() );
+            if ( Config.Field ) AreaManager.PackAreaCode( player.getLocation() );
             pc.get( player.getUniqueId() ).PrintArea( player, Messages.AreaCode );
         }
     }
@@ -180,6 +186,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      */
     @EventHandler
     public void onClick( PlayerInteractEvent event ) {
+        if ( Config.EventName.equals( "none" ) ) return;
+
         if ( event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_AIR ) { return; }
 
         Player player = event.getPlayer();
@@ -262,7 +270,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 if ( ( item.getItemMeta().getDisplayName().equals( Config.EventToolName ) ) &&
                     ( event.getAction() == Action.RIGHT_CLICK_BLOCK )
                 ) {
-                    if ( ClickFlag ) {
+                    if ( Config.Field && ClickFlag ) {
                         AreaManager.AreaGet( player, block );
                     }
                     ClickFlag = !ClickFlag;
@@ -280,6 +288,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      */
     @EventHandler
     public void onBlockPlace( BlockPlaceEvent event ) {
+        if ( Config.EventName.equals( "none" ) ) return;
+
         Player player = event.getPlayer();
         Block block = event.getBlock();
         String blockName = BukkitTool.getStoneName( block );
@@ -294,7 +304,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         }
 
         //  イベント保護
-        if ( Config.PlayerAlarm ) {
+        if ( Config.Field && Config.PlayerAlarm ) {
             AreaManager.AreaRelease( player, block );
         }
 
@@ -303,7 +313,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
 
         if ( Config.stones.contains( blockName ) == false ) {
             if ( !Config.placeSpecified ) {
-                Tools.Prt( player, Messages.ReplaceString( "NGBlockPlace" ), consoleMode.full, programCode );
+                Tools.Prt( player, Messages.ReplaceString( "NGBlockPlace" ), Tools.consoleMode.full, programCode );
                 event.setCancelled( true );
             }
             Tools.Prt(
@@ -311,13 +321,13 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 ChatColor.GREEN + " [" +
                 ChatColor.GOLD + blockName +
                 ChatColor.GREEN + "] is not a target",
-                consoleMode.full, programCode
+                Tools.consoleMode.full, programCode
             );
             return;
         }
 
         if ( ( Config.zeroPlace ) || ( config.getPoint( blockName ) == 0 ) || ( pc.get( player.getUniqueId() ).getStoneCount( blockName ) > 0 ) ) {
-            Tools.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), consoleMode.max, programCode );
+            Tools.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), Tools.consoleMode.max, programCode );
             if ( config.getPoint( blockName ) != 0 ) {
                 pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
                 pc.get( player.getUniqueId() ).subStoneCount( blockName, ( config.getPoint( blockName ) < 0 ) );
@@ -328,7 +338,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             }
         } else {
             if ( !Config.placeFree ) {
-                Tools.Prt( player, Messages.ReplaceString( "NoMorePlace" ), consoleMode.full, programCode );
+                Tools.Prt( player, Messages.ReplaceString( "NoMorePlace" ), Tools.consoleMode.full, programCode );
                 if ( Config.titlePrint ) {
                     player.sendTitle(
                         Messages.ReplaceString( "NoMoreTitleM" ),
@@ -347,6 +357,8 @@ public class PremisesEvent extends JavaPlugin implements Listener {
      */
     @EventHandler
     public void onBlockBreak( BlockBreakEvent event ) {
+        if ( Config.EventName.equals( "none" ) ) return;
+
         Player player = event.getPlayer();
 
         if ( Config.CreativeCount && player.getGameMode() == GameMode.CREATIVE ) return;
@@ -356,7 +368,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         switch ( pc.get( player.getUniqueId() ).getEntry() ) {
             case 0:
                 if ( !Config.breakFree ) {
-                    Tools.Prt( player, Messages.ReplaceString( "RequestJoin" ), consoleMode.normal, programCode );
+                    Tools.Prt( player, Messages.ReplaceString( "RequestJoin" ), Tools.consoleMode.normal, programCode );
                     event.setCancelled( true );
                 }
                 return;
@@ -364,7 +376,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 // 参加者なので、スルー
                 break;
             case 2:
-                Tools.Prt( player, Messages.ReplaceString( "OmitPlayer" ), consoleMode.normal, programCode );
+                Tools.Prt( player, Messages.ReplaceString( "OmitPlayer" ), Tools.consoleMode.normal, programCode );
                 event.setCancelled( true );
                 return;
         }
@@ -377,7 +389,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         Location loc = block.getLocation();
         loc.setY( loc.getY() + 1 );
         Block checkBlock = loc.getBlock();
-        if ( !player.hasPermission( "Premises.warning" ) ) {
+        if ( !player.hasPermission( "Premises.warning" ) && Config.Field ) {
             switch ( Config.UpperBlock ) {
                 case Block:
                     if ( AreaManager.WarningCheck( player, checkBlock ) ) {
@@ -400,21 +412,21 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     ( !item.getItemMeta().hasDisplayName() ) ||
                     ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) )
                ) {
-                Tools.Prt( player, Messages.ReplaceString( "NoEventTool" ), consoleMode.full, programCode );
+                Tools.Prt( player, Messages.ReplaceString( "NoEventTool" ), Tools.consoleMode.full, programCode );
                 event.setCancelled( true );
                 return;
             }
         }
 
         //  エリア関連チェック
-        if ( Config.PlayerAlarm ) { AreaManager.AreaCheck( player, block ); }
+        if ( Config.Field && Config.PlayerAlarm ) { AreaManager.AreaCheck( player, block ); }
 
         //  ブロック処理
         if ( Config.stones.contains( blockName ) ) {
             Tools.Prt(
                 player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) +
                 ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")",
-                consoleMode.max, programCode
+                Tools.consoleMode.max, programCode
             );
 
             if ( config.getPoint( blockName )<0 ) {
@@ -423,16 +435,16 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                     ChatColor.AQUA + player.getDisplayName() +
                     ChatColor.RED + " broke a " +
                     ChatColor.YELLOW + blockName,
-                    consoleMode.normal, programCode
+                    Tools.consoleMode.normal, programCode
                 );
 
                 switch( Config.difficulty ) {
                     case Easy:
-                        Tools.Prt( player, Messages.ReplaceString( "NoBreak" ), consoleMode.full, programCode );
+                        Tools.Prt( player, Messages.ReplaceString( "NoBreak" ), Tools.consoleMode.full, programCode );
                         event.setCancelled( true );
                         return;
                     case Normal:
-                        Tools.Prt( player, Messages.ReplaceString( "DontBreak" ), consoleMode.full, programCode );
+                        Tools.Prt( player, Messages.ReplaceString( "DontBreak" ), Tools.consoleMode.full, programCode );
                         if ( Config.titlePrint ) {
                             player.sendTitle(
                                 Messages.ReplaceString( "NoBreakTitleM" ),
@@ -460,7 +472,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 ChatColor.LIGHT_PURPLE + " [" +
                 ChatColor.GOLD + block.getType().toString() +
                 ChatColor.LIGHT_PURPLE + "] is not a target",
-                consoleMode.full, programCode );
+                Tools.consoleMode.full, programCode );
         }
 
         if ( item.getType() == Material.AIR ) return;
@@ -468,7 +480,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         if ( item.getItemMeta().hasDisplayName() ) {
             if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) ) {
                 if ( ( item.getType().getMaxDurability() * Config.Repair ) <= item.getDurability() ) {
-                    Tools.Prt( player, Messages.ReplaceString( "ToolWarning" ), consoleMode.max, programCode );
+                    Tools.Prt( player, Messages.ReplaceString( "ToolWarning" ), Tools.consoleMode.max, programCode );
                     if ( Config.titlePrint ) {
                         player.sendTitle(
                             Messages.ReplaceString( "ToolWarningTitleM" ),
@@ -496,7 +508,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
             } else {
                 UUID uuid;
 
-                Tools.Prt( player, ChatColor.RED + "Look other Player : " + Other, consoleMode.print, programCode );
+                Tools.Prt( player, ChatColor.RED + "Look other Player : " + Other, Tools.consoleMode.print, programCode );
 
                 OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( Other );
                 if ( op.hasPlayedBefore() ) {

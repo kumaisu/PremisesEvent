@@ -5,6 +5,7 @@
  */
 package com.mycompany.premisesevent.config;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +15,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import com.mycompany.kumaisulibraries.Tools;
-import com.mycompany.kumaisulibraries.Tools.consoleMode;
 import static com.mycompany.premisesevent.config.Config.programCode;
 
 /**
@@ -35,7 +35,7 @@ public class ConfigManager {
     public ConfigManager( Plugin plugin ) {
         Config.stones = new ArrayList<>();
         this.plugin = plugin;
-        Tools.entryDebugFlag( programCode, consoleMode.print );
+        Tools.entryDebugFlag( programCode, Tools.consoleMode.print );
         Tools.Prt( "Config Loading now...", programCode );
         load();
     }
@@ -71,6 +71,13 @@ public class ConfigManager {
         }
 
         Config.EventName = config.getString( "EventName" );
+
+        //  Field 指定があった場合は予めディレクトリを作成する
+        if ( !"none".equals( Config.EventName ) ) {
+            File newdir = new File( Config.DataFolder + File.separator + Config.EventName );
+            newdir.mkdir();
+        }
+
         Config.Field = config.getBoolean( "Field", false );
         Config.ScoreNotice = config.getInt( "ScoreNotice", 0 );
         Config.ScoreBroadcast = config.getInt( "ScoreBroadcast", 0 );
@@ -127,14 +134,14 @@ public class ConfigManager {
         try {
             Config.difficulty = Config.EventMode.valueOf( config.getString( "Difficulty" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( Messages.ReplaceString( "FraudEvent" ), consoleMode.print, programCode );
+            Tools.Prt( Messages.ReplaceString( "FraudEvent" ), Tools.consoleMode.print, programCode );
             Config.difficulty = Config.EventMode.Normal;
         }
 
         try {
             Config.UpperBlock = Config.UpperMode.valueOf( config.getString( "UpperBlock" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( Messages.ReplaceString( "FraudUpper" ), consoleMode.print, programCode );
+            Tools.Prt( Messages.ReplaceString( "FraudUpper" ), Tools.consoleMode.print, programCode );
             Config.UpperBlock = Config.UpperMode.None;
         }
 
@@ -155,8 +162,6 @@ public class ConfigManager {
         Tools.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + Config.EventName, programCode );
         Tools.Prt( p, ChatColor.WHITE + "難易度           : " + ChatColor.YELLOW + Config.difficulty.toString(), programCode );
         Tools.Prt( p, ChatColor.WHITE + "下層掘削制限     : " + ChatColor.YELLOW + Config.UpperBlock.toString(), programCode );
-        Tools.Prt( p, ChatColor.WHITE + "他者エリア警告   : " + ChatColor.YELLOW + ( Config.PlayerAlarm ? "あり":"なし" ), programCode );
-        Tools.Prt( p, ChatColor.WHITE + "Dynmap Area 表示 : " + ChatColor.YELLOW + ( Config.OnDynmap ? "あり":"なし" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + Config.RePresent, programCode );
         Tools.Prt( p, ChatColor.WHITE + "最小効率強化     : " + ChatColor.YELLOW + Config.MinDigSpeed, programCode );
         Tools.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + Config.UpCost, programCode );
@@ -178,6 +183,8 @@ public class ConfigManager {
 
         Tools.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Config.Field ? "あり":"なし" ), programCode );
         if ( Config.Field ) {
+            Tools.Prt( p, ChatColor.WHITE + "他者エリア警告   : " + ChatColor.YELLOW + ( Config.PlayerAlarm ? "あり":"なし" ), programCode );
+            Tools.Prt( p, ChatColor.WHITE + "Dynmap Area 表示 : " + ChatColor.YELLOW + ( Config.OnDynmap ? "あり":"なし" ), programCode );
             Tools.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Config.Event_World, programCode );
             Tools.Prt( p,
                 ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + String.format( "%-7d", Config.Event_X1 ) +
@@ -206,9 +213,9 @@ public class ConfigManager {
      * @param player
      */
     public void getStoneList( Player player ) {
-        Tools.Prt( player, ChatColor.GREEN + "=== Premises Stone List ===", consoleMode.full, programCode );
+        Tools.Prt( player, ChatColor.GREEN + "=== Premises Stone List ===", Tools.consoleMode.full, programCode );
         GetPoint.keySet().forEach( ( key ) -> {
-            Tools.Prt( player, ChatColor.GREEN + key + " : " + ChatColor.WHITE + GetPoint.get( key ), consoleMode.full, programCode );
+            Tools.Prt( player, ChatColor.GREEN + key + " : " + ChatColor.WHITE + GetPoint.get( key ), Tools.consoleMode.full, programCode );
         } );
     }
 

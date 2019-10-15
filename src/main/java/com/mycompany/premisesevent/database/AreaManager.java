@@ -253,9 +253,7 @@ public class AreaManager {
      */
     public static void DelRegister( Player player, String AreaCode ) {
         DelSQL( AreaCode );
-        if ( Config.OnDynmap ) {
-            DynmapControl.DelDynmapArea( AreaCode );
-        }
+        DynmapControl.DelDynmapArea( AreaCode );
         Tools.Prt( player, "Manual UnRegist Area Code [ " + Messages.AreaCode + " ]", Tools.consoleMode.full, programCode );
     }
 
@@ -273,10 +271,7 @@ public class AreaManager {
             Tools.consoleMode.max, programCode );
         if ( !GetSQL( Messages.AreaCode ) ) {
             AddSQL( player.getName(), block.getLocation(), block.getType().name(), Messages.AreaCode );
-
-            if ( Config.OnDynmap ) {
-                DynmapControl.SetDynmapArea( player.getName(), Messages.AreaCode, block.getLocation() );
-            }
+            DynmapControl.SetDynmapArea( player.getName(), Messages.AreaCode, block.getLocation() );
 
             String getMessage = Messages.ReplaceString( "GetAreaM" );
             Messages.RepPlayer = Database.Owner;

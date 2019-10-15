@@ -7,8 +7,8 @@ Debug: normal
 #   Fieldがfalseの場合サーバー全体が対象となる
 #   Whether to perform a field check
 #   If it is false, it will be the entire server
-EventName: EventName
-Field: true
+EventName: none
+Field: false
 World: world
 AreaPos1: 200,50,100
 AreaPos2: 100,2,200

@@ -27,15 +27,13 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import com.mycompany.kumaisulibraries.Utility;
 import com.mycompany.kumaisulibraries.Tools;
-import com.mycompany.kumaisulibraries.Tools.consoleMode;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.database.Database;
+import com.mycompany.premisesevent.database.AreaManager;
 import static com.mycompany.premisesevent.config.Config.programCode;
 import static com.mycompany.kumaisulibraries.BukkitTool.launchFireWorks;
-import static com.mycompany.premisesevent.config.Messages.PlayerMessage;
-import static com.mycompany.premisesevent.database.AreaManager.GetSQL;
 
 /**
  *
@@ -125,7 +123,7 @@ public class PlayerControl {
      * @return
      */
     public boolean load() {
-        Tools.Prt( "Loading Player Data.", consoleMode.full, programCode );
+        Tools.Prt( "Loading Player Data.", Tools.consoleMode.full, programCode );
         // 設定ファイルを保存
         File dataFolder = new File( Config.DataFolder + File.separator + Config.EventName + File.separator + "users" );
         File UKfile = new File( dataFolder, uuid + ".yml" );
@@ -156,7 +154,7 @@ public class PlayerControl {
      *
      */
     public void save() {
-        Tools.Prt( "Saving Player Data.", consoleMode.full, programCode );
+        Tools.Prt( "Saving Player Data.", Tools.consoleMode.full, programCode );
         File dataFolder = new File( Config.DataFolder + File.separator + Config.EventName + File.separator + "users" );
         if( !dataFolder.exists() ) { dataFolder.mkdir(); }
 
@@ -186,7 +184,7 @@ public class PlayerControl {
     }
 
     private void BroadcastMessage( Player player, String Key ) {
-        if ( !"".equals( PlayerMessage.get( Key ) ) ) {
+        if ( !"".equals( Messages.PlayerMessage.get( Key ) ) ) {
             String Msg = Messages.ReplaceString( Key );
             Bukkit.broadcastMessage( Msg );
             for( int i = 0; i<Config.bc_command.size(); i++ ) {
@@ -205,7 +203,7 @@ public class PlayerControl {
      */
     public boolean JoinPlayer( Player p ) {
         if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
-            Tools.Prt( p, Messages.ReplaceString( "NoInventory" ), consoleMode.normal, programCode );
+            Tools.Prt( p, Messages.ReplaceString( "NoInventory" ), Tools.consoleMode.normal, programCode );
             return false;
         }
 
@@ -213,16 +211,16 @@ public class PlayerControl {
 
         switch ( getEntry() ) {
             case 1: //  Double registration failure.
-                Tools.Prt( p, Messages.ReplaceString( "AlreadyJoin" ), consoleMode.normal, programCode );
+                Tools.Prt( p, Messages.ReplaceString( "AlreadyJoin" ), Tools.consoleMode.normal, programCode );
                 BroadcastMessage( p, "AlreadyJoinBroadcast" );
                 return false;
             case 2: //  Kick registration.
-                Tools.Prt( p, Messages.ReplaceString( "RefusalJoin" ), consoleMode.normal, programCode );
+                Tools.Prt( p, Messages.ReplaceString( "RefusalJoin" ), Tools.consoleMode.normal, programCode );
                 BroadcastMessage( p, "RefusalJoinBroadcast" );
                 return false;
             default: // Registration success.
                 Tools.Prt( ChatColor.AQUA + "Registration success.", programCode );
-                Tools.Prt( p, Config.JoinMessage, consoleMode.normal, programCode );
+                Tools.Prt( p, Config.JoinMessage, Tools.consoleMode.normal, programCode );
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -232,7 +230,7 @@ public class PlayerControl {
         scoreBroadcast = Config.ScoreBroadcast;
         save();
         ScoreBoardEntry( p );
-        Tools.Prt( p, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, consoleMode.normal, programCode );
+        Tools.Prt( p, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, Tools.consoleMode.normal, programCode );
 
         ItemControl ic = new ItemControl();
         ic.ItemPresent( p );
@@ -254,17 +252,17 @@ public class PlayerControl {
      */
     public boolean getEventItem( Player player, String Item ) {
         if ( getEntry() != 1 ) {
-            Tools.Prt( player, Messages.ReplaceString( "OnlyJoin" ), consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.ReplaceString( "OnlyJoin" ), Tools.consoleMode.normal, programCode );
             return false;
         }
     
         if ( !Arrays.asList( player.getInventory().getStorageContents() ).contains( null ) ) {
-            Tools.Prt( player, Messages.ReplaceString( "NoInventory" ), consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.ReplaceString( "NoInventory" ), Tools.consoleMode.normal, programCode );
             return false;
         }
 
         if ( !Config.tools.keySet().contains( Item ) ) {
-            Tools.Prt( player, Messages.ReplaceString( "NoEventTool" ), consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.ReplaceString( "NoEventTool" ), Tools.consoleMode.normal, programCode );
             return false;
         }
 
@@ -273,10 +271,16 @@ public class PlayerControl {
             ItemControl ic = new ItemControl();
             ic.ToolPresent( player, Material.getMaterial( Item ), Config.MinDigSpeed, Config.EventToolName );
             addScore( null, - Rep );
-            Tools.Prt( ChatColor.GOLD + player.getDisplayName() + " Redistributing " + Material.getMaterial( Item ).name() + " tools !!", consoleMode.normal, programCode );
+            Tools.Prt(
+                ChatColor.GOLD + player.getDisplayName() +
+                " Redistributing " +
+                Material.getMaterial( Item ).name() +
+                " tools !!",
+                Tools.consoleMode.normal, programCode
+            );
             return true;
         } else {
-            Tools.Prt( player, Messages.ReplaceString( "NoEnoughScore" ), consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.ReplaceString( "NoEnoughScore" ), Tools.consoleMode.normal, programCode );
             return false;
         }
     }
@@ -290,7 +294,7 @@ public class PlayerControl {
     public void ToolUpdate( Player player, boolean Force ) {
 
         if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) {
-            Tools.Prt( player, Messages.ReplaceString( "HaveTool" ), consoleMode.full, programCode );
+            Tools.Prt( player, Messages.ReplaceString( "HaveTool" ), Tools.consoleMode.full, programCode );
             return;
         }
 
@@ -309,12 +313,12 @@ public class PlayerControl {
                     } else {
                         Messages.RepNDura = String.valueOf( item.getType().getMaxDurability() - item.getDurability() );
                         Messages.RepTDura = String.valueOf( (int) ( item.getType().getMaxDurability() - CheckDurability ) );
-                        Tools.Prt( player, Messages.ReplaceString( "NowDurable" ), consoleMode.full, programCode
+                        Tools.Prt( player, Messages.ReplaceString( "NowDurable" ), Tools.consoleMode.full, programCode
                         );
                     }
-                } else Tools.Prt( player, Messages.ReplaceString( "NotToolName" ), consoleMode.full, programCode );
-            } else Tools.Prt( player, Messages.ReplaceString( "NoEventTool" ), consoleMode.full, programCode );
-        } else Tools.Prt( player, Messages.ReplaceString( "NotUpdate" ), consoleMode.full, programCode );
+                } else Tools.Prt( player, Messages.ReplaceString( "NotToolName" ), Tools.consoleMode.full, programCode );
+            } else Tools.Prt( player, Messages.ReplaceString( "NoEventTool" ), Tools.consoleMode.full, programCode );
+        } else Tools.Prt( player, Messages.ReplaceString( "NotUpdate" ), Tools.consoleMode.full, programCode );
     }
 
     /**
@@ -360,13 +364,13 @@ public class PlayerControl {
             //  デバッグ（または保守）用、一定数到達記録をコンソールログに残す
             //  不具合や他責によるスコアの未記録時の対応ログとして表示
             if ( ( Config.ScoreNotice > 0 ) && ( PlayerScore >= scoreNotice ) ) {
-                Tools.Prt( "[Premises Notice] " + DisplayName + " reached " + PlayerScore + " points.", consoleMode.full, programCode );
+                Tools.Prt( "[Premises Notice] " + DisplayName + " reached " + PlayerScore + " points.", Tools.consoleMode.full, programCode );
                 scoreNotice = Config.ScoreNotice * ( ( int ) Math.floor( PlayerScore / Config.ScoreNotice ) + 1 );
             }
 
             //  ブロードキャスト、一定スコア達成をオンラインプレイヤーに知らせる
             if ( ( Config.ScoreBroadcast > 0 ) && ( PlayerScore >= scoreBroadcast ) ) {
-                Tools.Prt( "[Premises Broadcast] " + DisplayName + " reached " + PlayerScore + " points.", consoleMode.full, programCode );
+                Tools.Prt( "[Premises Broadcast] " + DisplayName + " reached " + PlayerScore + " points.", Tools.consoleMode.full, programCode );
                 Messages.RepScore = String.valueOf( scoreBroadcast );
                 Messages.RepPlayer = player.getName();
                 scoreBroadcast = Config.ScoreBroadcast * ( ( int ) Math.floor( PlayerScore / Config.ScoreBroadcast ) + 1 );
@@ -378,7 +382,7 @@ public class PlayerControl {
                         Tools.ExecOtherCommand( player, Config.bc_command.get( i ), SendMessage );
                     }
                 } else {
-                    Tools.Prt( Messages.ReplaceString( "NoBCAchive" ), consoleMode.full, programCode );
+                    Tools.Prt( Messages.ReplaceString( "NoBCAchive" ), Tools.consoleMode.full, programCode );
                 }
             }
         }
@@ -441,7 +445,7 @@ public class PlayerControl {
      * @param p
      */
     public void getStatus( Player p ) {
-        Tools.Prt( ChatColor.RED + "Look Status: " + DisplayName, consoleMode.normal, programCode );
+        Tools.Prt( ChatColor.RED + "Look Status: " + DisplayName, Tools.consoleMode.normal, programCode );
         Tools.Prt( p, ChatColor.GREEN + "--------------------------------------------------", programCode );
         Tools.Prt( p, ChatColor.AQUA + "Block mined by: " + DisplayName, programCode );
         Tools.Prt( p, ChatColor.GOLD + "SCORE: " + ChatColor.WHITE + getScore(), programCode );
@@ -485,7 +489,7 @@ public class PlayerControl {
     public void PrintArea( Player player, String AreaCode ) {
         if ( Config.PlayerAlarm && ( !NowArea.equals( AreaCode ) ) ) {
             String GetOwner = "不在";
-            if ( GetSQL( AreaCode ) ) { GetOwner = Database.Owner; }
+            if ( Config.Field && AreaManager.GetSQL( AreaCode ) ) { GetOwner = Database.Owner; }
             Tools.Prt( "[" + NowOwner + "] x [" + GetOwner + "]", Tools.consoleMode.max, programCode);
             if ( !NowOwner.equals( GetOwner ) ) {
                 player.sendTitle(

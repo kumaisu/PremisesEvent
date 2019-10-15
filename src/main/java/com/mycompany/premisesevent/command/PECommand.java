@@ -24,8 +24,8 @@ import com.mycompany.premisesevent.PremisesEvent;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.config.MessagesManager;
-import static com.mycompany.premisesevent.config.Config.programCode;
 import static com.mycompany.premisesevent.PremisesEvent.pc;
+import static com.mycompany.premisesevent.config.Config.programCode;
 
 /**
  *

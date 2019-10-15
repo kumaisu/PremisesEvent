@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import com.mycompany.kumaisulibraries.Items;
 import com.mycompany.kumaisulibraries.Tools;
-import com.mycompany.kumaisulibraries.Tools.consoleMode;
 import com.mycompany.premisesevent.config.Messages;
 import static com.mycompany.premisesevent.config.Config.programCode;
 
@@ -40,7 +39,7 @@ public class ItemControl {
      */
     public void ItemPresent( Player player ) {
         player.getInventory().addItem( Items.PresentArmor() );
-        Tools.Prt( player, Messages.ReplaceString( "PresentTool" ), consoleMode.full, programCode );
+        Tools.Prt( player, Messages.ReplaceString( "PresentTool" ), Tools.consoleMode.full, programCode );
     }
 
     /**
@@ -55,7 +54,7 @@ public class ItemControl {
         player.getInventory().addItem( Items.EventTool( ToolName, tool, Digs, player.isOp() ) );
         Messages.RepTool = tool.name();
         Messages.RepDigs = String.valueOf( Digs );
-        Tools.Prt( player, Messages.ReplaceString( "PresentTool" ), consoleMode.full, programCode );
+        Tools.Prt( player, Messages.ReplaceString( "PresentTool" ), Tools.consoleMode.full, programCode );
     }
 
     /**
@@ -105,7 +104,7 @@ public class ItemControl {
 
         player.getInventory().addItem( itemstack );
         Messages.RepMessage = UpdateMessage;
-        Tools.Prt( player, Messages.ReplaceString( "UpdateTool" ), consoleMode.full, programCode );
+        Tools.Prt( player, Messages.ReplaceString( "UpdateTool" ), Tools.consoleMode.full, programCode );
     }
 
     /**
@@ -115,12 +114,12 @@ public class ItemControl {
      */
     public void ShowItemStatus( Player player ) {
             ItemStack PlayerItem = player.getInventory().getItemInMainHand();
-            Tools.Prt( player, ChatColor.GREEN + "Detect Enchant...", consoleMode.max, programCode );
-            Tools.Prt( player, "効率強化 : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.DIG_SPEED ), consoleMode.max, programCode );
-            Tools.Prt( player, "耐久力   : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.DURABILITY ), consoleMode.max, programCode );
-            Tools.Prt( player, "シルク   : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.SILK_TOUCH ), consoleMode.max, programCode );
-            Tools.Prt( player, "入れ食い : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.LURE ), consoleMode.max, programCode );
-            Tools.Prt( player, "無限     : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.ARROW_INFINITE ), consoleMode.max, programCode );
+            Tools.Prt( player, ChatColor.GREEN + "Detect Enchant...", Tools.consoleMode.max, programCode );
+            Tools.Prt( player, "効率強化 : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.DIG_SPEED ), Tools.consoleMode.max, programCode );
+            Tools.Prt( player, "耐久力   : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.DURABILITY ), Tools.consoleMode.max, programCode );
+            Tools.Prt( player, "シルク   : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.SILK_TOUCH ), Tools.consoleMode.max, programCode );
+            Tools.Prt( player, "入れ食い : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.LURE ), Tools.consoleMode.max, programCode );
+            Tools.Prt( player, "無限     : " + PlayerItem.getItemMeta().getEnchantLevel( Enchantment.ARROW_INFINITE ), Tools.consoleMode.max, programCode );
     }
 }
 
