@@ -77,6 +77,7 @@ public class ConfigManager {
             File newdir = new File( Config.DataFolder + File.separator + Config.EventName );
             newdir.mkdir();
         }
+        Config.databaseName = Config.DataFolder + File.separator + Config.EventName + File.separator + "AreaData.db";
 
         Config.Field = config.getBoolean( "Field", false );
         Config.ScoreNotice = config.getInt( "ScoreNotice", 0 );

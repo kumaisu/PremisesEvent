@@ -26,7 +26,9 @@ public class DynmapControl {
      */
     public static void SetDynmapArea( String Owner, String AreaCode, Location Loc ) {
         if ( Config.Field && Config.OnDynmap ) {
-            Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), "dmarker clearcors" );
+            String Command = "dmarker clearcorners";
+            Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
+            Tools.Prt( "Clear Corner : " + Command, Tools.consoleMode.max, programCode );
             String[] param = AreaCode.split( "-" );
             int bx = Integer.valueOf( param[0] );
             int bz = Integer.valueOf( param[1] );
@@ -37,7 +39,7 @@ public class DynmapControl {
             int hx = ( ( bx + 1 ) * 16 ) + Config.Event_X1;
             int hz = ( ( bz + 1 ) * 16 ) + Config.Event_Z1;
 
-            String Command = "dmarker addcorner " + lx + " 1 " + lz + " " + Config.Event_World;
+            Command = "dmarker addcorner " + lx + " 1 " + lz + " " + Config.Event_World;
             Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Command );
             Tools.Prt( "Dynmap set : " + Command, Tools.consoleMode.max, programCode );
 

@@ -26,6 +26,8 @@ import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.config.MessagesManager;
 import static com.mycompany.premisesevent.PremisesEvent.pc;
 import static com.mycompany.premisesevent.config.Config.programCode;
+import com.mycompany.premisesevent.database.Database;
+import com.mycompany.premisesevent.database.SQLControl;
 
 /**
  *
@@ -70,6 +72,14 @@ public class PECommand implements CommandExecutor {
             case "reload":
                 if ( hasPermission ) {
                     instance.config.load();
+                    if ( Config.Field ) {
+                        if ( Database.dataSource != null ) {
+                            Database.dataSource.close();
+                        }
+                        Tools.Prt( "Open SQLite Database : " + Config.databaseName, Tools.consoleMode.max, programCode );
+                        SQLControl.connect();
+                        SQLControl.TableUpdate();
+                    }
                     return true;
                 } else return false;
             case "messagereload":

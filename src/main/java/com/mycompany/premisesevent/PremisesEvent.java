@@ -74,7 +74,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     public void onEnable() {
         getServer().getPluginManager().registerEvents( this, this );
         Config.DataFolder = this.getDataFolder().toString();
-        Config.databaseName = Config.DataFolder + File.separator + Config.EventName + File.separator + "AreaData.db";
         config = new ConfigManager( this );
         messe = new MessagesManager( this );
         if ( Config.Field ) {
