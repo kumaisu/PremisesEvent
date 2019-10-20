@@ -286,7 +286,7 @@ public class AreaManager {
         } else {
             if ( !Database.Owner.contains( player.getName() ) || ( player.hasPermission( "Premises.admin" ) && player.isSneaking() ) ) {
                 Messages.RepPlayer = ( Database.Owner.equals( player.getName() ) ? ChatColor.AQUA : ChatColor.RED ) + Database.Owner;
-                Tools.Prt( player, Messages.ReplaceString( "OwnerArea" ), Tools.consoleMode.normal, programCode );
+                Tools.Prt( player, Messages.ReplaceString( "OwnerArea" ), Tools.consoleMode.full, programCode );
             }
         }
     }
@@ -331,7 +331,13 @@ public class AreaManager {
         if ( ( config.getPoint( BukkitTool.getStoneName( checkBlock ) ) > 0 ) && ( !Config.ignoreStone.contains( BukkitTool.getStoneName( checkBlock ) ) ) ) {
             Messages.RepMessage = Config.JoinMessage;
             Tools.Prt( player, Messages.ReplaceString( "WarningMsg" ), Tools.consoleMode.normal, programCode );
-            Tools.Prt( ChatColor.RED + player.getDisplayName() + " Upper Block : " + BukkitTool.getStoneName( checkBlock ), Tools.consoleMode.full, programCode );
+            Tools.Prt(
+                ChatColor.RED + player.getDisplayName() +
+                " Upper Block : " +
+                BukkitTool.getStoneName( checkBlock ) +
+                " (" + checkBlock.getLocation().toString() + ")",
+                Tools.consoleMode.full, programCode
+            );
             if ( Config.titlePrint ) {
                 player.sendTitle(
                     Messages.ReplaceString( "WarnTitleM" ),
