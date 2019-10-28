@@ -19,15 +19,16 @@ import com.mycompany.kumaisulibraries.BukkitTool;
 import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.Player.PlayerControl;
+import com.mycompany.premisesevent.Player.PlayerStatus;
 import com.mycompany.premisesevent.Player.TopList;
 import com.mycompany.premisesevent.PremisesEvent;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.config.MessagesManager;
-import static com.mycompany.premisesevent.PremisesEvent.pc;
-import static com.mycompany.premisesevent.config.Config.programCode;
 import com.mycompany.premisesevent.database.Database;
 import com.mycompany.premisesevent.database.SQLControl;
+import static com.mycompany.premisesevent.PremisesEvent.pc;
+import static com.mycompany.premisesevent.config.Config.programCode;
 
 /**
  *
@@ -173,7 +174,7 @@ public class PECommand implements CommandExecutor {
                     if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).ToolUpdate( player, force );
                     return true;
                 case "status":
-                    return instance.PlayerStatus( player, itemName );
+                    return PlayerStatus.Print( player, itemName );
                 case "check":
                     if ( hasPermission ) {
                         ItemControl ic = new ItemControl();
@@ -249,5 +250,9 @@ public class PECommand implements CommandExecutor {
 
         if ( createStat ) pc.remove( scorePlayer.getUniqueId() );
         return retStat;
+    }
+
+    private boolean PlayerStatus(Player player, String itemName) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

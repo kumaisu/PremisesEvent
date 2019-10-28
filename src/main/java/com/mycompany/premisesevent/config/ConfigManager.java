@@ -97,6 +97,7 @@ public class ConfigManager {
         Config.zeroPlace = config.getBoolean( "ZeroPlace", false );
         Config.PlayerAlarm = config.getBoolean( "PlayerAlarm", true );
         Config.OnDynmap = config.getBoolean( "OnDynmap", false );
+        Config.SignPlace = config.getBoolean( "SignPlace", false );
 
         Config.Event_World = config.getString( "World" );
 

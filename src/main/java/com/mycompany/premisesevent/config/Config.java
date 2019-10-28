@@ -70,4 +70,5 @@ public class Config {
     public static List< String > stones;
     public static List< String > ignoreStone;
     public static boolean OnDynmap;
+    public static boolean SignPlace;
 }

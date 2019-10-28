@@ -16,6 +16,10 @@ AreaPos2: 100,2,200
 #   Dynmap へ Marker Area 表示するか？
 OnDynmap: false
 
+#   全員へ看板設置を許可するか？
+#   許可しない場合は、看板の破壊保護が動作する
+SignPlace: false
+
 #   イベント難易度 (Easy/Normal/Hard)
 #   Easy :      ペナルティブロックは破壊できない＋警告
 #   Normal :    ペナルティブロックの警告メッセージのみ表示
