@@ -112,25 +112,27 @@ public class ClickListener implements Listener {
 
         try {
             Sign sign = ( Sign ) block.getState();
-            switch ( sign.getLine( 0 ) ) {
-                case "[P-Get]":
-                    pc.get( player.getUniqueId() ).getEventItem( player, sign.getLine( 1 ) );
-                    break;
-                case "[P-Join]":
-                    pc.get( player.getUniqueId() ).JoinPlayer( player );
-                    break;
-                case "[P-Status]":
-                    PlayerStatus.Print( player, "" );
-                    break;
-                case "[P-Update]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).ToolUpdate( player, false );
-                    break;
-                case "[P-TOP]":
-                    if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).save();
-                    TopList TL = new TopList( DataFolder );
-                    TL.Top( player, Tools.consoleMode.max );
-                    break;
-                default:
+            if ( sign.getLine( 3 ).equals( ChatColor.DARK_PURPLE + "Premises" + ChatColor.RED  + " " ) ) {
+                switch ( sign.getLine( 0 ) ) {
+                    case "[P-Get]":
+                        pc.get( player.getUniqueId() ).getEventItem( player, sign.getLine( 1 ) );
+                        break;
+                    case "[P-Join]":
+                        pc.get( player.getUniqueId() ).JoinPlayer( player );
+                        break;
+                    case "[P-Status]":
+                        PlayerStatus.Print( player, "" );
+                        break;
+                    case "[P-Update]":
+                        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).ToolUpdate( player, false );
+                        break;
+                    case "[P-TOP]":
+                        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).save();
+                        TopList TL = new TopList( DataFolder );
+                        TL.Top( player, Tools.consoleMode.max );
+                        break;
+                    default:
+                }
             }
         } catch ( ClassCastException e ) {}
 

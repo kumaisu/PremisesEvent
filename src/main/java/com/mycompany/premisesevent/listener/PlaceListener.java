@@ -8,6 +8,8 @@ package com.mycompany.premisesevent.listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.Material;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
@@ -15,12 +17,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import com.mycompany.kumaisulibraries.BukkitTool;
 import com.mycompany.kumaisulibraries.Tools;
+import com.mycompany.premisesevent.Player.PlayerStatus;
+import com.mycompany.premisesevent.Player.TopList;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.database.AreaManager;
 import static com.mycompany.premisesevent.PremisesEvent.config;
 import static com.mycompany.premisesevent.PremisesEvent.pc;
 import static com.mycompany.premisesevent.config.Config.programCode;
+import org.bukkit.block.Sign;
 
 /**
  *
@@ -101,6 +106,34 @@ public class PlaceListener implements Listener {
                 }
                 event.setCancelled( true );
             }
+        }
+    }
+
+    /**
+     * 看板設置時に文章を記載した時に発生するイベント
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onSignChange( SignChangeEvent event ) {
+        Player player = event.getPlayer();
+        Material material = event.getBlock().getType();
+
+        if ( ( !Config.SignPlace ) && ( !player.hasPermission( "Premises.admin" ) ) ) return;
+
+        Tools.Prt( ChatColor.YELLOW + "get Sign Change Envent Material = " + material.name(), Tools.consoleMode.max, programCode );
+        for ( int i = 0; i < 4; i++ ) { Tools.Prt( ChatColor.YELLOW + "Old Sign " + i + " : " + event.getLine( i ), Tools.consoleMode.max, programCode ); }
+
+        switch ( event.getLine( 0 ) ) {
+            case "[P-Get]":
+            case "[P-Join]":
+            case "[P-Status]":
+            case "[P-Update]":
+            case "[P-TOP]":
+                //  指定
+                event.setLine( 3, ChatColor.DARK_PURPLE + "Premises" + ChatColor.RED + " " );
+                break;
+            default:
         }
     }
 }

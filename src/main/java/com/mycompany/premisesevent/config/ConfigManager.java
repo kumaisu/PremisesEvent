@@ -172,6 +172,7 @@ public class ConfigManager {
         Tools.Prt( p, ChatColor.WHITE + "通知 Broadcast   : " + ChatColor.YELLOW + Config.ScoreBroadcast, programCode );
         Tools.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( Config.breakFree ? "許可":"不可" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( Config.breakTool ? "不可":"許可" ), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "専用看板設置破壊 : " + ChatColor.YELLOW + ( Config.SignPlace ? "許可":"不可" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "ブロック無限設置 : " + ChatColor.YELLOW + ( Config.zeroPlace ? "許可":"不可" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( Config.CreativeCount ? "しない":"する" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "参加者以外の設置 : " + ChatColor.YELLOW + ( Config.placeFree ? "許可":"不可" ), programCode );
