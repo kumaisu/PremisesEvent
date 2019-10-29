@@ -13,6 +13,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
@@ -111,6 +112,20 @@ public class BreakListener implements Listener {
 
         //  エリア関連チェック
         if ( Config.Field && Config.PlayerAlarm ) { AreaManager.AreaCheck( player, block ); }
+
+        //  機能看板処理
+        if ( blockName.contains( "SIGN" ) ) {
+            Tools.Prt( "this is Sign Block : " + blockName, Tools.consoleMode.max, programCode );
+            Sign sign = ( Sign ) block.getState();
+            if (
+                ( !Config.SignPlace ) &&
+                ( !player.hasPermission( "Premises.admin" ) ) &&
+                ( sign.getLine( 3 ).equals( ChatColor.DARK_PURPLE + "Premises" + ChatColor.RED  + " " ) )
+            ) {
+                event.setCancelled( true );
+                return;
+            }
+        }
 
         //  ブロック処理
         if ( Config.stones.contains( blockName ) ) {

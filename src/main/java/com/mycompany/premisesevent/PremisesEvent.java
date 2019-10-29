@@ -31,8 +31,6 @@ import static com.mycompany.premisesevent.config.Config.programCode;
  */
 public class PremisesEvent extends JavaPlugin implements Listener {
 
-    private PremisesEvent instance;
-
     public static ConfigManager config;
     public static MessagesManager messe;
     public static Map<UUID, PlayerControl> pc = new HashMap<>();

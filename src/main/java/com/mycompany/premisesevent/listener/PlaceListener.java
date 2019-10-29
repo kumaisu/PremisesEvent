@@ -17,15 +17,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import com.mycompany.kumaisulibraries.BukkitTool;
 import com.mycompany.kumaisulibraries.Tools;
-import com.mycompany.premisesevent.Player.PlayerStatus;
-import com.mycompany.premisesevent.Player.TopList;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.database.AreaManager;
 import static com.mycompany.premisesevent.PremisesEvent.config;
 import static com.mycompany.premisesevent.PremisesEvent.pc;
 import static com.mycompany.premisesevent.config.Config.programCode;
-import org.bukkit.block.Sign;
 
 /**
  *
