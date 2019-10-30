@@ -130,8 +130,7 @@ public class BreakListener implements Listener {
         //  ブロック処理
         if ( Config.stones.contains( blockName ) ) {
             Tools.Prt(
-                player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ) +
-                ChatColor.YELLOW + " (" + ( block.hasMetadata( "PLACED" ) ? "Placed":"Naturally" ) + ")",
+                player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ),
                 Tools.consoleMode.max, programCode
             );
 
