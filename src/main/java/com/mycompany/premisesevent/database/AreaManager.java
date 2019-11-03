@@ -254,7 +254,7 @@ public class AreaManager {
     public static void DelRegister( Player player, String AreaCode ) {
         DelSQL( AreaCode );
         DynmapControl.DelDynmapArea( AreaCode );
-        Tools.Prt( player, "Manual UnRegist Area Code [ " + Messages.AreaCode + " ]", Tools.consoleMode.full, programCode );
+        Tools.Prt( player, "Manual UnRegist Area Code [ " + AreaCode + " ]", Tools.consoleMode.full, programCode );
     }
 
     /**
