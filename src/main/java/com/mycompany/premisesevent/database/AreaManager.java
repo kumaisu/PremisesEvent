@@ -18,7 +18,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import com.mycompany.kumaisulibraries.Tools;
-import com.mycompany.kumaisulibraries.BukkitTool;
+import com.mycompany.premisesevent.utility.BukkitTool;
 import com.mycompany.premisesevent.utility.DynmapControl;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.Messages;

@@ -32,8 +32,8 @@ import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.database.Database;
 import com.mycompany.premisesevent.database.AreaManager;
+import com.mycompany.premisesevent.utility.BukkitTool;
 import static com.mycompany.premisesevent.config.Config.programCode;
-import static com.mycompany.kumaisulibraries.BukkitTool.launchFireWorks;
 
 /**
  *
@@ -375,7 +375,7 @@ public class PlayerControl {
                 Messages.RepPlayer = player.getName();
                 scoreBroadcast = Config.ScoreBroadcast * ( ( int ) Math.floor( PlayerScore / Config.ScoreBroadcast ) + 1 );
                 String SendMessage = Messages.ReplaceString( "Achievement" );
-                launchFireWorks( player.getLocation() );
+                BukkitTool.launchFireWorks( player.getLocation() );
                 if ( player.hasPermission( "Premises.broadcast" ) ) {
                     Bukkit.broadcastMessage( SendMessage );
                     for( int i = 0; i<Config.bc_command.size(); i++ ) {

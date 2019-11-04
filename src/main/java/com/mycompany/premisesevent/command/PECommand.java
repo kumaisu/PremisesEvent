@@ -15,7 +15,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.OfflinePlayer;
-import com.mycompany.kumaisulibraries.BukkitTool;
 import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.premisesevent.Item.ItemControl;
 import com.mycompany.premisesevent.Player.PlayerControl;
@@ -27,6 +26,7 @@ import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.config.MessagesManager;
 import com.mycompany.premisesevent.database.Database;
 import com.mycompany.premisesevent.database.SQLControl;
+import com.mycompany.premisesevent.utility.BukkitTool;
 import static com.mycompany.premisesevent.PremisesEvent.pc;
 import static com.mycompany.premisesevent.config.Config.programCode;
 
