@@ -38,6 +38,9 @@ public class ItemControl {
      * @param player
      */
     public void ItemPresent( Player player ) {
+        ItemStack PresentArmor = Items.PresentArmor();
+        Messages.RepTool = PresentArmor.getItemMeta().getDisplayName();
+        Messages.RepDigs = "落下耐性Ⅴ";
         player.getInventory().addItem( Items.PresentArmor() );
         Tools.Prt( player, Messages.ReplaceString( "PresentTool" ), Tools.consoleMode.full, programCode );
     }

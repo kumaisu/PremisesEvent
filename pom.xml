@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mycompany</groupId>
     <artifactId>PremisesEvent</artifactId>
-    <version>0.8.3</version>
+    <version>0.8.4</version>
     <description>Premises Event Control plugin</description>
     <packaging>jar</packaging>
     <properties>
