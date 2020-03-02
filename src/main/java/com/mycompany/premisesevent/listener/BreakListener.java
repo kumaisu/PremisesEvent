@@ -53,6 +53,7 @@ public class BreakListener implements Listener {
 
         Player player = event.getPlayer();
 
+        if ( !player.getLocation().getWorld().getName().equals( Config.Event_World ) ) return;
         if ( Config.CreativeCount && player.getGameMode() == GameMode.CREATIVE ) return;
         if ( Config.Field && !AreaManager.CheckArea( event.getBlock().getLocation() ) ) return;
 

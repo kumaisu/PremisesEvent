@@ -103,13 +103,15 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerMove( PlayerMoveEvent event ) {
         if ( Config.EventName.equals( "none" ) ) return;
-
         Player player = event.getPlayer();
-        if ( Config.Field && !AreaManager.CheckArea( player.getLocation() ) ) return;
+        if ( !player.getLocation().getWorld().getName().equals( Config.Event_World ) ) return;
 
         //  イベント参加判定
         if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
-            if ( Config.Field ) AreaManager.PackAreaCode( player.getLocation() );
+            if ( Config.Field ) {
+                if ( !AreaManager.CheckArea( player.getLocation() ) ) return;
+                AreaManager.PackAreaCode( player.getLocation() );
+            }
             pc.get( player.getUniqueId() ).PrintArea( player, Messages.AreaCode );
         }
     }

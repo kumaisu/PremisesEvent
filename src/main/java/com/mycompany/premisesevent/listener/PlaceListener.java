@@ -50,11 +50,12 @@ public class PlaceListener implements Listener {
         if ( Config.EventName.equals( "none" ) ) return;
 
         Player player = event.getPlayer();
+        if ( !player.getLocation().getWorld().getName().equals( Config.Event_World ) ) return;
+
         Block block = event.getBlock();
         String blockName = BukkitTool.getStoneName( block );
 
         if ( Config.CreativeCount && player.getGameMode() == GameMode.CREATIVE ) return;
-
         if ( Config.Field && !AreaManager.CheckArea( block.getLocation() ) ) return;
 
         if ( pc.get( player.getUniqueId() ).getEntry() != 1 ) {
