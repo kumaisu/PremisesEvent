@@ -16,6 +16,9 @@ AreaPos2: 100,2,200
 #   Dynmap へ Marker Area 表示するか？
 OnDynmap: false
 
+#   エリア解放時、掘削したブロックと同じ物を設置する必要があるか
+MarkReleaseBlock: false
+
 #   全員へ看板設置を許可するか？
 #   許可しない場合は、看板の破壊保護が動作する
 SignPlace: false

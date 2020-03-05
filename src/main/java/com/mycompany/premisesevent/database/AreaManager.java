@@ -161,9 +161,9 @@ public class AreaManager {
         PackAreaCode( block.getLocation() );
         if ( GetSQL( Messages.AreaCode ) ) {
             Messages.RepPlayer = Database.Owner;
-            Tools.Prt( player, Messages.ReplaceString( "OwnerArea" ), Tools.consoleMode.full, programCode );
+            Tools.Prt( player, Messages.GetString( "OwnerArea" ), Tools.consoleMode.full, programCode );
         } else {
-            Tools.Prt( player, Messages.ReplaceString( "NoOwnerArea" ), Tools.consoleMode.full, programCode );
+            Tools.Prt( player, Messages.GetString( "NoOwnerArea" ), Tools.consoleMode.full, programCode );
         }
     }
 
@@ -273,11 +273,12 @@ public class AreaManager {
             AddSQL( player.getName(), block.getLocation(), block.getType().name(), Messages.AreaCode );
             DynmapControl.SetDynmapArea( player.getName(), Messages.AreaCode, block.getLocation() );
 
-            String getMessage = Messages.ReplaceString( "GetAreaM" );
+            Messages.RepPlayer = player.getName();
+            String getMessage = Messages.GetString( "GetAreaM" );
             Messages.RepPlayer = Database.Owner;
-            String getSubMessage = Messages.ReplaceString( "GetAreaS" );
+            String getSubMessage = Messages.GetString( "GetAreaS" );
             Tools.Prt( player, getMessage + getSubMessage, Tools.consoleMode.normal, programCode );
-            if ( Config.titlePrint ) { player.sendTitle( getMessage + Messages.ReplaceString( "GetAreaM2" ), getSubMessage, 0, 50, 0 ); }
+            if ( Config.titlePrint ) { player.sendTitle( getMessage + Messages.GetString( "GetAreaM2" ), getSubMessage, 0, 50, 0 ); }
             Tools.Prt( 
                 "Break Location X:" + block.getLocation().getX() + " Y:" + block.getLocation().getY() + " Z:" + block.getLocation().getZ() +
                 " Area Code [ " + Messages.AreaCode + " ] : " + block.getLocation().toString(),
@@ -286,7 +287,7 @@ public class AreaManager {
         } else {
             if ( !Database.Owner.contains( player.getName() ) || ( player.hasPermission( "Premises.admin" ) && player.isSneaking() ) ) {
                 Messages.RepPlayer = ( Database.Owner.equals( player.getName() ) ? ChatColor.AQUA : ChatColor.RED ) + Database.Owner;
-                Tools.Prt( player, Messages.ReplaceString( "OwnerArea" ), Tools.consoleMode.full, programCode );
+                Tools.Prt( player, Messages.GetString( "OwnerArea" ), Tools.consoleMode.full, programCode );
             }
         }
     }
@@ -316,7 +317,8 @@ public class AreaManager {
             //  デバッグ表示 End
             if ( Database.Owner.contains( player.getName() ) ) {
                 if ( CheckLoc( block.getLocation(), Database.Location ) ) {
-                    Tools.Prt( player, Messages.ReplaceString( "FreeArea" ), Tools.consoleMode.normal, programCode );
+                    Messages.RepPlayer = player.getName();
+                    Tools.Prt( player, Messages.GetString( "FreeArea" ), Tools.consoleMode.normal, programCode );
                     Messages.RepPlayer = Database.Owner;
                     DelSQL( Messages.AreaCode );
                     if ( Config.OnDynmap ) {
@@ -330,7 +332,8 @@ public class AreaManager {
     public static boolean WarningCheck( Player player, Block checkBlock ) {
         if ( ( config.getPoint( BukkitTool.getStoneName( checkBlock ) ) > 0 ) && ( !Config.ignoreStone.contains( BukkitTool.getStoneName( checkBlock ) ) ) ) {
             Messages.RepMessage = Config.JoinMessage;
-            Tools.Prt( player, Messages.ReplaceString( "WarningMsg" ), Tools.consoleMode.normal, programCode );
+            Messages.RepPlayer = player.getName();
+            Tools.Prt( player, Messages.GetString( "WarningMsg" ), Tools.consoleMode.normal, programCode );
             Tools.Prt(
                 ChatColor.RED + player.getDisplayName() +
                 " Upper Block : " +
@@ -340,8 +343,8 @@ public class AreaManager {
             );
             if ( Config.titlePrint ) {
                 player.sendTitle(
-                    Messages.ReplaceString( "WarnTitleM" ),
-                    Messages.ReplaceString( "WarnTitleS" ),
+                    Messages.GetString( "WarnTitleM" ),
+                    Messages.GetString( "WarnTitleS" ),
                     0, 50, 0
                 );
             }

@@ -23,6 +23,7 @@ import com.mycompany.premisesevent.utility.BukkitTool;
 import static com.mycompany.premisesevent.PremisesEvent.config;
 import static com.mycompany.premisesevent.PremisesEvent.pc;
 import static com.mycompany.premisesevent.config.Config.programCode;
+import com.mycompany.premisesevent.database.Database;
 
 /**
  *
@@ -52,6 +53,7 @@ public class PlaceListener implements Listener {
         Player player = event.getPlayer();
         if ( !player.getLocation().getWorld().getName().equals( Config.Event_World ) ) return;
 
+        Messages.RepPlayer = player.getName();
         Block block = event.getBlock();
         String blockName = BukkitTool.getStoneName( block );
 
@@ -65,12 +67,14 @@ public class PlaceListener implements Listener {
 
         //  イベント保護
         if ( Config.Field && Config.PlayerAlarm ) {
-            AreaManager.AreaRelease( player, block );
+            if ( !Config.MarkReleaseBlock || Database.Block.equals( block.getType().name() ) ) {
+                AreaManager.AreaRelease( player, block );
+            }
         }
 
         if ( Config.stones.contains( blockName ) == false ) {
             if ( !Config.placeSpecified ) {
-                Tools.Prt( player, Messages.ReplaceString( "NGBlockPlace" ), Tools.consoleMode.full, programCode );
+                Tools.Prt( player, Messages.GetString( "NGBlockPlace" ), Tools.consoleMode.full, programCode );
                 event.setCancelled( true );
             }
             Tools.Prt(
@@ -95,11 +99,11 @@ public class PlaceListener implements Listener {
             }
         } else {
             if ( !Config.placeFree ) {
-                Tools.Prt( player, Messages.ReplaceString( "NoMorePlace" ), Tools.consoleMode.full, programCode );
+                Tools.Prt( player, Messages.GetString( "NoMorePlace" ), Tools.consoleMode.full, programCode );
                 if ( Config.titlePrint ) {
                     player.sendTitle(
-                        Messages.ReplaceString( "NoMoreTitleM" ),
-                        Messages.ReplaceString( "NoMoreTitleS" ),
+                        Messages.GetString( "NoMoreTitleM" ),
+                        Messages.GetString( "NoMoreTitleS" ),
                         0, 100, 0 );
                 }
                 event.setCancelled( true );

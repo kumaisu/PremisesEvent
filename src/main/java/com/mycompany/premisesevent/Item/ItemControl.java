@@ -42,7 +42,7 @@ public class ItemControl {
         Messages.RepTool = PresentArmor.getItemMeta().getDisplayName();
         Messages.RepDigs = "落下耐性Ⅴ";
         player.getInventory().addItem( Items.PresentArmor() );
-        Tools.Prt( player, Messages.ReplaceString( "PresentTool" ), Tools.consoleMode.full, programCode );
+        Tools.Prt( player, Messages.GetString( "PresentTool" ), Tools.consoleMode.full, programCode );
     }
 
     /**
@@ -57,7 +57,7 @@ public class ItemControl {
         player.getInventory().addItem( Items.EventTool( ToolName, tool, Digs, player.isOp() ) );
         Messages.RepTool = tool.name();
         Messages.RepDigs = String.valueOf( Digs );
-        Tools.Prt( player, Messages.ReplaceString( "PresentTool" ), Tools.consoleMode.full, programCode );
+        Tools.Prt( player, Messages.GetString( "PresentTool" ), Tools.consoleMode.full, programCode );
     }
 
     /**
@@ -107,7 +107,8 @@ public class ItemControl {
 
         player.getInventory().addItem( itemstack );
         Messages.RepMessage = UpdateMessage;
-        Tools.Prt( player, Messages.ReplaceString( "UpdateTool" ), Tools.consoleMode.full, programCode );
+        Messages.RepPlayer  = player.getName();
+        Tools.Prt( player, Messages.GetString( "UpdateTool" ), Tools.consoleMode.full, programCode );
     }
 
     /**

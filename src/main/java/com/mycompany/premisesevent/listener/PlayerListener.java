@@ -48,29 +48,30 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin( PlayerJoinEvent event ) {
         if ( Config.EventName.equals( "none" ) ) return;
 
-        Player p = event.getPlayer();
+        Player player = event.getPlayer();
+        Messages.RepPlayer = player.getName();
 
-        pc.put( p.getUniqueId(), new PlayerControl( p ) );
-        pc.get( p.getUniqueId() ).load();
+        pc.put( player.getUniqueId(), new PlayerControl( player ) );
+        pc.get( player.getUniqueId() ).load();
 
-        if ( pc.get( p.getUniqueId() ).getEntry() != 1 ) {
-            Tools.Prt( ChatColor.RED + p.getDisplayName() + " has not joined the this Event", programCode );
+        if ( pc.get( player.getUniqueId() ).getEntry() != 1 ) {
+            Tools.Prt( ChatColor.RED + player.getDisplayName() + " has not joined the this Event", programCode );
             return;
         }
 
-        pc.get( p.getUniqueId() ).ScoreBoardEntry( p );
-        Tools.Prt( ChatColor.AQUA + p.getDisplayName() + " is participating in the this Event", programCode );
+        pc.get( player.getUniqueId() ).ScoreBoardEntry( player );
+        Tools.Prt( ChatColor.AQUA + player.getDisplayName() + " is participating in the this Event", programCode );
 
         ItemControl ic = new ItemControl();
-        if ( pc.get( p.getUniqueId() ).getPresentFlag() ) {
-            Tools.Prt( p, Messages.ReplaceString( "DistArmor" ), Tools.consoleMode.normal, programCode );
-            ic.ItemPresent( p );
+        if ( pc.get( player.getUniqueId() ).getPresentFlag() ) {
+            Tools.Prt( player, Messages.GetString( "DistArmor" ), Tools.consoleMode.normal, programCode );
+            ic.ItemPresent( player );
         }
-        if ( pc.get( p.getUniqueId() ).getUpdateFlag() ) {
-            Tools.Prt( p, Messages.ReplaceString( "DistTool" ), Tools.consoleMode.normal, programCode );
+        if ( pc.get( player.getUniqueId() ).getUpdateFlag() ) {
+            Tools.Prt( player, Messages.GetString( "DistTool" ), Tools.consoleMode.normal, programCode );
             Config.tools.keySet().forEach( ( key ) -> {
                 Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + key, programCode );
-                ic.ToolPresent( p, Material.getMaterial( key ), Config.tools.get( key ), Config.EventToolName );
+                ic.ToolPresent( player, Material.getMaterial( key ), Config.tools.get( key ), Config.EventToolName );
             } );
         }
     }

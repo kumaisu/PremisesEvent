@@ -189,7 +189,10 @@ public class PECommand implements CommandExecutor {
                 default:
                     break;
             }
-        } else Tools.Prt( player, Messages.ReplaceString( "ConsoleOnly" ), programCode );
+        } else {
+            Messages.RepPlayer = player.getName();
+            Tools.Prt( player, Messages.GetString( "ConsoleOnly" ), programCode );
+        }
 
         Tools.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + commandString + "]", Tools.consoleMode.full, programCode );
         return false;
@@ -213,7 +216,7 @@ public class PECommand implements CommandExecutor {
         try {
             scoreNum = Integer.parseInt( score );
         } catch ( NumberFormatException e ) {
-            Tools.Prt( player, Messages.ReplaceString( "ValueIncorrect" ), programCode );
+            Tools.Prt( player, Messages.GetString( "ValueIncorrect" ), programCode );
             return false;
         }
 
@@ -233,7 +236,7 @@ public class PECommand implements CommandExecutor {
                     pc.get( scorePlayer.getUniqueId() ).load();
                     createStat = true;
                 } else {
-                    Tools.Prt( player, Messages.ReplaceString( "NoPlayer" ), programCode );
+                    Tools.Prt( player, Messages.GetString( "NoPlayer" ), programCode );
                     return false;
                 }
             }
@@ -244,7 +247,7 @@ public class PECommand implements CommandExecutor {
             pc.get( scorePlayer.getUniqueId() ).save();
             retStat = true;
         } else {
-            Tools.Prt( player, Messages.ReplaceString( "NoJoin" ), programCode );
+            Tools.Prt( player, Messages.GetString( "NoJoin" ), programCode );
             retStat = false;
         }
 

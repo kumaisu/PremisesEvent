@@ -185,11 +185,13 @@ public class PlayerControl {
 
     private void BroadcastMessage( Player player, String Key ) {
         if ( !"".equals( Messages.PlayerMessage.get( Key ) ) ) {
-            String Msg = Messages.ReplaceString( Key );
+            Messages.RepPlayer = player.getName();
+            String Msg = Messages.GetString( Key );
             Bukkit.broadcastMessage( Msg );
             for( int i = 0; i<Config.bc_command.size(); i++ ) {
-                Tools.Prt( ChatColor.WHITE + "Command Exec : " + ChatColor.YELLOW + Config.bc_command.get( i ), programCode );
-                Tools.ExecOtherCommand( player, Config.bc_command.get( i ), Msg );
+                String Cmd = Messages.Replace( Config.bc_command.get( i ) );
+                Tools.Prt( ChatColor.WHITE + "Command Exec : " + ChatColor.YELLOW + Cmd, Tools.consoleMode.full, programCode );
+                Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Cmd );
             }
         }
         
@@ -198,29 +200,29 @@ public class PlayerControl {
     /**
      * プレイヤーの参加処理をします
      *
-     * @param p
+     * @param player
      * @return
      */
-    public boolean JoinPlayer( Player p ) {
-        if ( !Arrays.asList( p.getInventory().getStorageContents() ).contains( null ) ) {
-            Tools.Prt( p, Messages.ReplaceString( "NoInventory" ), Tools.consoleMode.normal, programCode );
+    public boolean JoinPlayer( Player player ) {
+        Messages.RepPlayer = player.getName();
+
+        if ( !Arrays.asList( player.getInventory().getStorageContents() ).contains( null ) ) {
+            Tools.Prt( player, Messages.GetString( "NoInventory" ), Tools.consoleMode.normal, programCode );
             return false;
         }
 
-        Messages.RepPlayer = p.getName();
-
         switch ( getEntry() ) {
             case 1: //  Double registration failure.
-                Tools.Prt( p, Messages.ReplaceString( "AlreadyJoin" ), Tools.consoleMode.normal, programCode );
-                BroadcastMessage( p, "AlreadyJoinBroadcast" );
+                Tools.Prt( player, Messages.GetString( "AlreadyJoin" ), Tools.consoleMode.normal, programCode );
+                BroadcastMessage( player, "AlreadyJoinBroadcast" );
                 return false;
             case 2: //  Kick registration.
-                Tools.Prt( p, Messages.ReplaceString( "RefusalJoin" ), Tools.consoleMode.normal, programCode );
-                BroadcastMessage( p, "RefusalJoinBroadcast" );
+                Tools.Prt( player, Messages.GetString( "RefusalJoin" ), Tools.consoleMode.normal, programCode );
+                BroadcastMessage( player, "RefusalJoinBroadcast" );
                 return false;
             default: // Registration success.
                 Tools.Prt( ChatColor.AQUA + "Registration success.", programCode );
-                Tools.Prt( p, Config.JoinMessage, Tools.consoleMode.normal, programCode );
+                Tools.Prt( player, Config.JoinMessage, Tools.consoleMode.normal, programCode );
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -229,17 +231,17 @@ public class PlayerControl {
         scoreNotice = Config.ScoreNotice;
         scoreBroadcast = Config.ScoreBroadcast;
         save();
-        ScoreBoardEntry( p );
-        Tools.Prt( p, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, Tools.consoleMode.normal, programCode );
+        ScoreBoardEntry( player );
+        Tools.Prt( player, ChatColor.AQUA + "Joined Date was " + ChatColor.WHITE + FirstDate, Tools.consoleMode.normal, programCode );
 
         ItemControl ic = new ItemControl();
-        ic.ItemPresent( p );
+        ic.ItemPresent( player );
         Config.tools.keySet().forEach( ( key ) -> {
             Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + key, programCode );
-            ic.ToolPresent( p, Material.getMaterial( key ), Config.tools.get( key ), Config.EventToolName );
+            ic.ToolPresent( player, Material.getMaterial( key ), Config.tools.get( key ), Config.EventToolName );
         } );
 
-        BroadcastMessage( p, "JoinBroadcast" );
+        BroadcastMessage( player, "JoinBroadcast" );
         return true;
     }
 
@@ -251,18 +253,20 @@ public class PlayerControl {
      * @return
      */
     public boolean getEventItem( Player player, String Item ) {
+        Messages.RepPlayer = player.getName();
+
         if ( getEntry() != 1 ) {
-            Tools.Prt( player, Messages.ReplaceString( "OnlyJoin" ), Tools.consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.GetString( "OnlyJoin" ), Tools.consoleMode.normal, programCode );
             return false;
         }
     
         if ( !Arrays.asList( player.getInventory().getStorageContents() ).contains( null ) ) {
-            Tools.Prt( player, Messages.ReplaceString( "NoInventory" ), Tools.consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.GetString( "NoInventory" ), Tools.consoleMode.normal, programCode );
             return false;
         }
 
         if ( !Config.tools.keySet().contains( Item ) ) {
-            Tools.Prt( player, Messages.ReplaceString( "NoEventTool" ), Tools.consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.GetString( "NoEventTool" ), Tools.consoleMode.normal, programCode );
             return false;
         }
 
@@ -280,7 +284,7 @@ public class PlayerControl {
             );
             return true;
         } else {
-            Tools.Prt( player, Messages.ReplaceString( "NoEnoughScore" ), Tools.consoleMode.normal, programCode );
+            Tools.Prt( player, Messages.GetString( "NoEnoughScore" ), Tools.consoleMode.normal, programCode );
             return false;
         }
     }
@@ -292,9 +296,10 @@ public class PlayerControl {
      * @param Force
      */
     public void ToolUpdate( Player player, boolean Force ) {
+        Messages.RepPlayer = player.getName();
 
         if ( player.getInventory().getItemInMainHand().getType() == Material.AIR ) {
-            Tools.Prt( player, Messages.ReplaceString( "HaveTool" ), Tools.consoleMode.full, programCode );
+            Tools.Prt( player, Messages.GetString( "HaveTool" ), Tools.consoleMode.full, programCode );
             return;
         }
 
@@ -313,12 +318,12 @@ public class PlayerControl {
                     } else {
                         Messages.RepNDura = String.valueOf( item.getType().getMaxDurability() - item.getDurability() );
                         Messages.RepTDura = String.valueOf( (int) ( item.getType().getMaxDurability() - CheckDurability ) );
-                        Tools.Prt( player, Messages.ReplaceString( "NowDurable" ), Tools.consoleMode.full, programCode
+                        Tools.Prt( player, Messages.GetString( "NowDurable" ), Tools.consoleMode.full, programCode
                         );
                     }
-                } else Tools.Prt( player, Messages.ReplaceString( "NotToolName" ), Tools.consoleMode.full, programCode );
-            } else Tools.Prt( player, Messages.ReplaceString( "NoEventTool" ), Tools.consoleMode.full, programCode );
-        } else Tools.Prt( player, Messages.ReplaceString( "NotUpdate" ), Tools.consoleMode.full, programCode );
+                } else Tools.Prt( player, Messages.GetString( "NotToolName" ), Tools.consoleMode.full, programCode );
+            } else Tools.Prt( player, Messages.GetString( "NoEventTool" ), Tools.consoleMode.full, programCode );
+        } else Tools.Prt( player, Messages.GetString( "NotUpdate" ), Tools.consoleMode.full, programCode );
     }
 
     /**
@@ -371,18 +376,20 @@ public class PlayerControl {
             //  ブロードキャスト、一定スコア達成をオンラインプレイヤーに知らせる
             if ( ( Config.ScoreBroadcast > 0 ) && ( PlayerScore >= scoreBroadcast ) ) {
                 Tools.Prt( "[Premises Broadcast] " + DisplayName + " reached " + PlayerScore + " points.", Tools.consoleMode.full, programCode );
-                Messages.RepScore = String.valueOf( scoreBroadcast );
                 Messages.RepPlayer = player.getName();
+                Messages.RepScore = String.valueOf( scoreBroadcast );
                 scoreBroadcast = Config.ScoreBroadcast * ( ( int ) Math.floor( PlayerScore / Config.ScoreBroadcast ) + 1 );
-                String SendMessage = Messages.ReplaceString( "Achievement" );
+                Messages.RepMessage = Messages.GetString( "Achievement" );
                 BukkitTool.launchFireWorks( player.getLocation() );
                 if ( player.hasPermission( "Premises.broadcast" ) ) {
-                    Bukkit.broadcastMessage( SendMessage );
+                    Bukkit.broadcastMessage( Messages.RepMessage );
                     for( int i = 0; i<Config.bc_command.size(); i++ ) {
-                        Tools.ExecOtherCommand( player, Config.bc_command.get( i ), SendMessage );
+                        String Cmd = Messages.Replace( Config.bc_command.get( i ) );
+                        Tools.Prt( ChatColor.WHITE + "Command Exec : " + ChatColor.YELLOW + Cmd, Tools.consoleMode.full, programCode );
+                        Bukkit.getServer().dispatchCommand( Bukkit.getConsoleSender(), Cmd );
                     }
                 } else {
-                    Tools.Prt( Messages.ReplaceString( "NoBCAchive" ), Tools.consoleMode.full, programCode );
+                    Tools.Prt( Messages.GetString( "NoBCAchive" ), Tools.consoleMode.full, programCode );
                 }
             }
         }

@@ -52,6 +52,7 @@ public class BreakListener implements Listener {
         if ( Config.EventName.equals( "none" ) ) return;
 
         Player player = event.getPlayer();
+        Messages.RepPlayer = player.getName();
 
         if ( !player.getLocation().getWorld().getName().equals( Config.Event_World ) ) return;
         if ( Config.CreativeCount && player.getGameMode() == GameMode.CREATIVE ) return;
@@ -61,7 +62,7 @@ public class BreakListener implements Listener {
         switch ( pc.get( player.getUniqueId() ).getEntry() ) {
             case 0:
                 if ( !Config.breakFree ) {
-                    Tools.Prt( player, Messages.ReplaceString( "RequestJoin" ), Tools.consoleMode.normal, programCode );
+                    Tools.Prt( player, Messages.GetString( "RequestJoin" ), Tools.consoleMode.normal, programCode );
                     event.setCancelled( true );
                 }
                 return;
@@ -69,7 +70,7 @@ public class BreakListener implements Listener {
                 // 参加者なので、スルー
                 break;
             case 2:
-                Tools.Prt( player, Messages.ReplaceString( "OmitPlayer" ), Tools.consoleMode.normal, programCode );
+                Tools.Prt( player, Messages.GetString( "OmitPlayer" ), Tools.consoleMode.normal, programCode );
                 event.setCancelled( true );
                 return;
         }
@@ -105,7 +106,7 @@ public class BreakListener implements Listener {
                     ( !item.getItemMeta().hasDisplayName() ) ||
                     ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) )
                ) {
-                Tools.Prt( player, Messages.ReplaceString( "NoEventTool" ), Tools.consoleMode.full, programCode );
+                Tools.Prt( player, Messages.GetString( "NoEventTool" ), Tools.consoleMode.full, programCode );
                 event.setCancelled( true );
                 return;
             }
@@ -146,15 +147,15 @@ public class BreakListener implements Listener {
 
                 switch( Config.difficulty ) {
                     case Easy:
-                        Tools.Prt( player, Messages.ReplaceString( "NoBreak" ), Tools.consoleMode.full, programCode );
+                        Tools.Prt( player, Messages.GetString( "NoBreak" ), Tools.consoleMode.full, programCode );
                         event.setCancelled( true );
                         return;
                     case Normal:
-                        Tools.Prt( player, Messages.ReplaceString( "DontBreak" ), Tools.consoleMode.full, programCode );
+                        Tools.Prt( player, Messages.GetString( "DontBreak" ), Tools.consoleMode.full, programCode );
                         if ( Config.titlePrint ) {
                             player.sendTitle(
-                                Messages.ReplaceString( "NoBreakTitleM" ),
-                                Messages.ReplaceString( "NoBreakTitleS" ),
+                                Messages.GetString( "NoBreakTitleM" ),
+                                Messages.GetString( "NoBreakTitleS" ),
                                 0, 100, 0 );
                         }
                         break;
@@ -186,11 +187,11 @@ public class BreakListener implements Listener {
         if ( item.getItemMeta().hasDisplayName() ) {
             if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) ) {
                 if ( ( item.getType().getMaxDurability() * Config.Repair ) <= item.getDurability() ) {
-                    Tools.Prt( player, Messages.ReplaceString( "ToolWarning" ), Tools.consoleMode.max, programCode );
+                    Tools.Prt( player, Messages.GetString( "ToolWarning" ), Tools.consoleMode.max, programCode );
                     if ( Config.titlePrint ) {
                         player.sendTitle(
-                            Messages.ReplaceString( "ToolWarningTitleM" ),
-                            Messages.ReplaceString( "ToolWarningTitleS" ),
+                            Messages.GetString( "ToolWarningTitleM" ),
+                            Messages.GetString( "ToolWarningTitleS" ),
                             0, 50, 0
                         );
                     }

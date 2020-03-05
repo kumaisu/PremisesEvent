@@ -98,6 +98,7 @@ public class ConfigManager {
         Config.PlayerAlarm = config.getBoolean( "PlayerAlarm", true );
         Config.OnDynmap = config.getBoolean( "OnDynmap", false );
         Config.SignPlace = config.getBoolean( "SignPlace", false );
+        Config.MarkReleaseBlock = config.getBoolean( "MarkReleaseBlock", false );
 
         Config.Event_World = config.getString( "World" );
 
@@ -136,14 +137,14 @@ public class ConfigManager {
         try {
             Config.difficulty = Config.EventMode.valueOf( config.getString( "Difficulty" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( Messages.ReplaceString( "FraudEvent" ), Tools.consoleMode.print, programCode );
+            Tools.Prt( Messages.GetString( "FraudEvent" ), Tools.consoleMode.print, programCode );
             Config.difficulty = Config.EventMode.Normal;
         }
 
         try {
             Config.UpperBlock = Config.UpperMode.valueOf( config.getString( "UpperBlock" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( Messages.ReplaceString( "FraudUpper" ), Tools.consoleMode.print, programCode );
+            Tools.Prt( Messages.GetString( "FraudUpper" ), Tools.consoleMode.print, programCode );
             Config.UpperBlock = Config.UpperMode.None;
         }
 

@@ -26,18 +26,21 @@ public class Messages {
     public static String RepScore = "%$4#(error)";          //  %score%             : Player Score
     public static String AreaCode = "%$4#-#(error)";        //  %AreaCode%          : AreaCode
 
-    public static String ReplaceString( String key ) {
+    public static String Replace( String word ) {
+        word = word.replace( "%player%", RepPlayer );
+        word = word.replace( "%message%", RepMessage );
+        word = word.replace( "%tool%", RepTool );
+        word = word.replace( "%digs%", RepDigs );
+        word = word.replace( "%nowDurability%", RepNDura );
+        word = word.replace( "%targetDurability%", RepTDura );
+        word = word.replace( "%score%", RepScore );
+        word = word.replace( "%AreaCode%", AreaCode );
+        word = word.replace( "%$", "§" );
+        return word;
+    }
+ 
+    public static String GetString( String key ) {
         Tools.Prt( "Message Key : " + key, Tools.consoleMode.max, programCode );
-        String mainStr = PlayerMessage.get( key );
-        mainStr = mainStr.replace( "%player%", RepPlayer );
-        mainStr = mainStr.replace( "%message%", RepMessage );
-        mainStr = mainStr.replace( "%tool%", RepTool );
-        mainStr = mainStr.replace( "%digs%", RepDigs );
-        mainStr = mainStr.replace( "%nowDurability%", RepNDura );
-        mainStr = mainStr.replace( "%targetDurability%", RepTDura );
-        mainStr = mainStr.replace( "%score%", RepScore );
-        mainStr = mainStr.replace( "%AreaCode%", AreaCode );
-        mainStr = mainStr.replace( "%$", "§" );
-        return mainStr;
+        return Replace( PlayerMessage.get( key ) );
     }
 }

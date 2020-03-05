@@ -98,8 +98,8 @@ public class TopList {
      * @param key
      */
     public void Top( Player player, Tools.consoleMode key ) {
-        String PlayerName = ( ( player == null ) ? "null":player.getDisplayName() );
-        Tools.Prt( player, ChatColor.GREEN + Messages.ReplaceString( "EventList" ), programCode );
+        Messages.RepPlayer = ( ( player == null ) ? "null":player.getName() );
+        Tools.Prt( player, ChatColor.GREEN + Messages.GetString( "EventList" ), programCode );
         Tools.Prt( player, ChatColor.GREEN + "============================", programCode );
 
         Map<String, Integer> rank = new HashMap<>();
@@ -123,11 +123,11 @@ public class TopList {
         boolean lineflag = true;
         for( Entry<String, Integer> entry : list_entries ) {
             i++;
-            if ( entry.getKey().equals( PlayerName ) ) lineflag = false;
-            if ( ( i<11 ) || entry.getKey().equals( PlayerName ) || ( player == null ) )
+            if ( entry.getKey().equals( Messages.RepPlayer ) ) lineflag = false;
+            if ( ( i<11 ) || entry.getKey().equals( Messages.RepPlayer ) || ( player == null ) )
                 Tools.Prt( player, 
                     ChatColor.WHITE + String.format( "%2d", i ) + " : " +
-                    ( entry.getKey().equals( PlayerName ) ? ChatColor.AQUA:ChatColor.GRAY ) +
+                    ( entry.getKey().equals( Messages.RepPlayer ) ? ChatColor.AQUA:ChatColor.GRAY ) +
                     String.format( "%-15s", entry.getKey() ) + ChatColor.YELLOW +
                     String.format( "%8d", entry.getValue() ),
                     programCode

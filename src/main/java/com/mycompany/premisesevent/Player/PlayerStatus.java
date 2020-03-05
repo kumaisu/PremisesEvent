@@ -52,7 +52,7 @@ public class PlayerStatus {
             return true;
         } else {
             Messages.RepPlayer = player.getName();
-            Tools.Prt( player, Messages.ReplaceString( "NoJoin" ), programCode );
+            Tools.Prt( player, Messages.GetString( "NoJoin" ), programCode );
             return false;
         }
     }
