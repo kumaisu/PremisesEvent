@@ -88,6 +88,7 @@ public class MessagesManager {
         Messages.PlayerMessage.put( "GetAreaM", UKData.getString( "GetAreaM", "error" ) );
         Messages.PlayerMessage.put( "GetAreaM2", UKData.getString( "GetAreaM2", "error" ) );
         Messages.PlayerMessage.put( "GetAreaS", UKData.getString( "GetAreaS", "error" ) );
+        Messages.PlayerMessage.put( "GetNewBlock", UKData.getString( "GetNewBlock", "error" ) );
         Messages.PlayerMessage.put( "FreeArea", UKData.getString( "FreeArea", "error" ) );
         Messages.PlayerMessage.put( "WarningMsg", UKData.getString( "WarningMsg", "error" ) );
         Messages.PlayerMessage.put( "WarnTitleM", UKData.getString( "WarnTitleM", "error" ) );

@@ -277,13 +277,16 @@ public class AreaManager {
             String getMessage = Messages.GetString( "GetAreaM" );
             Messages.RepPlayer = Database.Owner;
             String getSubMessage = Messages.GetString( "GetAreaS" );
+            Tools.Prt( player, Messages.GetString( "GetNewBlock" )
+                + " X:" + block.getLocation().getX()
+                + " Y:" + block.getLocation().getY()
+                + " Z:" + block.getLocation().getZ()
+                + " Name[" + Database.Block + "]",
+                Tools.consoleMode.normal, programCode
+            );
             Tools.Prt( player, getMessage + getSubMessage, Tools.consoleMode.normal, programCode );
             if ( Config.titlePrint ) { player.sendTitle( getMessage + Messages.GetString( "GetAreaM2" ), getSubMessage, 0, 50, 0 ); }
-            Tools.Prt( 
-                "Break Location X:" + block.getLocation().getX() + " Y:" + block.getLocation().getY() + " Z:" + block.getLocation().getZ() +
-                " Area Code [ " + Messages.AreaCode + " ] : " + block.getLocation().toString(),
-                Tools.consoleMode.max, programCode
-            );
+            Tools.Prt( "Area Code [ " + Messages.AreaCode + " ] : " + block.getLocation().toString(), Tools.consoleMode.max, programCode );
         } else {
             if ( !Database.Owner.contains( player.getName() ) || ( player.hasPermission( "Premises.admin" ) && player.isSneaking() ) ) {
                 Messages.RepPlayer = ( Database.Owner.equals( player.getName() ) ? ChatColor.AQUA : ChatColor.RED ) + Database.Owner;
