@@ -186,8 +186,8 @@ public class PlayerControl {
     private void BroadcastMessage( Player player, String Key ) {
         if ( !"".equals( Messages.PlayerMessage.get( Key ) ) ) {
             Messages.RepPlayer = player.getName();
-            String Msg = Messages.GetString( Key );
-            Bukkit.broadcastMessage( Msg );
+            Messages.RepMessage = Messages.GetString( Key );
+            Bukkit.broadcastMessage( Messages.RepMessage );
             for( int i = 0; i<Config.bc_command.size(); i++ ) {
                 String Cmd = Messages.Replace( Config.bc_command.get( i ) );
                 Tools.Prt( ChatColor.WHITE + "Command Exec : " + ChatColor.YELLOW + Cmd, Tools.consoleMode.full, programCode );
