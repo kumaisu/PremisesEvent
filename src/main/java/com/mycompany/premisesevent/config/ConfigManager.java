@@ -99,6 +99,11 @@ public class ConfigManager {
         Config.OnDynmap = config.getBoolean( "OnDynmap", false );
         Config.SignPlace = config.getBoolean( "SignPlace", false );
         Config.MarkReleaseBlock = config.getBoolean( "MarkReleaseBlock", false );
+        Config.PointTip = config.getBoolean( "PointTip.enabled", false );
+        Config.pt_x = config.getDouble( "PointTip.x", 0 );
+        Config.pt_y = config.getDouble( "PointTip.y", 0 );
+        Config.pt_z = config.getDouble( "PointTip.z", 0 );
+        Config.pt_delay = config.getInt( "PointTip.delay", 0 );
 
         Config.Event_World = config.getString( "World" );
 
@@ -200,6 +205,16 @@ public class ConfigManager {
                 ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d", Config.Event_Y2 ) +
                 ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Config.Event_Z2,
                 programCode );
+        }
+
+        Tools.Prt( p, ChatColor.WHITE + "PointTip表示 : " + ChatColor.YELLOW + ( Config.PointTip ? "あり":"なし" ), programCode );
+        if ( Config.PointTip ) {
+            Tools.Prt( p,
+                ChatColor.WHITE + "Offset : X:" + ChatColor.YELLOW + Config.pt_x +
+                ChatColor.WHITE + " Y:" + ChatColor.YELLOW + Config.pt_y +
+                ChatColor.WHITE + " Z:" + ChatColor.YELLOW + Config.pt_z,
+                programCode );
+            Tools.Prt( p, ChatColor.WHITE + "Delay : " + ChatColor.YELLOW + Config.pt_delay, programCode );
         }
 
         Tools.Prt( p, ChatColor.WHITE + "参加時メッセージ : " + Config.JoinMessage, programCode );

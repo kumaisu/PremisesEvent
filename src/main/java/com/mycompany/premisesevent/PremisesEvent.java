@@ -70,6 +70,6 @@ public class PremisesEvent extends JavaPlugin implements Listener {
                 Tools.Prt( ChatColor.AQUA + pc.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score", programCode );
             }
         } );
-        SQLControl.disconnect();
+        // SQLControl.disconnect();
     }
 }

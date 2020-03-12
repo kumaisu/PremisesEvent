@@ -5,6 +5,7 @@
  */
 package com.mycompany.premisesevent.listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -15,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -34,12 +36,30 @@ import static com.mycompany.premisesevent.config.Config.programCode;
  */
 public class BreakListener implements Listener {
 
+    public Plugin plugin;
+
     /**
      *
      * @param plugin
      */
     public BreakListener( Plugin plugin ) {
+        this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents( this, plugin );
+    }
+
+    public void ScoreStand( Location location, int score ) {
+        Location loc = location;
+        //  loc.add( 0.5, 0.5, 0.5 );
+        loc.add( Config.pt_x, Config.pt_y, Config.pt_z );
+        ArmorStand stand = location.getWorld().spawn( loc, ArmorStand.class );
+        stand.setMarker( true );
+        stand.setSmall( true );
+        stand.setBasePlate( false );
+        stand.setCustomName( String.format( "§a%d Point", score ) );
+        stand.setCustomNameVisible( true );
+        stand.setVisible( false );
+        Bukkit.getServer().getScheduler().runTaskTimer( plugin, () -> { stand.remove(); }, Config.pt_delay, Config.pt_delay );
+        //  Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask( plugin, () -> { if ( stand.isOnGround() ) { stand.remove(); } }, 60 );
     }
 
     /**
@@ -164,7 +184,10 @@ public class BreakListener implements Listener {
                 }
             }
 
-            if ( config.getPoint( blockName ) != 0 ){
+            if ( config.getPoint( blockName ) != 0 ) {
+                if ( Config.PointTip ) {
+                    ScoreStand( block.getLocation(), config.getPoint( blockName ) );
+                }
                 pc.get( player.getUniqueId() ).addStoneCount( blockName, ( config.getPoint( blockName ) < 0 ) );
                 pc.get( player.getUniqueId() ).addScore( player, config.getPoint( blockName ) );
                 player.setPlayerListName(

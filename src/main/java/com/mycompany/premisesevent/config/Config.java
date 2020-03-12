@@ -72,4 +72,10 @@ public class Config {
     public static boolean OnDynmap;
     public static boolean MarkReleaseBlock;
     public static boolean SignPlace;
+
+    public static boolean PointTip;
+    public static double pt_x;
+    public static double pt_y;
+    public static double pt_z;
+    public static int pt_delay;
 }

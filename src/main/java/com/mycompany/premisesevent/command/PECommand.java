@@ -139,6 +139,10 @@ public class PECommand implements CommandExecutor {
                 TopList TL = new TopList( instance.getDataFolder().toString() );
                 TL.Top( player, Tools.consoleMode.max );
                 return true;
+            case "pointtip":
+                Config.PointTip = !Config.PointTip;
+                Tools.Prt( player, ChatColor.WHITE + "PointTip表示 : " + ChatColor.YELLOW + ( Config.PointTip ? "あり":"なし" ), programCode );
+                return true;
             case "help":
                 Tools.Prt( player, ChatColor.GREEN + "/premises Command List", programCode );
                 Tools.Prt( player, ChatColor.YELLOW +   "join               : " + ChatColor.WHITE + "イベント参加", programCode );
@@ -157,13 +161,15 @@ public class PECommand implements CommandExecutor {
                     Tools.Prt( player, ChatColor.AQUA + "stones             : " + ChatColor.WHITE + "ストーンスコア", programCode );
                     Tools.Prt( player, ChatColor.AQUA + "pstatus            : " + ChatColor.WHITE + "Configステータス", programCode );
                     Tools.Prt( player, ChatColor.AQUA + "message            : " + ChatColor.WHITE + "Message一覧", programCode );
+                    Tools.Prt( player, ChatColor.AQUA + "pointtip           : " + ChatColor.WHITE + "破壊ポイント表示可否", programCode );
                 }
                 return true;
             default:
                 break;
         }
 
-        if ( player != null ) {
+        if ( sender instanceof Player ) {
+            Messages.RepPlayer = player.getName();
             switch ( commandString ) {
                 case "join":
                     return pc.get( player.getUniqueId() ).JoinPlayer( player );
@@ -189,10 +195,7 @@ public class PECommand implements CommandExecutor {
                 default:
                     break;
             }
-        } else {
-            Messages.RepPlayer = player.getName();
-            Tools.Prt( player, Messages.GetString( "ConsoleOnly" ), programCode );
-        }
+        } else Tools.Prt( Messages.GetString( "ConsoleOnly" ), programCode );
 
         Tools.Prt( player, ChatColor.RED + "[Premises] Unknown Command [" + commandString + "]", Tools.consoleMode.full, programCode );
         return false;
