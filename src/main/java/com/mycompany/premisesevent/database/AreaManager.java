@@ -284,7 +284,11 @@ public class AreaManager {
                 + " Name[" + Database.Block + "]",
                 Tools.consoleMode.normal, programCode
             );
-            Tools.Prt( player, getMessage + getSubMessage, Tools.consoleMode.normal, programCode );
+            if ( Config.AreaRegistBroadcast ) {
+                Bukkit.broadcastMessage( getMessage + getSubMessage );
+            } else {
+                Tools.Prt( player, getMessage + getSubMessage, Tools.consoleMode.normal, programCode );
+            }
             if ( Config.titlePrint ) { player.sendTitle( getMessage + Messages.GetString( "GetAreaM2" ), getSubMessage, 0, 50, 0 ); }
             Tools.Prt( "Area Code [ " + Messages.AreaCode + " ] : " + block.getLocation().toString(), Tools.consoleMode.max, programCode );
         } else {
@@ -321,7 +325,11 @@ public class AreaManager {
             if ( Database.Owner.contains( player.getName() ) ) {
                 if ( CheckLoc( block.getLocation(), Database.Location ) ) {
                     Messages.RepPlayer = player.getName();
-                    Tools.Prt( player, Messages.GetString( "FreeArea" ), Tools.consoleMode.normal, programCode );
+                    if ( Config.AreaReleaseBroadcast ) {
+                        Bukkit.broadcastMessage( Messages.GetString( "FreeArea" ) );
+                    } else {
+                        Tools.Prt( player, Messages.GetString( "FreeArea" ), Tools.consoleMode.normal, programCode );
+                    }
                     Messages.RepPlayer = Database.Owner;
                     DelSQL( Messages.AreaCode );
                     if ( Config.OnDynmap ) {

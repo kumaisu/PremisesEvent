@@ -99,6 +99,9 @@ public class ConfigManager {
         Config.OnDynmap = config.getBoolean( "OnDynmap", false );
         Config.SignPlace = config.getBoolean( "SignPlace", false );
         Config.MarkReleaseBlock = config.getBoolean( "MarkReleaseBlock", false );
+        Config.AreaRegistBroadcast = config.getBoolean( "AreaRegistBroadcast", false );
+        Config.AreaReleaseBroadcast = config.getBoolean( "AreaReleaseBroadcast", false );
+
         Config.PointTip = config.getBoolean( "PointTip.enabled", false );
         Config.pt_x = config.getDouble( "PointTip.x", 0 );
         Config.pt_y = config.getDouble( "PointTip.y", 0 );
@@ -176,6 +179,8 @@ public class ConfigManager {
         Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Config.Repair, programCode );
         Tools.Prt( p, ChatColor.WHITE + "通知 Console     : " + ChatColor.YELLOW + Config.ScoreNotice, programCode );
         Tools.Prt( p, ChatColor.WHITE + "通知 Broadcast   : " + ChatColor.YELLOW + Config.ScoreBroadcast, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "Area確保Broadcast: " + ChatColor.YELLOW + ( Config.AreaRegistBroadcast ? "あり":"なし" ), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "Area解放Broadcast: " + ChatColor.YELLOW + ( Config.AreaReleaseBroadcast ? "あり":"なし" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( Config.breakFree ? "許可":"不可" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( Config.breakTool ? "不可":"許可" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "専用看板設置破壊 : " + ChatColor.YELLOW + ( Config.SignPlace ? "許可":"不可" ), programCode );

@@ -35,6 +35,7 @@ Difficulty: Normal
 #   Warning :   注意喚起チャットメッセージ
 #   Block :     破壊不能
 #   None 以外は、採掘速度低下１０秒のペナルティ発動
+#   PermissionでPremises.warning設定があると全て無視する
 UpperBlock: Warning
 
 #   他者エリア掘削の警告表示
@@ -82,6 +83,14 @@ Repair: 0.1
 
 #   重要メッセージを画面中央に表示するか/Player.sendTitle Status
 sendTitle: true
+
+#   AreaRegist Broadcast
+#   エリア取得をBroadcastするか?
+AreaRegistBroadcast: true
+
+#   AreaRelease Broadcast
+#   エリア解放をBroadcastするか?
+AreaReleaseBroadcast: true
 
 #   スコア達成アナウンス設定
 #   Notice:コンソールのみ   Broadcast:サーバーチャット
