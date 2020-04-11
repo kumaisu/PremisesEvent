@@ -13,6 +13,10 @@ World: world
 AreaPos1: 200,50,100
 AreaPos2: 100,2,200
 
+#   最大エリア登録数
+#   Fieldがfalseか、設定ゼロで無制限
+MaxRegist: 4
+
 #   Dynmap へ Marker Area 表示するか？
 OnDynmap: false
 

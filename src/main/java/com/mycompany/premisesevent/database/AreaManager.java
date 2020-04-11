@@ -220,12 +220,24 @@ public class AreaManager {
     }
 
     /**
+     * 手動削除
+     *
+     * @param player
+     * @param AreaCode
+     */
+    public static void DelRegister( Player player, String AreaCode ) {
+        DelSQL( AreaCode );
+        DynmapControl.DelDynmapArea( AreaCode );
+        Tools.Prt( player, "Manual UnRegist Area Code [ " + AreaCode + " ]", Tools.consoleMode.full, programCode );
+    }
+
+    /**
      * 手動登録
      *
      * @param player
      * @param Owner
      */
-    public static void AddRegister( Player player, String Owner ) {
+    public static void ManualAddRegist( Player player, String Owner ) {
         String[] param = Messages.AreaCode.split( "-" );
         int bx = ( Integer.valueOf( param[0] ) * 16 ) + Config.Event_X1;
         int by = 1;
@@ -246,25 +258,12 @@ public class AreaManager {
     }
 
     /**
-     * 手動削除
-     *
-     * @param player
-     * @param AreaCode
-     */
-    public static void DelRegister( Player player, String AreaCode ) {
-        DelSQL( AreaCode );
-        DynmapControl.DelDynmapArea( AreaCode );
-        Tools.Prt( player, "Manual UnRegist Area Code [ " + AreaCode + " ]", Tools.consoleMode.full, programCode );
-    }
-
-    /**
      * 保護エリアの状態チェック＆新規登録
      *
      * @param player
      * @param block 
      */
     public static void AreaCheck( Player player, Block block ) {
-        PackAreaCode( block.getLocation() );
         Tools.Prt( 
             "Get Location X:" + block.getLocation().getX() + " Z:" + block.getLocation().getZ() +
             " Area Code [ " + Messages.AreaCode + " ]",
@@ -389,6 +388,53 @@ public class AreaManager {
             con.close();
         } catch ( SQLException e ) {
             Tools.Prt( ChatColor.RED + "Error All Delete : " + e.getMessage(), programCode );
+        }
+    }
+
+    public static int AreaCount( String AreaCode ) {
+        int NGBlock = 0;
+        String[] param = AreaCode.split( "-" );
+        int bx = Integer.valueOf( param[0] );
+        int bz = Integer.valueOf( param[1] );
+        Tools.Prt( "Location(X) : [" + bx + "]", Tools.consoleMode.max, programCode );
+        Tools.Prt( "Location(Z) : [" + bz + "]", Tools.consoleMode.max, programCode );
+        int lx = ( bx * 16 ) + Config.Event_X1;
+        int lz = ( bz * 16 ) + Config.Event_Z1;
+        int hx = ( ( bx + 1 ) * 16 ) + Config.Event_X1 - 1;
+        int hz = ( ( bz + 1 ) * 16 ) + Config.Event_Z1 - 1;
+
+        Tools.Prt( "Area " + lx + "," + lz + " - " + hx + "," + hz, Tools.consoleMode.max, programCode );
+        for ( int x = lx; x <= hx; ++x ) {
+            for ( int y = 1; y <= 256; ++y ) {
+                for ( int z = lz; z <= hz; ++z ) {
+                    Location loc = new Location( Bukkit.getWorld( Config.Event_World ), x, y, z, 0, 0 );
+                    if ( config.getPoint( loc.getBlock().getType().toString() ) > 0 ) {
+                        NGBlock += config.getPoint( loc.getBlock().getType().toString() );
+                        Tools.Prt( loc.getBlock().getType().toString() + "[" + x + "," + y + "," + z +"]", Tools.consoleMode.max, programCode );
+                    }
+                }
+            }
+        }
+        Tools.Prt( "Area " + lx + "," + lz + " - " + hx + "," + hz + " : " + NGBlock, Tools.consoleMode.full, programCode );
+        return NGBlock;
+    }
+
+    public static int GetRegistCount( String Owner ) {
+        try ( Connection con = dataSource.getConnection() ) {
+            Statement stmt = con.createStatement();
+            String sql = "SELECT * FROM area WHERE Owner = '" + Owner + "' ORDER BY AreaCode ASC;";
+            Tools.Prt( "SQL : " + sql, Tools.consoleMode.max , programCode );
+            ResultSet rs = stmt.executeQuery( sql );
+            int AC = 0;
+            while( rs.next() ) {
+                if ( AreaCount( rs.getString( "AreaCode" ) ) > 0 ) AC++;
+            }
+            con.close();
+            Tools.Prt( "Area Regist Count : " + AC, Tools.consoleMode.full, programCode );
+            return AC;
+        } catch ( SQLException e ) {
+            Tools.Prt( ChatColor.RED + "Error GetRegistCount : " + e.getMessage(), programCode );
+            return 0;
         }
     }
 }

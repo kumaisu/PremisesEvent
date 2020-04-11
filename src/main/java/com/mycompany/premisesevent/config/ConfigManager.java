@@ -140,6 +140,8 @@ public class ConfigManager {
             Config.Event_Z2 = temp;
         }
 
+        Config.MAX_REGIST = config.getInt( "MaxRegist", 0 );
+
         Config.JoinMessage = config.getString( "JOIN_MESSAGE" );
 
         try {

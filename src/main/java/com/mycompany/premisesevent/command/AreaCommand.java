@@ -36,8 +36,10 @@ public class AreaCommand implements CommandExecutor {
       */
      private void help( Player player ) {
         Tools.Prt( player, ChatColor.GREEN + "/Area Command List", programCode );
-        Tools.Prt( player, ChatColor.YELLOW + "add [AreaCode] [PlayerName] : " + ChatColor.WHITE + "Registration", programCode );
-        Tools.Prt( player, ChatColor.YELLOW + "del [AreaCode]              : " + ChatColor.WHITE + "Delete Owner", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "add [AreaCode] [Owner] : " + ChatColor.WHITE + "Registration", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "del [AreaCode]         : " + ChatColor.WHITE + "Delete Owner", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "check [AreaCode]       : " + ChatColor.WHITE + "Area Total Score", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "regist [Owner]         : " + ChatColor.WHITE + "Player Regist Area Count", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "list     : " + ChatColor.WHITE + "Holding Area List", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "AllClear : " + ChatColor.WHITE + "Clear All AreaData", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "help     : " + ChatColor.WHITE + "Command List", programCode );
@@ -69,7 +71,7 @@ public class AreaCommand implements CommandExecutor {
             case "add":
                 if ( args.length > 2 ) {
                     Messages.AreaCode = args[1];
-                    AreaManager.AddRegister( player, args[2] );
+                    AreaManager.ManualAddRegist( player, args[2] );
                 }
                 return true;
             case "del":
@@ -79,6 +81,12 @@ public class AreaCommand implements CommandExecutor {
                 return true;
             case "list":
                 AreaManager.AreaList( player, ( ( args.length > 1 ) ? args[1] : "" ) );
+                return true;
+            case "check":
+                Tools.Prt( player, "Checked Area [" + args[1] + "] = " + AreaManager.AreaCount( args[1] ) + " Point.", programCode );
+                return true;
+            case "regist":
+                Tools.Prt( player, args[1] + "'s Registerd : " + AreaManager.GetRegistCount( args[1] ), programCode );
                 return true;
             case "help":
                 help( player );

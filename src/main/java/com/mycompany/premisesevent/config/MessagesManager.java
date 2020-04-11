@@ -57,6 +57,7 @@ public class MessagesManager {
         Messages.PlayerMessage.put( "DontBreak", UKData.getString( "DontBreak", "error" ) );
         Messages.PlayerMessage.put( "NoBreakTitleM", UKData.getString( "NoBreakTitleM", "error" ) );
         Messages.PlayerMessage.put( "NoBreakTitleS", UKData.getString( "NoBreakTitleS", "error" ) );
+        Messages.PlayerMessage.put( "OverRegist", UKData.getString( "OverRegist", "error" ) );
         Messages.PlayerMessage.put( "ToolWarning", UKData.getString( "ToolWarning", "error" ) );
         Messages.PlayerMessage.put( "ToolWarningTitleM", UKData.getString( "ToolWarningTitleM", "error" ) );
         Messages.PlayerMessage.put( "ToolWarningTitleS", UKData.getString( "ToolWarningTitleS", "error" ) );

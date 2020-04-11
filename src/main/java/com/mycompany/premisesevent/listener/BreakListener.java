@@ -52,10 +52,11 @@ public class BreakListener implements Listener {
         //  loc.add( 0.5, 0.5, 0.5 );
         loc.add( Config.pt_x, Config.pt_y, Config.pt_z );
         ArmorStand stand = location.getWorld().spawn( loc, ArmorStand.class );
-        stand.setMarker( true );
+        stand.setGravity( true );
+        //stand.setMarker( true );
         stand.setSmall( true );
         stand.setBasePlate( false );
-        stand.setCustomName( String.format( "§a%d Point", score ) );
+        stand.setCustomName( String.format( "§a%d P", score ) );
         stand.setCustomNameVisible( true );
         stand.setVisible( false );
         Bukkit.getServer().getScheduler().runTaskTimer( plugin, () -> { stand.remove(); }, Config.pt_delay, Config.pt_delay );
@@ -133,7 +134,17 @@ public class BreakListener implements Listener {
         }
 
         //  エリア関連チェック
-        if ( Config.Field && Config.PlayerAlarm ) { AreaManager.AreaCheck( player, block ); }
+        if ( Config.Field && Config.PlayerAlarm ) {
+            AreaManager.PackAreaCode( block.getLocation() );
+            if ( !AreaManager.GetSQL( Messages.AreaCode ) ) {
+                if ( ( Config.MAX_REGIST > 0 ) && ( AreaManager.GetRegistCount( player.getName() ) >= Config.MAX_REGIST ) ) {
+                    Tools.Prt( player, Messages.GetString( "OverRegist" ), Tools.consoleMode.full, programCode );
+                    event.setCancelled( true );
+                    return;
+                }
+            }
+            AreaManager.AreaCheck( player, block );
+        }
 
         //  機能看板処理
         if ( blockName.contains( "SIGN" ) ) {

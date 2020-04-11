@@ -47,6 +47,7 @@ public class Config {
     public static int Event_Z2;
     public static int Event_Y2;
     public static String Event_World;
+    public static int MAX_REGIST;
 
     public static EventMode difficulty;
     public static UpperMode UpperBlock;

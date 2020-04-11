@@ -128,7 +128,7 @@ public class PECommand implements CommandExecutor {
                     pc.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ).forEachOrdered( ( onPlayer ) -> {
                         Tools.Prt(
                             onPlayer.getDisplayName() +
-                            "is Online Event[" +
+                            " is Online Event[" +
                             ( ( pc.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ? "true":"false" ) +
                             "]",
                             programCode
