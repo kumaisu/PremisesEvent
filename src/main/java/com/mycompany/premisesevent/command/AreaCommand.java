@@ -40,7 +40,7 @@ public class AreaCommand implements CommandExecutor {
         Tools.Prt( player, ChatColor.YELLOW + "del [AreaCode]         : " + ChatColor.WHITE + "Delete Owner", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "check [AreaCode]       : " + ChatColor.WHITE + "Area Total Score", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "regist [Owner]         : " + ChatColor.WHITE + "Player Regist Area Count", programCode );
-        Tools.Prt( player, ChatColor.YELLOW + "list     : " + ChatColor.WHITE + "Holding Area List", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "list [Owner]           : " + ChatColor.WHITE + "Holding Area List", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "AllClear : " + ChatColor.WHITE + "Clear All AreaData", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "help     : " + ChatColor.WHITE + "Command List", programCode );
      }
@@ -77,17 +77,21 @@ public class AreaCommand implements CommandExecutor {
             case "del":
                 if ( args.length > 1 ) {
                     AreaManager.DelRegister( player, args[1] );
-                }
-                return true;
+                    return true;
+                } else return false;
             case "list":
                 AreaManager.AreaList( player, ( ( args.length > 1 ) ? args[1] : "" ) );
                 return true;
             case "check":
-                Tools.Prt( player, "Checked Area [" + args[1] + "] = " + AreaManager.AreaCount( args[1] ) + " Point.", programCode );
-                return true;
+                if ( args.length > 1 ) {
+                    Tools.Prt( player, "Checked Area [" + args[1] + "] = " + AreaManager.AreaCount( args[1] ) + " Point.", programCode );
+                    return true;
+                } else return false;
             case "regist":
-                Tools.Prt( player, args[1] + "'s Registerd : " + AreaManager.GetRegistCount( args[1] ), programCode );
-                return true;
+                if ( args.length > 1 ) {
+                    Tools.Prt( player, args[1] + "'s Registerd : " + AreaManager.GetRegistCount( args[1] ), programCode );
+                    return true;
+                } else return false;
             case "help":
                 help( player );
                 return true;
