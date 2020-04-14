@@ -131,6 +131,9 @@ public class ClickListener implements Listener {
                         TopList TL = new TopList( DataFolder );
                         TL.Top( player, Tools.consoleMode.max );
                         break;
+                    case "[P-LIST]":
+                        AreaManager.GetRegist( player.getName(), true, player );
+                        break;
                     default:
                 }
             }

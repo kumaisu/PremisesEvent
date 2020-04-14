@@ -24,6 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.Messages;
+import com.mycompany.premisesevent.database.Database;
 import com.mycompany.premisesevent.database.AreaManager;
 import com.mycompany.premisesevent.utility.BukkitTool;
 import static com.mycompany.premisesevent.PremisesEvent.config;
@@ -134,9 +135,14 @@ public class BreakListener implements Listener {
         }
 
         //  エリア関連チェック
-        if ( Config.Field && Config.PlayerAlarm ) {
+        if ( Config.Field && ( Config.PlayerAlarm != Config.UpperMode.None ) ) {
             AreaManager.PackAreaCode( block.getLocation() );
             if ( !AreaManager.GetSQL( Messages.AreaCode ) ) {
+                if ( ( Config.PlayerAlarm == Config.UpperMode.Block ) && ( !Database.Owner.equals( player.getName() ) ) ) {
+                    Tools.Prt( player, Messages.GetString( "OtherRegist" ), Tools.consoleMode.full, programCode );
+                    event.setCancelled( true );
+                    return;
+                }
                 if ( ( Config.MAX_REGIST > 0 ) && ( AreaManager.GetRegistCount( player.getName() ) >= Config.MAX_REGIST ) ) {
                     Tools.Prt( player, Messages.GetString( "OverRegist" ), Tools.consoleMode.full, programCode );
                     event.setCancelled( true );

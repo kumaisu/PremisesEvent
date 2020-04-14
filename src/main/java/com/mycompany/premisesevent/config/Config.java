@@ -51,7 +51,7 @@ public class Config {
 
     public static EventMode difficulty;
     public static UpperMode UpperBlock;
-    public static boolean PlayerAlarm;
+    public static UpperMode PlayerAlarm;
     public static boolean placeFree;
     public static boolean placeSpecified;
     public static boolean breakFree;

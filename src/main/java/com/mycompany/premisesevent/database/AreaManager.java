@@ -419,22 +419,31 @@ public class AreaManager {
         return NGBlock;
     }
 
-    public static int GetRegistCount( String Owner ) {
+    public static int GetRegist( String Owner, boolean Output, Player player ) {
         try ( Connection con = dataSource.getConnection() ) {
             Statement stmt = con.createStatement();
             String sql = "SELECT * FROM area WHERE Owner = '" + Owner + "' ORDER BY AreaCode ASC;";
             Tools.Prt( "SQL : " + sql, Tools.consoleMode.max , programCode );
             ResultSet rs = stmt.executeQuery( sql );
             int AC = 0;
+            if ( Output ) Tools.Prt( player, "あなたの掘削未完リスト", programCode );
             while( rs.next() ) {
-                if ( AreaCount( rs.getString( "AreaCode" ) ) > 0 ) AC++;
+                if ( AreaCount( rs.getString( "AreaCode" ) ) > 0 ) {
+                    AC++;
+                    if ( Output ) Tools.Prt( player, rs.getString( "AreaCode" ), programCode );
+                }
             }
             con.close();
             Tools.Prt( "Area Regist Count : " + AC, Tools.consoleMode.full, programCode );
             return AC;
         } catch ( SQLException e ) {
-            Tools.Prt( ChatColor.RED + "Error GetRegistCount : " + e.getMessage(), programCode );
+            Tools.Prt( ChatColor.RED + "Error GetRegist : " + e.getMessage(), programCode );
             return 0;
         }
     }
+
+    public static int GetRegistCount( String Owner ) {
+        return GetRegist( Owner, false, null );
+    }
 }
+

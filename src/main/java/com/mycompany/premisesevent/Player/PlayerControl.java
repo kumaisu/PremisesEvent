@@ -494,7 +494,7 @@ public class PlayerControl {
      * @param AreaCode
      */
     public void PrintArea( Player player, String AreaCode ) {
-        if ( Config.PlayerAlarm && ( !NowArea.equals( AreaCode ) ) ) {
+        if ( ( Config.PlayerAlarm != Config.UpperMode.None ) && ( !NowArea.equals( AreaCode ) ) ) {
             String GetOwner = "不在";
             if ( Config.Field && AreaManager.GetSQL( AreaCode ) ) { GetOwner = Database.Owner; }
             Tools.Prt( "[" + NowOwner + "] x [" + GetOwner + "]", Tools.consoleMode.max, programCode);

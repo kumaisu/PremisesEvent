@@ -95,7 +95,6 @@ public class ConfigManager {
         Config.breakFree = config.getBoolean( "FreeBreak", true );
         Config.breakTool = config.getBoolean( "ToolBreak", true );
         Config.zeroPlace = config.getBoolean( "ZeroPlace", false );
-        Config.PlayerAlarm = config.getBoolean( "PlayerAlarm", true );
         Config.OnDynmap = config.getBoolean( "OnDynmap", false );
         Config.SignPlace = config.getBoolean( "SignPlace", false );
         Config.MarkReleaseBlock = config.getBoolean( "MarkReleaseBlock", false );
@@ -154,7 +153,14 @@ public class ConfigManager {
         try {
             Config.UpperBlock = Config.UpperMode.valueOf( config.getString( "UpperBlock" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( Messages.GetString( "FraudUpper" ), Tools.consoleMode.print, programCode );
+            Tools.Prt( Messages.GetString( "FraudEnum" ), Tools.consoleMode.print, programCode );
+            Config.UpperBlock = Config.UpperMode.None;
+        }
+
+        try {
+            Config.PlayerAlarm = Config.UpperMode.valueOf( config.getString( "PlayerAlarm" ) );
+        } catch ( IllegalArgumentException e ) {
+            Tools.Prt( Messages.GetString( "FraudEnum" ), Tools.consoleMode.print, programCode );
             Config.UpperBlock = Config.UpperMode.None;
         }
 
@@ -197,9 +203,9 @@ public class ConfigManager {
             Tools.Prt( p, ChatColor.WHITE + "Tools : " + ChatColor.YELLOW + gn + "(" + Config.tools.get( gn ) + ")", programCode );
         } );
 
-        Tools.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Config.Field ? "あり":"なし" ), programCode );
+        Tools.Prt( p, ChatColor.WHITE + "掘削範囲指定     : " + ChatColor.YELLOW + ( Config.Field ? "あり":"なし" ), programCode );
         if ( Config.Field ) {
-            Tools.Prt( p, ChatColor.WHITE + "他者エリア警告   : " + ChatColor.YELLOW + ( Config.PlayerAlarm ? "あり":"なし" ), programCode );
+            Tools.Prt( p, ChatColor.WHITE + "他者エリア警告   : " + ChatColor.YELLOW + Config.PlayerAlarm.toString(), programCode );
             Tools.Prt( p, ChatColor.WHITE + "Dynmap Area 表示 : " + ChatColor.YELLOW + ( Config.OnDynmap ? "あり":"なし" ), programCode );
             Tools.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Config.Event_World, programCode );
             Tools.Prt( p,
