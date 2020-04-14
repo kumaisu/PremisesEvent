@@ -136,15 +136,16 @@ public class BreakListener implements Listener {
 
         //  エリア関連チェック
         if ( Config.Field && ( Config.PlayerAlarm != Config.UpperMode.None ) ) {
-            AreaManager.PackAreaCode( block.getLocation() );
-            if ( !AreaManager.GetSQL( Messages.AreaCode ) ) {
-                if ( ( Config.PlayerAlarm == Config.UpperMode.Block ) && ( !Database.Owner.equals( player.getName() ) ) ) {
-                    Tools.Prt( player, Messages.GetString( "OtherRegist" ), Tools.consoleMode.full, programCode );
+            if ( !AreaManager.GetSQL( AreaManager.PackAreaCode( block.getLocation() ) ) ) {
+                if ( ( Config.MAX_REGIST > 0 ) && ( AreaManager.GetRegistCount( player.getName() ) >= Config.MAX_REGIST ) ) {
+                    Tools.Prt( player, Messages.GetString( "OverRegist" ), Tools.consoleMode.full, programCode );
                     event.setCancelled( true );
                     return;
                 }
-                if ( ( Config.MAX_REGIST > 0 ) && ( AreaManager.GetRegistCount( player.getName() ) >= Config.MAX_REGIST ) ) {
-                    Tools.Prt( player, Messages.GetString( "OverRegist" ), Tools.consoleMode.full, programCode );
+            } else {
+                Tools.Prt( "AreaCheck " + Database.Owner + " : " + player.getName(), Tools.consoleMode.max,programCode );
+                if ( ( Config.PlayerAlarm == Config.UpperMode.Block ) && ( !Database.Owner.equals( player.getName() ) ) ) {
+                    Tools.Prt( player, Messages.GetString( "OtherRegist" ), Tools.consoleMode.full, programCode );
                     event.setCancelled( true );
                     return;
                 }

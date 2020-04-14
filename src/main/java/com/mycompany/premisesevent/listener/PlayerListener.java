@@ -111,7 +111,7 @@ public class PlayerListener implements Listener {
         if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
             if ( Config.Field ) {
                 if ( !AreaManager.CheckArea( player.getLocation() ) ) return;
-                AreaManager.PackAreaCode( player.getLocation() );
+                Messages.AreaCode = AreaManager.PackAreaCode( player.getLocation() );
             }
             pc.get( player.getUniqueId() ).PrintArea( player, Messages.AreaCode );
         }

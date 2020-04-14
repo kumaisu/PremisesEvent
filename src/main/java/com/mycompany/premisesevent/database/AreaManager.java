@@ -144,10 +144,11 @@ public class AreaManager {
                 );
     }
 
-    public static void PackAreaCode( Location Loc ) {
+    public static String PackAreaCode( Location Loc ) {
         int cx = ( int )( Loc.getX() - Config.Event_X1 ) / 16;
         int cz = ( int )( Loc.getZ() - Config.Event_Z1 ) / 16;
-        Messages.AreaCode = cx + "-" + cz;
+        //  Messages.AreaCode = cx + "-" + cz;
+        return cx + "-" + cz;
     }
 
     /**
@@ -158,7 +159,7 @@ public class AreaManager {
      */
     public static void AreaGet( Player player, Block block ) {
         if ( Config.Field && !CheckArea( block.getLocation() ) ) return;
-        PackAreaCode( block.getLocation() );
+        Messages.AreaCode = PackAreaCode( block.getLocation() );
         if ( GetSQL( Messages.AreaCode ) ) {
             Messages.RepPlayer = Database.Owner;
             Tools.Prt( player, Messages.GetString( "OwnerArea" ), Tools.consoleMode.full, programCode );
@@ -305,7 +306,7 @@ public class AreaManager {
      * @param block 
      */
     public static void AreaRelease( Player player, Block block ) {
-        PackAreaCode( block.getLocation() );
+        Messages.AreaCode = PackAreaCode( block.getLocation() );
 
         Tools.Prt( 
             "Place Location key : " + block.getLocation().toString() +
