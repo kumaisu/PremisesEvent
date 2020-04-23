@@ -109,6 +109,7 @@ public class BreakListener implements Listener {
             switch ( Config.UpperBlock ) {
                 case Block:
                     if ( AreaManager.WarningCheck( player, checkBlock ) ) {
+                        player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 30, 2 ) );
                         event.setCancelled( true );
                         return;
                     }
@@ -139,6 +140,7 @@ public class BreakListener implements Listener {
             if ( !AreaManager.GetSQL( AreaManager.PackAreaCode( block.getLocation() ) ) ) {
                 if ( ( Config.MAX_REGIST > 0 ) && ( AreaManager.GetRegistCount( player.getName() ) >= Config.MAX_REGIST ) ) {
                     Tools.Prt( player, Messages.GetString( "OverRegist" ), Tools.consoleMode.full, programCode );
+                    player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 30, 2 ) );
                     event.setCancelled( true );
                     return;
                 }
@@ -146,6 +148,7 @@ public class BreakListener implements Listener {
                 Tools.Prt( "AreaCheck " + Database.Owner + " : " + player.getName(), Tools.consoleMode.max,programCode );
                 if ( ( Config.PlayerAlarm == Config.UpperMode.Block ) && ( !Database.Owner.equals( player.getName() ) ) ) {
                     Tools.Prt( player, Messages.GetString( "OtherRegist" ), Tools.consoleMode.full, programCode );
+                    player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 30, 2 ) );
                     event.setCancelled( true );
                     return;
                 }
@@ -186,6 +189,7 @@ public class BreakListener implements Listener {
                 switch( Config.difficulty ) {
                     case Easy:
                         Tools.Prt( player, Messages.GetString( "NoBreak" ), Tools.consoleMode.full, programCode );
+                        player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 30, 2 ) );
                         event.setCancelled( true );
                         return;
                     case Normal:

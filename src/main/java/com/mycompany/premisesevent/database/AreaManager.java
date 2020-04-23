@@ -265,6 +265,7 @@ public class AreaManager {
      * @param block 
      */
     public static void AreaCheck( Player player, Block block ) {
+        Messages.AreaCode = PackAreaCode( block.getLocation() );
         Tools.Prt( 
             "Get Location X:" + block.getLocation().getX() + " Z:" + block.getLocation().getZ() +
             " Area Code [ " + Messages.AreaCode + " ]",
