@@ -74,6 +74,7 @@ public class PlayerListener implements Listener {
                 ic.ToolPresent( player, Material.getMaterial( key ), Config.tools.get( key ), Config.EventToolName );
             } );
         }
+        pc.get( player.getUniqueId() ).setListName( player.getPlayerListName() );
     }
 
     /**

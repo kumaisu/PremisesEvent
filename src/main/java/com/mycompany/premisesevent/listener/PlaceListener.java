@@ -93,7 +93,7 @@ public class PlaceListener implements Listener {
                 pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
                 pc.get( player.getUniqueId() ).subStoneCount( blockName, ( config.getPoint( blockName ) < 0 ) );
                 player.setPlayerListName(
-                    ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
+                    pc.get( player.getUniqueId() ).getListName() + " " +
                     ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
                 );
             }

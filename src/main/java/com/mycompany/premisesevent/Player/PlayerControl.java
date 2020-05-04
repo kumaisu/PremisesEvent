@@ -65,6 +65,7 @@ public class PlayerControl {
     private int scoreBroadcast;
     private String NowArea = "";
     private String NowOwner = "none";
+    private String ListName = "";
 
     /**
      * プレイヤーコントロールライブラリ
@@ -514,4 +515,11 @@ public class PlayerControl {
         }
     }
 
+    public void setListName( String name ) {
+        ListName = name;
+    }
+
+    public String getListName() {
+        return ListName;
+    }
 }
