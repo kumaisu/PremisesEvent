@@ -33,6 +33,8 @@ public class ChangeWorldListener implements Listener {
     @EventHandler( priority = EventPriority.HIGHEST )
     public void onChangeWorld( PlayerChangedWorldEvent event ) {
         Player player = event.getPlayer();
-        pc.get( player.getUniqueId() ).setListName( player.getPlayerListName() );
+        if ( pc.containsKey( player.getUniqueId() ) ) {
+            pc.get( player.getUniqueId() ).setListName( player.getPlayerListName() );
+        }
     }
 }

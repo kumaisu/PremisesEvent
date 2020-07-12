@@ -106,7 +106,7 @@ public class BreakListener implements Listener {
         Location loc = block.getLocation();
         loc.setY( loc.getY() + 1 );
         Block checkBlock = loc.getBlock();
-        if ( !player.hasPermission( "Premises.warning" ) && Config.Field ) {
+        if ( player.hasPermission( "Premises.warning" ) && Config.Field ) {
             switch ( Config.UpperBlock ) {
                 case Block:
                     if ( AreaManager.WarningCheck( player, checkBlock ) ) {
