@@ -16,6 +16,7 @@ import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.database.AreaManager;
 import static com.mycompany.premisesevent.config.Config.programCode;
+import com.mycompany.premisesevent.database.Database;
 
 /**
  *
@@ -36,6 +37,7 @@ public class AreaCommand implements CommandExecutor {
       */
      private void help( Player player ) {
         Tools.Prt( player, ChatColor.GREEN + "/Area Command List", programCode );
+        Tools.Prt( player, ChatColor.YELLOW + "info [AreaCode]        : " + ChatColor.WHITE + "Area Information", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "add [AreaCode] [Owner] : " + ChatColor.WHITE + "Registration", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "del [AreaCode]         : " + ChatColor.WHITE + "Delete Owner", programCode );
         Tools.Prt( player, ChatColor.YELLOW + "check [AreaCode]       : " + ChatColor.WHITE + "Area Total Score", programCode );
@@ -68,6 +70,19 @@ public class AreaCommand implements CommandExecutor {
         if ( args.length > 0 ) commandString = args[0];
 
         switch ( commandString ) {
+            case "info":
+                if ( args.length > 1 ) {
+                    String infoArea = args[1];
+                    
+                    if ( AreaManager.GetSQL( infoArea ) ) {
+                        Tools.Prt( player, ChatColor.GREEN + "AreaCode:" + ChatColor.YELLOW + Database.AreaCode, programCode );
+                        Tools.Prt( player, ChatColor.GREEN + "Owner:" + ChatColor.YELLOW + Database.Owner, programCode );
+                        Tools.Prt( player, ChatColor.GREEN + "Location:" + ChatColor.YELLOW + Database.Location.toString(), programCode );
+                        Tools.Prt( player, ChatColor.GREEN + "Block:" + ChatColor.YELLOW + Database.Block, programCode );
+                        Tools.Prt( player, ChatColor.GREEN + "Date:" + ChatColor.YELLOW + Database.GetDate, programCode );
+                    } else { Tools.Prt( player, ChatColor.RED + "存在しないエリアコードです[" + infoArea + "]", programCode ); }
+                    return true;
+                } else { return false; }
             case "add":
                 if ( args.length > 2 ) {
                     Messages.AreaCode = args[1];
