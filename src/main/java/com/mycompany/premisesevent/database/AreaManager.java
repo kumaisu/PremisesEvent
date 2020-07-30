@@ -144,10 +144,11 @@ public class AreaManager {
                 );
     }
 
-    public static void PackAreaCode( Location Loc ) {
+    public static String PackAreaCode( Location Loc ) {
         int cx = ( int )( Loc.getX() - Config.Event_X1 ) / 16;
         int cz = ( int )( Loc.getZ() - Config.Event_Z1 ) / 16;
-        Messages.AreaCode = cx + "-" + cz;
+        //  Messages.AreaCode = cx + "-" + cz;
+        return cx + "-" + cz;
     }
 
     /**
@@ -158,7 +159,7 @@ public class AreaManager {
      */
     public static void AreaGet( Player player, Block block ) {
         if ( Config.Field && !CheckArea( block.getLocation() ) ) return;
-        PackAreaCode( block.getLocation() );
+        Messages.AreaCode = PackAreaCode( block.getLocation() );
         if ( GetSQL( Messages.AreaCode ) ) {
             Messages.RepPlayer = Database.Owner;
             Tools.Prt( player, Messages.GetString( "OwnerArea" ), Tools.consoleMode.full, programCode );
@@ -264,6 +265,7 @@ public class AreaManager {
      * @param block 
      */
     public static void AreaCheck( Player player, Block block ) {
+        Messages.AreaCode = PackAreaCode( block.getLocation() );
         Tools.Prt( 
             "Get Location X:" + block.getLocation().getX() + " Z:" + block.getLocation().getZ() +
             " Area Code [ " + Messages.AreaCode + " ]",
@@ -305,7 +307,7 @@ public class AreaManager {
      * @param block 
      */
     public static void AreaRelease( Player player, Block block ) {
-        PackAreaCode( block.getLocation() );
+        Messages.AreaCode = PackAreaCode( block.getLocation() );
 
         Tools.Prt( 
             "Place Location key : " + block.getLocation().toString() +
@@ -419,22 +421,31 @@ public class AreaManager {
         return NGBlock;
     }
 
-    public static int GetRegistCount( String Owner ) {
+    public static int GetRegist( String Owner, boolean Output, Player player ) {
         try ( Connection con = dataSource.getConnection() ) {
             Statement stmt = con.createStatement();
             String sql = "SELECT * FROM area WHERE Owner = '" + Owner + "' ORDER BY AreaCode ASC;";
             Tools.Prt( "SQL : " + sql, Tools.consoleMode.max , programCode );
             ResultSet rs = stmt.executeQuery( sql );
             int AC = 0;
+            if ( Output ) Tools.Prt( player, "あなたの掘削未完リスト", programCode );
             while( rs.next() ) {
-                if ( AreaCount( rs.getString( "AreaCode" ) ) > 0 ) AC++;
+                if ( AreaCount( rs.getString( "AreaCode" ) ) > 0 ) {
+                    AC++;
+                    if ( Output ) Tools.Prt( player, rs.getString( "AreaCode" ), programCode );
+                }
             }
             con.close();
             Tools.Prt( "Area Regist Count : " + AC, Tools.consoleMode.full, programCode );
             return AC;
         } catch ( SQLException e ) {
-            Tools.Prt( ChatColor.RED + "Error GetRegistCount : " + e.getMessage(), programCode );
+            Tools.Prt( ChatColor.RED + "Error GetRegist : " + e.getMessage(), programCode );
             return 0;
         }
     }
+
+    public static int GetRegistCount( String Owner ) {
+        return GetRegist( Owner, false, null );
+    }
 }
+

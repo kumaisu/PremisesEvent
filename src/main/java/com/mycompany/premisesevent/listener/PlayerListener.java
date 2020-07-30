@@ -74,6 +74,7 @@ public class PlayerListener implements Listener {
                 ic.ToolPresent( player, Material.getMaterial( key ), Config.tools.get( key ), Config.EventToolName );
             } );
         }
+        pc.get( player.getUniqueId() ).setListName( player.getPlayerListName() );
     }
 
     /**
@@ -111,7 +112,7 @@ public class PlayerListener implements Listener {
         if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
             if ( Config.Field ) {
                 if ( !AreaManager.CheckArea( player.getLocation() ) ) return;
-                AreaManager.PackAreaCode( player.getLocation() );
+                Messages.AreaCode = AreaManager.PackAreaCode( player.getLocation() );
             }
             pc.get( player.getUniqueId() ).PrintArea( player, Messages.AreaCode );
         }

@@ -66,7 +66,7 @@ public class PlaceListener implements Listener {
         }
 
         //  イベント保護
-        if ( Config.Field && Config.PlayerAlarm ) {
+        if ( Config.Field && ( Config.PlayerAlarm != Config.UpperMode.None ) ) {
             if ( !Config.MarkReleaseBlock || Database.Block.equals( block.getType().name() ) ) {
                 AreaManager.AreaRelease( player, block );
             }
@@ -93,7 +93,7 @@ public class PlaceListener implements Listener {
                 pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
                 pc.get( player.getUniqueId() ).subStoneCount( blockName, ( config.getPoint( blockName ) < 0 ) );
                 player.setPlayerListName(
-                    ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
+                    pc.get( player.getUniqueId() ).getListName() + " " +
                     ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
                 );
             }
@@ -132,6 +132,7 @@ public class PlaceListener implements Listener {
             case "[P-Status]":
             case "[P-Update]":
             case "[P-TOP]":
+            case "[P-LIST]":
                 //  指定
                 event.setLine( 3, ChatColor.DARK_PURPLE + "Premises" + ChatColor.RED + " " );
                 break;

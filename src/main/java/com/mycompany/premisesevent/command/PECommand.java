@@ -26,6 +26,7 @@ import com.mycompany.premisesevent.config.Messages;
 import com.mycompany.premisesevent.config.MessagesManager;
 import com.mycompany.premisesevent.database.Database;
 import com.mycompany.premisesevent.database.SQLControl;
+import com.mycompany.premisesevent.database.AreaManager;
 import com.mycompany.premisesevent.utility.BukkitTool;
 import static com.mycompany.premisesevent.PremisesEvent.pc;
 import static com.mycompany.premisesevent.config.Config.programCode;
@@ -181,6 +182,9 @@ public class PECommand implements CommandExecutor {
                     return true;
                 case "status":
                     return PlayerStatus.Print( player, itemName );
+                case "list":
+                    AreaManager.GetRegist( player.getName(), true, player );
+                    return true;
                 case "check":
                     if ( hasPermission ) {
                         ItemControl ic = new ItemControl();

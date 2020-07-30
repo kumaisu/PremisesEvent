@@ -17,6 +17,7 @@ import com.mycompany.premisesevent.listener.PlayerListener;
 import com.mycompany.premisesevent.listener.ClickListener;
 import com.mycompany.premisesevent.listener.PlaceListener;
 import com.mycompany.premisesevent.listener.BreakListener;
+import com.mycompany.premisesevent.listener.ChangeWorldListener;
 import com.mycompany.premisesevent.command.AreaCommand;
 import com.mycompany.premisesevent.command.PECommand;
 import com.mycompany.premisesevent.config.Config;
@@ -53,6 +54,7 @@ public class PremisesEvent extends JavaPlugin implements Listener {
         new ClickListener( this );
         new PlaceListener( this );
         new BreakListener( this );
+        new ChangeWorldListener( this );
         getCommand( "premises" ).setExecutor( new PECommand( this ) );
         getCommand( "area" ).setExecutor( new AreaCommand( this ) );
     }

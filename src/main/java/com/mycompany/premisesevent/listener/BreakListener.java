@@ -24,6 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.mycompany.kumaisulibraries.Tools;
 import com.mycompany.premisesevent.config.Config;
 import com.mycompany.premisesevent.config.Messages;
+import com.mycompany.premisesevent.database.Database;
 import com.mycompany.premisesevent.database.AreaManager;
 import com.mycompany.premisesevent.utility.BukkitTool;
 import static com.mycompany.premisesevent.PremisesEvent.config;
@@ -56,9 +57,10 @@ public class BreakListener implements Listener {
         //stand.setMarker( true );
         stand.setSmall( true );
         stand.setBasePlate( false );
-        stand.setCustomName( String.format( "§a%d P", score ) );
+        stand.setCustomName( String.format( "§a%d", score ) );
         stand.setCustomNameVisible( true );
         stand.setVisible( false );
+        stand.setInvulnerable( true );
         Bukkit.getServer().getScheduler().runTaskTimer( plugin, () -> { stand.remove(); }, Config.pt_delay, Config.pt_delay );
         //  Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask( plugin, () -> { if ( stand.isOnGround() ) { stand.remove(); } }, 60 );
     }
@@ -104,10 +106,11 @@ public class BreakListener implements Listener {
         Location loc = block.getLocation();
         loc.setY( loc.getY() + 1 );
         Block checkBlock = loc.getBlock();
-        if ( !player.hasPermission( "Premises.warning" ) && Config.Field ) {
+        if ( player.hasPermission( "Premises.warning" ) && Config.Field ) {
             switch ( Config.UpperBlock ) {
                 case Block:
                     if ( AreaManager.WarningCheck( player, checkBlock ) ) {
+                        player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 30, 2 ) );
                         event.setCancelled( true );
                         return;
                     }
@@ -134,11 +137,19 @@ public class BreakListener implements Listener {
         }
 
         //  エリア関連チェック
-        if ( Config.Field && Config.PlayerAlarm ) {
-            AreaManager.PackAreaCode( block.getLocation() );
-            if ( !AreaManager.GetSQL( Messages.AreaCode ) ) {
+        if ( Config.Field && ( Config.PlayerAlarm != Config.UpperMode.None ) ) {
+            if ( !AreaManager.GetSQL( AreaManager.PackAreaCode( block.getLocation() ) ) ) {
                 if ( ( Config.MAX_REGIST > 0 ) && ( AreaManager.GetRegistCount( player.getName() ) >= Config.MAX_REGIST ) ) {
                     Tools.Prt( player, Messages.GetString( "OverRegist" ), Tools.consoleMode.full, programCode );
+                    player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 30, 2 ) );
+                    event.setCancelled( true );
+                    return;
+                }
+            } else {
+                Tools.Prt( "AreaCheck " + Database.Owner + " : " + player.getName(), Tools.consoleMode.max,programCode );
+                if ( ( Config.PlayerAlarm == Config.UpperMode.Block ) && ( !Database.Owner.equals( player.getName() ) ) ) {
+                    Tools.Prt( player, Messages.GetString( "OtherRegist" ), Tools.consoleMode.full, programCode );
+                    player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 30, 2 ) );
                     event.setCancelled( true );
                     return;
                 }
@@ -179,6 +190,7 @@ public class BreakListener implements Listener {
                 switch( Config.difficulty ) {
                     case Easy:
                         Tools.Prt( player, Messages.GetString( "NoBreak" ), Tools.consoleMode.full, programCode );
+                        player.addPotionEffect( new PotionEffect( PotionEffectType.SLOW_DIGGING, 30, 2 ) );
                         event.setCancelled( true );
                         return;
                     case Normal:
@@ -202,7 +214,7 @@ public class BreakListener implements Listener {
                 pc.get( player.getUniqueId() ).addStoneCount( blockName, ( config.getPoint( blockName ) < 0 ) );
                 pc.get( player.getUniqueId() ).addScore( player, config.getPoint( blockName ) );
                 player.setPlayerListName(
-                    ChatColor.WHITE + String.format( "%-12s", player.getDisplayName() ) + " " +
+                    pc.get( player.getUniqueId() ).getListName() + " " +
                     ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
                 );
             }

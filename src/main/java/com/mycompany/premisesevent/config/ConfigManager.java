@@ -95,7 +95,6 @@ public class ConfigManager {
         Config.breakFree = config.getBoolean( "FreeBreak", true );
         Config.breakTool = config.getBoolean( "ToolBreak", true );
         Config.zeroPlace = config.getBoolean( "ZeroPlace", false );
-        Config.PlayerAlarm = config.getBoolean( "PlayerAlarm", true );
         Config.OnDynmap = config.getBoolean( "OnDynmap", false );
         Config.SignPlace = config.getBoolean( "SignPlace", false );
         Config.MarkReleaseBlock = config.getBoolean( "MarkReleaseBlock", false );
@@ -154,7 +153,14 @@ public class ConfigManager {
         try {
             Config.UpperBlock = Config.UpperMode.valueOf( config.getString( "UpperBlock" ) );
         } catch ( IllegalArgumentException e ) {
-            Tools.Prt( Messages.GetString( "FraudUpper" ), Tools.consoleMode.print, programCode );
+            Tools.Prt( Messages.GetString( "FraudEnum" ), Tools.consoleMode.print, programCode );
+            Config.UpperBlock = Config.UpperMode.None;
+        }
+
+        try {
+            Config.PlayerAlarm = Config.UpperMode.valueOf( config.getString( "PlayerAlarm" ) );
+        } catch ( IllegalArgumentException e ) {
+            Tools.Prt( Messages.GetString( "FraudEnum" ), Tools.consoleMode.print, programCode );
             Config.UpperBlock = Config.UpperMode.None;
         }
 
@@ -175,54 +181,86 @@ public class ConfigManager {
         Tools.Prt( p, ChatColor.WHITE + "イベント名       : " + ChatColor.YELLOW + Config.EventName, programCode );
         Tools.Prt( p, ChatColor.WHITE + "難易度           : " + ChatColor.YELLOW + Config.difficulty.toString(), programCode );
         Tools.Prt( p, ChatColor.WHITE + "下層掘削制限     : " + ChatColor.YELLOW + Config.UpperBlock.toString(), programCode );
-        Tools.Prt( p, ChatColor.WHITE + "ツール再取得Cost : " + ChatColor.YELLOW + Config.RePresent, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "最小効率強化     : " + ChatColor.YELLOW + Config.MinDigSpeed, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "ツール更新Cost   : " + ChatColor.YELLOW + Config.UpCost, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Config.Repair, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "通知 Console     : " + ChatColor.YELLOW + Config.ScoreNotice, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "通知 Broadcast   : " + ChatColor.YELLOW + Config.ScoreBroadcast, programCode );
-        Tools.Prt( p, ChatColor.WHITE + "Area確保Broadcast: " + ChatColor.YELLOW + ( Config.AreaRegistBroadcast ? "あり":"なし" ), programCode );
-        Tools.Prt( p, ChatColor.WHITE + "Area解放Broadcast: " + ChatColor.YELLOW + ( Config.AreaReleaseBroadcast ? "あり":"なし" ), programCode );
-        Tools.Prt( p, ChatColor.WHITE + "参加者以外の掘削 : " + ChatColor.YELLOW + ( Config.breakFree ? "許可":"不可" ), programCode );
-        Tools.Prt( p, ChatColor.WHITE + "一般Toolでの掘削 : " + ChatColor.YELLOW + ( Config.breakTool ? "不可":"許可" ), programCode );
-        Tools.Prt( p, ChatColor.WHITE + "専用看板設置破壊 : " + ChatColor.YELLOW + ( Config.SignPlace ? "許可":"不可" ), programCode );
-        Tools.Prt( p, ChatColor.WHITE + "ブロック無限設置 : " + ChatColor.YELLOW + ( Config.zeroPlace ? "許可":"不可" ), programCode );
         Tools.Prt( p, ChatColor.WHITE + "CreativeでCount  : " + ChatColor.YELLOW + ( Config.CreativeCount ? "しない":"する" ), programCode );
-        Tools.Prt( p, ChatColor.WHITE + "参加者以外の設置 : " + ChatColor.YELLOW + ( Config.placeFree ? "許可":"不可" ), programCode );
-        Tools.Prt( p, ChatColor.WHITE + "指定以外の設置   : " + ChatColor.YELLOW + ( Config.placeSpecified ? "許可":"不可" ), programCode );
+
+        Tools.Prt( p,
+            ChatColor.WHITE + "ツールCost : 再取得(" + ChatColor.YELLOW + Config.RePresent +
+            ChatColor.WHITE + ") 更新(" + ChatColor.YELLOW + Config.UpCost +
+            ChatColor.WHITE + ")",
+            programCode
+        );
+
+        Tools.Prt( p,
+            ChatColor.WHITE + "通知 : Console(" + ChatColor.YELLOW + Config.ScoreNotice +
+            ChatColor.WHITE + ") Broadcast(" + ChatColor.YELLOW + Config.ScoreBroadcast +
+            ChatColor.WHITE + ")",
+            programCode
+        );
+
+        Tools.Prt( p,
+            ChatColor.WHITE + "AreaBroadcast: 確保[" + ChatColor.YELLOW + ( Config.AreaRegistBroadcast ? "あり":"なし" ) +
+            ChatColor.WHITE + "] 解放[" + ChatColor.YELLOW + ( Config.AreaReleaseBroadcast ? "あり":"なし" ) +
+            ChatColor.WHITE + "]",
+            programCode
+        );
+
+        Tools.Prt( p,
+            ChatColor.WHITE + "掘削 : 参加者以外[" + ChatColor.YELLOW + ( Config.breakFree ? "許可":"不可" ) +
+            ChatColor.WHITE + "] 一般Tool[" + ChatColor.YELLOW + ( Config.breakTool ? "不可":"許可" ) +
+            ChatColor.WHITE + "]",
+            programCode
+        );
+
+        Tools.Prt( p, ChatColor.WHITE + "専用看板設置破壊 : " + ChatColor.YELLOW + ( Config.SignPlace ? "許可":"不可" ), programCode );
+
+        Tools.Prt( p,
+            ChatColor.WHITE + "設置 : ブロック無限[" + ChatColor.YELLOW + ( Config.zeroPlace ? "許可":"不可" ) +
+            ChatColor.WHITE + "] 参加者以外[" + ChatColor.YELLOW + ( Config.placeFree ? "許可":"不可" ) +
+            ChatColor.WHITE + "] 指定以外[" + ChatColor.YELLOW + ( Config.placeSpecified ? "許可":"不可" ) +
+            ChatColor.WHITE + "]",
+            programCode
+        );
+
         Tools.Prt( p, ChatColor.WHITE + "タイトル表示     : " + ChatColor.YELLOW + ( Config.titlePrint ? "する":"しない" ), programCode );
+
         Tools.Prt( p, ChatColor.WHITE + "イベントツール名 : " + Config.EventToolName, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "最小効率強化     : " + ChatColor.YELLOW + Config.MinDigSpeed, programCode );
+        Tools.Prt( p, ChatColor.WHITE + "耐久度警告値     : " + ChatColor.YELLOW + Config.Repair, programCode );
 
-        Config.tools.keySet().forEach ( ( gn ) -> {
-            Tools.Prt( p, ChatColor.WHITE + "Tools : " + ChatColor.YELLOW + gn + "(" + Config.tools.get( gn ) + ")", programCode );
-        } );
+        String ToolName = ChatColor.WHITE + "Tools : " + ChatColor.YELLOW;
+        for ( Map.Entry< String, Integer > entry : Config.tools.entrySet() ) {
+            ToolName += String.format( "%s (%d) , ", entry.getKey(), entry.getValue() );
+        }
+        Tools.Prt( p, ToolName, programCode );
 
-        Tools.Prt( p, ChatColor.WHITE + "掘削範囲指定 : " + ChatColor.YELLOW + ( Config.Field ? "あり":"なし" ), programCode );
+        Tools.Prt( p,
+            ChatColor.WHITE + "掘削範囲指定     : " +
+            ChatColor.YELLOW + ( Config.Field ?
+                Config.Event_X1 + "," + Config.Event_Y1 + "," + Config.Event_Z1 + " - " +
+                Config.Event_X2 + "," + Config.Event_Y2 + "," + Config.Event_Z2 + " [" +
+                Config.Event_World + "]"
+                    :
+                "なし" ),
+            programCode
+        );
+
         if ( Config.Field ) {
-            Tools.Prt( p, ChatColor.WHITE + "他者エリア警告   : " + ChatColor.YELLOW + ( Config.PlayerAlarm ? "あり":"なし" ), programCode );
+            Tools.Prt( p, ChatColor.WHITE + "他者エリア警告   : " + ChatColor.YELLOW + Config.PlayerAlarm.toString(), programCode );
             Tools.Prt( p, ChatColor.WHITE + "Dynmap Area 表示 : " + ChatColor.YELLOW + ( Config.OnDynmap ? "あり":"なし" ), programCode );
-            Tools.Prt( p, ChatColor.WHITE + "Check World: " + ChatColor.YELLOW + Config.Event_World, programCode );
-            Tools.Prt( p,
-                ChatColor.WHITE + "Area1 X=" + ChatColor.YELLOW + String.format( "%-7d", Config.Event_X1 ) +
-                ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d", Config.Event_Y1 ) +
-                ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Config.Event_Z1,
-                programCode );
-            Tools.Prt( p,
-                ChatColor.WHITE + "Area2 X=" + ChatColor.YELLOW + String.format( "%-7d", Config.Event_X2 ) +
-                ChatColor.WHITE + ",Y=" + ChatColor.YELLOW + String.format( "%-3d", Config.Event_Y2 ) +
-                ChatColor.WHITE + ",Z=" + ChatColor.YELLOW + Config.Event_Z2,
-                programCode );
         }
 
-        Tools.Prt( p, ChatColor.WHITE + "PointTip表示 : " + ChatColor.YELLOW + ( Config.PointTip ? "あり":"なし" ), programCode );
-        if ( Config.PointTip ) {
-            Tools.Prt( p,
-                ChatColor.WHITE + "Offset : X:" + ChatColor.YELLOW + Config.pt_x +
+        Tools.Prt( p,
+            ChatColor.WHITE + "PointTip表示 : " +
+            ( Config.PointTip ?
+                "Offset : X:" + ChatColor.YELLOW + Config.pt_x +
                 ChatColor.WHITE + " Y:" + ChatColor.YELLOW + Config.pt_y +
-                ChatColor.WHITE + " Z:" + ChatColor.YELLOW + Config.pt_z,
-                programCode );
-            Tools.Prt( p, ChatColor.WHITE + "Delay : " + ChatColor.YELLOW + Config.pt_delay, programCode );
-        }
+                ChatColor.WHITE + " Z:" + ChatColor.YELLOW + Config.pt_z +
+                ChatColor.WHITE + " Delay : " + ChatColor.YELLOW + Config.pt_delay
+                    :
+                ChatColor.YELLOW + "なし"
+            ),
+            programCode 
+        );        
 
         Tools.Prt( p, ChatColor.WHITE + "参加時メッセージ : " + Config.JoinMessage, programCode );
         Tools.Prt( p, ChatColor.WHITE + "Broadcast Command:", programCode );

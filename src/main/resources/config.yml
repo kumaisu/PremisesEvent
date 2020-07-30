@@ -45,9 +45,10 @@ UpperBlock: Warning
 #   他者エリア掘削の警告表示
 #   エリアはイベントエリアの起点を元に演算してエリア名を生成しています
 #   このためイベント中にエリアの拡大を行うと、正しくエリア管理ができなくなります
-#   true :      警告する
-#   false :     警告しない
-PlayerAlarm: true
+#   Warning:    警告のみ
+#   Block:      掘削キャンセルする
+#   None:       警告しない
+PlayerAlarm: Warning
 
 #   参加者以外のブロック破壊を許すか/Free Block Break
 #   参加者をスコア加算されますが、不参加者はされません

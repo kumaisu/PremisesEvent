@@ -58,6 +58,7 @@ public class MessagesManager {
         Messages.PlayerMessage.put( "NoBreakTitleM", UKData.getString( "NoBreakTitleM", "error" ) );
         Messages.PlayerMessage.put( "NoBreakTitleS", UKData.getString( "NoBreakTitleS", "error" ) );
         Messages.PlayerMessage.put( "OverRegist", UKData.getString( "OverRegist", "error" ) );
+        Messages.PlayerMessage.put( "OtherRegist", UKData.getString( "OtherRegist", "error" ) );
         Messages.PlayerMessage.put( "ToolWarning", UKData.getString( "ToolWarning", "error" ) );
         Messages.PlayerMessage.put( "ToolWarningTitleM", UKData.getString( "ToolWarningTitleM", "error" ) );
         Messages.PlayerMessage.put( "ToolWarningTitleS", UKData.getString( "ToolWarningTitleS", "error" ) );
@@ -96,7 +97,7 @@ public class MessagesManager {
         Messages.PlayerMessage.put( "WarnTitleS", UKData.getString( "WarnTitleS", "error" ) );
         Messages.PlayerMessage.put( "FraudMode", UKData.getString( "FraudMode", "error" ) );
         Messages.PlayerMessage.put( "FraudEvent", UKData.getString( "FraudEvent", "error" ) );
-        Messages.PlayerMessage.put( "FraudUpper", UKData.getString( "FraudUpper", "error" ) );
+        Messages.PlayerMessage.put( "FraudEnum", UKData.getString( "FraudEnum", "error" ) );
         Messages.PlayerMessage.put( "EventList", UKData.getString( "EventList", "error" ) );
     }
 
