@@ -8,6 +8,7 @@ This plug-in is a tool to support players achievement and event item distributio
   
 ## Operation check  
 Spigot Server 1.12.2 and 1.14.4  
+Paper 1.16.1
 
 ## Support  
 Open a new issue here: [https//github.com/kumaisu/PremisesEvent/issues](https://github.com/kumaisu/PremisesEvent/issues)  

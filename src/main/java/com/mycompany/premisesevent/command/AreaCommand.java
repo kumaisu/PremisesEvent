@@ -80,7 +80,7 @@ public class AreaCommand implements CommandExecutor {
                         Tools.Prt( player, ChatColor.GREEN + "Location:" + ChatColor.YELLOW + Database.Location.toString(), programCode );
                         Tools.Prt( player, ChatColor.GREEN + "Block:" + ChatColor.YELLOW + Database.Block, programCode );
                         Tools.Prt( player, ChatColor.GREEN + "Date:" + ChatColor.YELLOW + Database.GetDate, programCode );
-                    } else { Tools.Prt( player, ChatColor.RED + "存在しないエリアコードです[" + infoArea + "]", programCode ); }
+                    } else { Tools.Prt( player, ChatColor.RED + "Area code does not exist [" + infoArea + "]", programCode ); }
                     return true;
                 } else { return false; }
             case "add":
