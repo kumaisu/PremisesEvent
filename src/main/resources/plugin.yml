@@ -1,10 +1,10 @@
-main: com.mycompany.premisesevent.PremisesEvent
 name: PremisesEvent
-version: 0.9.6
+version: '1.0.1'
+main: io.github.kumaisu.premisesevent.PremisesEvent
+api-version: '1.21'
 description: Premises Event Control plugin
-author: Kumaisu
+author: NineTailedFox
 database: true
-api-version: 1.14
 commands:
     premises:
         description: Premises Event Control Command

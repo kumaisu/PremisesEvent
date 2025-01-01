@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="PremisesEvent">
+    <output-path>$PROJECT_DIR$/out/artifacts/PremisesEvent</output-path>
+    <root id="archive" name="PremisesEvent.jar">
+      <element id="module-output" name="PremisesEvent" />
+    </root>
+  </artifact>
+</component>

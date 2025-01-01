@@ -97,6 +97,10 @@ AreaRegistBroadcast: true
 #   エリア解放をBroadcastするか?
 AreaReleaseBroadcast: true
 
+#   Broadcast Message をDiscordへ送信するか？
+#   Webhook URL を記載する、送信しない場合は（NONE)
+WebhookURL: NONE
+
 #   スコア達成アナウンス設定
 #   Notice:コンソールのみ   Broadcast:サーバーチャット
 #   Player's score arrival notice
