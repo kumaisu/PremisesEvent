@@ -180,11 +180,22 @@ public class PECommand implements CommandExecutor {
                 case "join":
                     return pc.get( player.getUniqueId() ).JoinPlayer( player );
                 case "get":
-                    return pc.get( player.getUniqueId() ).getEventItem( player, itemName );
+                    if ( hasPermission || player.hasPermission( "Premises.get" ) ) {
+                        return pc.get(player.getUniqueId()).getEventItem(player, itemName);
+                    } else {
+                        Tools.Prt( player, Messages.GetString("NoAuthority" ), programCode );
+                        return false;
+                    }
                 case "update":
-                    boolean force = ( itemName.equals( "force" ) );
-                    if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).ToolUpdate( player, force );
-                    return true;
+                    if ( hasPermission || player.hasPermission( "Premises.update" ) ) {
+                        boolean force = (itemName.equals("force") && hasPermission);
+                        if ( pc.get(player.getUniqueId()).getEntry() == 1 )
+                            pc.get(player.getUniqueId()).ToolUpdate(player, force);
+                        return true;
+                    } else {
+                        Tools.Prt( player, Messages.GetString( "NoAuthority" ), programCode );
+                        return false;
+                    }
                 case "status":
                     return PlayerStatus.Print( player, itemName );
                 case "list":

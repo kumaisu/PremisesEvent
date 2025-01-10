@@ -322,8 +322,7 @@ public class PlayerControl {
                     } else {
                         Messages.RepNDura = String.valueOf( item.getType().getMaxDurability() - item.getDurability() );
                         Messages.RepTDura = String.valueOf( (int) ( item.getType().getMaxDurability() - CheckDurability ) );
-                        Tools.Prt( player, Messages.GetString( "NowDurable" ), Tools.consoleMode.full, programCode
-                        );
+                        Tools.Prt( player, Messages.GetString( "NowDurable" ), Tools.consoleMode.full, programCode );
                     }
                 } else Tools.Prt( player, Messages.GetString( "NotToolName" ), Tools.consoleMode.full, programCode );
             } else Tools.Prt( player, Messages.GetString( "NoEventTool" ), Tools.consoleMode.full, programCode );

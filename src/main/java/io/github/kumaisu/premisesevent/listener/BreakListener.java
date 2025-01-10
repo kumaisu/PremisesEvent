@@ -99,7 +99,9 @@ public class BreakListener implements Listener {
         }
 
         Block block = event.getBlock();
+        Tools.Prt( "1.Get Stone Name : " + block.getType().toString(), Tools.consoleMode.max, programCode );
         String blockName = BukkitTool.getStoneName( block );
+        Tools.Prt( "2.Get Stone Name : " + blockName, Tools.consoleMode.max, programCode );
         ItemStack item = player.getInventory().getItemInMainHand();
 
         //  禁止判定
@@ -110,14 +112,14 @@ public class BreakListener implements Listener {
             switch ( Config.UpperBlock ) {
                 case Block:
                     if ( AreaManager.WarningCheck( player, checkBlock ) ) {
-                        player.addPotionEffect( new PotionEffect( PotionEffectType.SLOWNESS, 30, 2 ) );
+                        player.addPotionEffect( new PotionEffect( PotionEffectType.MINING_FATIGUE, 30, 2 ) );
                         event.setCancelled( true );
                         return;
                     }
                     break;
                 case Warning:
                     if ( AreaManager.WarningCheck( player, checkBlock ) ) {
-                        player.addPotionEffect( new PotionEffect( PotionEffectType.SLOWNESS, 200, 2 ) );
+                        player.addPotionEffect( new PotionEffect( PotionEffectType.MINING_FATIGUE, 200, 2 ) );
                     }
                 default:
             }
@@ -190,7 +192,7 @@ public class BreakListener implements Listener {
                 switch( Config.difficulty ) {
                     case Easy:
                         Tools.Prt( player, Messages.GetString( "NoBreak" ), Tools.consoleMode.full, programCode );
-                        player.addPotionEffect( new PotionEffect( PotionEffectType.SLOWNESS, 30, 2 ) );
+                        player.addPotionEffect( new PotionEffect( PotionEffectType.MINING_FATIGUE, 30, 2 ) );
                         event.setCancelled( true );
                         return;
                     case Normal:

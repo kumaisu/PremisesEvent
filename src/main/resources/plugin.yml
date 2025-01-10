@@ -15,6 +15,12 @@ commands:
         aliases: pea
         usage: /<command> help
 permissions:
+    Premises.update:
+        description: Event Tool Update Command
+        default: false
+    premises.get:
+        description: Event Tool Get Command
+        default: false
     Premises.broadcast:
         description: Broadcast announce
         default: true
