@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import io.github.kumaisu.premisesevent.Lib.Discord;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -148,6 +150,12 @@ public class PECommand implements CommandExecutor {
             case "pointtip":
                 Config.PointTip = !Config.PointTip;
                 Tools.Prt( player, ChatColor.WHITE + "PointTip表示 : " + ChatColor.YELLOW + ( Config.PointTip ? "あり":"なし" ), programCode );
+                return true;
+            case "discord":
+                if ( hasPermission ) {
+                    Messages.RepMessage = Messages.GetString( "Achievement" );
+                    Discord.sendMessage( Config.WebHookURL, "Event", Messages.RepMessage + "[TEST]" );
+                }
                 return true;
             case "help":
                 Tools.Prt( player, ChatColor.GREEN + "/premises Command List", programCode );

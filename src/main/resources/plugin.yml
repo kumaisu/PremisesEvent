@@ -1,5 +1,5 @@
 name: PremisesEvent
-version: '1.0.1'
+version: ${project.version}
 main: io.github.kumaisu.premisesevent.PremisesEvent
 api-version: '1.21'
 description: Premises Event Control plugin

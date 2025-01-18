@@ -21,7 +21,8 @@ public class Discord {
             HttpPost post = new HttpPost( URL );
             post.setHeader("Content-Type", "application/json; charset=UTF-8");
 
-            String msg = "[Premises]" + Message;
+            String regex = "§."; // '%$'の後に任意の1文字
+            String msg = "[Premises]" + Message.replaceAll( regex, "" );
             String json = String.format( "{\"username\": \"%s\",\"content\": \"%s\"}", name, msg );
             StringEntity entity = new StringEntity( json, "UTF-8" );
             post.setEntity( entity );
