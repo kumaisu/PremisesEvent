@@ -99,6 +99,7 @@ public class MessagesManager {
         Messages.PlayerMessage.put( "FraudEvent", UKData.getString( "FraudEvent", "error" ) );
         Messages.PlayerMessage.put( "FraudEnum", UKData.getString( "FraudEnum", "error" ) );
         Messages.PlayerMessage.put( "EventList", UKData.getString( "EventList", "error" ) );
+        Messages.PlayerMessage.put( "NoAuthority", UKData.getString( "NoAuthority", "error" ) );
     }
 
     /**

@@ -284,7 +284,7 @@ public class AreaManager {
             );
             if ( Config.AreaRegistBroadcast ) {
                 Bukkit.broadcastMessage( getMessage + getSubMessage );
-                Discord.sendMessage(Config.WebHookURL, "Event", getMessage + getSubMessage);
+                // Discord.sendMessage( Config.WebHookURL, "Event", getMessage + getSubMessage );
             } else {
                 Tools.Prt( player, getMessage + getSubMessage, Tools.consoleMode.normal, programCode );
             }
@@ -326,7 +326,7 @@ public class AreaManager {
                     Messages.RepPlayer = player.getName();
                     if ( Config.AreaReleaseBroadcast ) {
                         Bukkit.broadcastMessage( Messages.GetString( "FreeArea" ) );
-                        Discord.sendMessage(Config.WebHookURL, "Event", Messages.GetString( "FreeArea" ) );
+                        // Discord.sendMessage(Config.WebHookURL, "Event", Messages.GetString( "FreeArea" ) );
                     } else {
                         Tools.Prt( player, Messages.GetString( "FreeArea" ), Tools.consoleMode.normal, programCode );
                     }

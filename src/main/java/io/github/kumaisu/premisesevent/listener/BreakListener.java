@@ -27,8 +27,8 @@ import io.github.kumaisu.premisesevent.config.Messages;
 import io.github.kumaisu.premisesevent.database.Database;
 import io.github.kumaisu.premisesevent.database.AreaManager;
 import io.github.kumaisu.premisesevent.utility.BukkitTool;
-import static io.github.kumaisu.premisesevent.PremisesEvent.config;
-import static io.github.kumaisu.premisesevent.PremisesEvent.pc;
+import static io.github.kumaisu.premisesevent.PremisesEvent.configManager;
+import static io.github.kumaisu.premisesevent.PremisesEvent.playerControlMap;
 import static io.github.kumaisu.premisesevent.config.Config.programCode;
 
 /**
@@ -48,21 +48,26 @@ public class BreakListener implements Listener {
         plugin.getServer().getPluginManager().registerEvents( this, plugin );
     }
 
-    public void ScoreStand( Location location, int score ) {
-        Location loc = location;
-        //  loc.add( 0.5, 0.5, 0.5 );
-        loc.add( Config.pt_x, Config.pt_y, Config.pt_z );
-        ArmorStand stand = location.getWorld().spawn( loc, ArmorStand.class );
-        stand.setGravity( true );
-        //stand.setMarker( true );
-        stand.setSmall( true );
-        stand.setBasePlate( false );
-        stand.setCustomName( String.format( "§a%d", score ) );
-        stand.setCustomNameVisible( true );
-        stand.setVisible( false );
-        stand.setInvulnerable( true );
-        Bukkit.getServer().getScheduler().runTaskTimer( plugin, () -> { stand.remove(); }, Config.pt_delay, Config.pt_delay );
-        //  Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask( plugin, () -> { if ( stand.isOnGround() ) { stand.remove(); } }, 60 );
+    public void spawnScoreStand( Location location, int score ) {
+        Location adjustedLocation = location.add(Config.pt_x, Config.pt_y, Config.pt_z);
+        ArmorStand armorStand = spawnArmorStand(adjustedLocation, score);
+        scheduleArmorStandRemoval(armorStand, Config.pt_delay);
+    }
+
+    private ArmorStand spawnArmorStand(Location location, int score) {
+        ArmorStand armorStand = location.getWorld().spawn(location, ArmorStand.class);
+        armorStand.setGravity(true);
+        armorStand.setSmall(true);
+        armorStand.setBasePlate(false);
+        armorStand.setCustomName("§a" + score);
+        armorStand.setCustomNameVisible(true);
+        armorStand.setVisible(false);
+        armorStand.setInvulnerable(true);
+        return armorStand;
+    }
+
+    private void scheduleArmorStandRemoval(ArmorStand armorStand, int delay) {
+        Bukkit.getServer().getScheduler().runTaskLater(plugin, armorStand::remove, delay);
     }
 
     /**
@@ -72,177 +77,88 @@ public class BreakListener implements Listener {
      */
     @EventHandler
     public void onBlockBreak( BlockBreakEvent event ) {
-        if ( Config.EventName.equals( "none" ) ) return;
+        if (isEventInactive() || isPlayerExempt(event)) return;
 
         Player player = event.getPlayer();
-        Messages.RepPlayer = player.getName();
-
-        if ( !player.getLocation().getWorld().getName().equals( Config.Event_World ) ) return;
-        if ( Config.CreativeCount && player.getGameMode() == GameMode.CREATIVE ) return;
-        if ( Config.Field && !AreaManager.CheckArea( event.getBlock().getLocation() ) ) return;
-
-        //  イベント参加判定
-        switch ( pc.get( player.getUniqueId() ).getEntry() ) {
-            case 0:
-                if ( !Config.breakFree ) {
-                    Tools.Prt( player, Messages.GetString( "RequestJoin" ), Tools.consoleMode.normal, programCode );
-                    event.setCancelled( true );
-                }
-                return;
-            case 1:
-                // 参加者なので、スルー
-                break;
-            case 2:
-                Tools.Prt( player, Messages.GetString( "OmitPlayer" ), Tools.consoleMode.normal, programCode );
-                event.setCancelled( true );
-                return;
-        }
-
         Block block = event.getBlock();
-        String blockName = BukkitTool.getStoneName( block );
-        ItemStack item = player.getInventory().getItemInMainHand();
 
-        //  禁止判定
-        Location loc = block.getLocation();
-        loc.setY( loc.getY() + 1 );
-        Block checkBlock = loc.getBlock();
-        if ( player.hasPermission( "Premises.warning" ) && Config.Field ) {
-            switch ( Config.UpperBlock ) {
-                case Block:
-                    if ( AreaManager.WarningCheck( player, checkBlock ) ) {
-                        player.addPotionEffect( new PotionEffect( PotionEffectType.SLOWNESS, 30, 2 ) );
-                        event.setCancelled( true );
-                        return;
-                    }
-                    break;
-                case Warning:
-                    if ( AreaManager.WarningCheck( player, checkBlock ) ) {
-                        player.addPotionEffect( new PotionEffect( PotionEffectType.SLOWNESS, 200, 2 ) );
-                    }
-                default:
-            }
+        if (block.getType().toString().contains("SIGN")) {
+            handleSignBlock(player, block);
         }
 
-        //  ツール判定
-        if ( Config.breakTool && ( item.getType() != Material.TORCH ) ) {
-            if (
-                    ( item.getType() == Material.AIR ) ||
-                    ( !item.getItemMeta().hasDisplayName() ) ||
-                    ( !item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) )
-               ) {
-                Tools.Prt( player, Messages.GetString( "NoEventTool" ), Tools.consoleMode.full, programCode );
-                event.setCancelled( true );
-                return;
-            }
+        if (isRestrictedTool(player)) {
+            cancelEventWithMessage(event, player, Messages.GetString("NoEventTool"));
         }
 
-        //  エリア関連チェック
-        if ( Config.Field && ( Config.PlayerAlarm != Config.UpperMode.None ) ) {
-            if ( !AreaManager.GetSQL( AreaManager.PackAreaCode( block.getLocation() ) ) ) {
-                if ( ( Config.MAX_REGIST > 0 ) && ( AreaManager.GetRegistCount( player.getName() ) >= Config.MAX_REGIST ) ) {
-                    Tools.Prt( player, Messages.GetString( "OverRegist" ), Tools.consoleMode.full, programCode );
-                    player.addPotionEffect( new PotionEffect( PotionEffectType.SLOWNESS, 30, 2 ) );
-                    event.setCancelled( true );
-                    return;
-                }
-            } else {
-                Tools.Prt( "AreaCheck " + Database.Owner + " : " + player.getName(), Tools.consoleMode.max,programCode );
-                if ( ( Config.PlayerAlarm == Config.UpperMode.Block ) && ( !Database.Owner.equals( player.getName() ) ) ) {
-                    Tools.Prt( player, Messages.GetString( "OtherRegist" ), Tools.consoleMode.full, programCode );
-                    player.addPotionEffect( new PotionEffect( PotionEffectType.SLOWNESS, 30, 2 ) );
-                    event.setCancelled( true );
-                    return;
-                }
-            }
-            AreaManager.AreaCheck( player, block );
+        if (!isAreaValid(player, block)) {
+            cancelEventWithWarning(event, player, Messages.GetString("OverRegist"));
         }
+    }
 
-        //  機能看板処理
-        if ( blockName.contains( "SIGN" ) ) {
-            Tools.Prt( "this is Sign Block : " + blockName, Tools.consoleMode.max, programCode );
-            Sign sign = ( Sign ) block.getState();
-            if (
-                ( !Config.SignPlace ) &&
-                ( !player.hasPermission( "Premises.admin" ) ) &&
-                ( sign.getLine( 3 ).equals( ChatColor.DARK_PURPLE + "Premises" + ChatColor.RED  + " " ) )
-            ) {
-                event.setCancelled( true );
-                return;
-            }
+    private boolean isEventInactive() {
+        return "none".equals(Config.EventName);
+    }
+
+    private boolean isPlayerExempt(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+        return !player.getWorld().getName().equals(Config.Event_World)
+                || (Config.CreativeCount && player.getGameMode() == GameMode.CREATIVE);
+    }
+
+    private static final String REQUIRED_SIGN_TEXT = ChatColor.DARK_PURPLE + "Premises" + ChatColor.RED + " ";
+
+    private String getSignLine(Sign sign, int index) {
+        String[] lines = sign.getLines();
+        if (index < 0 || index >= 4) {
+            throw new IllegalArgumentException("Index out of bounds for Sign lines: " + index);
         }
+        return lines[index] != null ? lines[index] : "";
+    }
 
-        //  ブロック処理
-        if ( Config.stones.contains( blockName ) ) {
-            Tools.Prt(
-                player.getDisplayName() + " get " + blockName + " Point: " + config.getPoint( blockName ),
-                Tools.consoleMode.max, programCode
-            );
-
-            if ( config.getPoint( blockName )<0 ) {
-                Tools.Prt(
-                    ChatColor.RED + "Warning " +
-                    ChatColor.AQUA + player.getDisplayName() +
-                    ChatColor.RED + " broke a " +
-                    ChatColor.YELLOW + blockName,
-                    Tools.consoleMode.normal, programCode
-                );
-
-                switch( Config.difficulty ) {
-                    case Easy:
-                        Tools.Prt( player, Messages.GetString( "NoBreak" ), Tools.consoleMode.full, programCode );
-                        player.addPotionEffect( new PotionEffect( PotionEffectType.SLOWNESS, 30, 2 ) );
-                        event.setCancelled( true );
-                        return;
-                    case Normal:
-                        Tools.Prt( player, Messages.GetString( "DontBreak" ), Tools.consoleMode.full, programCode );
-                        if ( Config.titlePrint ) {
-                            player.sendTitle(
-                                Messages.GetString( "NoBreakTitleM" ),
-                                Messages.GetString( "NoBreakTitleS" ),
-                                0, 100, 0 );
-                        }
-                        break;
-                    case Hard:
-                        break;
-                }
-            }
-
-            if ( config.getPoint( blockName ) != 0 ) {
-                if ( Config.PointTip ) {
-                    ScoreStand( block.getLocation(), config.getPoint( blockName ) );
-                }
-                pc.get( player.getUniqueId() ).addStoneCount( blockName, ( config.getPoint( blockName ) < 0 ) );
-                pc.get( player.getUniqueId() ).addScore( player, config.getPoint( blockName ) );
-                player.setPlayerListName(
-                    pc.get( player.getUniqueId() ).getListName() + " " +
-                    ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
-                );
-            }
-
-        } else {
-            Tools.Prt(
-                ChatColor.AQUA + player.getDisplayName() +
-                ChatColor.LIGHT_PURPLE + " [" +
-                ChatColor.GOLD + block.getType().toString() +
-                ChatColor.LIGHT_PURPLE + "] is not a target",
-                Tools.consoleMode.full, programCode );
-        }
-
-        if ( item.getType() == Material.AIR ) return;
-
-        if ( item.getItemMeta().hasDisplayName() ) {
-            if ( item.getItemMeta().getDisplayName().equalsIgnoreCase( Config.EventToolName ) ) {
-                if ( ( item.getType().getMaxDurability() * Config.Repair ) <= item.getDurability() ) {
-                    Tools.Prt( player, Messages.GetString( "ToolWarning" ), Tools.consoleMode.max, programCode );
-                    if ( Config.titlePrint ) {
-                        player.sendTitle(
-                            Messages.GetString( "ToolWarningTitleM" ),
-                            Messages.GetString( "ToolWarningTitleS" ),
-                            0, 50, 0
-                        );
-                    }
-                }
+    private void handleSignBlock(Player player, Block block) {
+        Sign sign = (Sign) block.getState();
+        if (!Config.SignPlace && !player.hasPermission("Premises.admin")) {
+            String signContentOnLine3 = getSignLine(sign, 3); // Using the helper method
+            if (REQUIRED_SIGN_TEXT.equals(signContentOnLine3)) {
+                Tools.Prt(player, Messages.GetString("SignBreakNotAllowed"), Tools.consoleMode.full, Config.programCode);
             }
         }
     }
+    private boolean isRestrictedTool(Player player) {
+        ItemStack item = player.getInventory().getItemInMainHand();
+        return Config.breakTool && item.getType() != Material.TORCH
+                && (!item.getItemMeta().hasDisplayName() || !item.getItemMeta().getDisplayName().equalsIgnoreCase(Config.EventToolName));
+    }
+
+    private void cancelEventWithMessage(BlockBreakEvent event, Player player, String message) {
+        Tools.Prt(player, message, Tools.consoleMode.full, Config.programCode);
+        event.setCancelled(true);
+    }
+
+    private boolean isAreaValid(Player player, Block block) {
+        if (!Config.Field || Config.PlayerAlarm == Config.UpperMode.None) {
+            return true;
+        }
+
+        if (!AreaManager.GetSQL(AreaManager.PackAreaCode(block.getLocation()))) {
+            return canRegisterMoreAreas(player);
+        }
+
+        return isAreaOwner(player);
+    }
+
+    private void cancelEventWithWarning(BlockBreakEvent event, Player player, String message) {
+        Tools.Prt(player, message, Tools.consoleMode.full, Config.programCode);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 30, 2));
+        event.setCancelled(true);
+    }
+
+    private boolean canRegisterMoreAreas(Player player) {
+        return Config.MAX_REGIST <= 0 || AreaManager.GetRegistCount(player.getName()) < Config.MAX_REGIST;
+    }
+
+    private boolean isAreaOwner(Player player) {
+        return Config.PlayerAlarm != Config.UpperMode.Block || Database.Owner.equals(player.getName());
+    }
+
 }
