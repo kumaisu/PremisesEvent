@@ -5,7 +5,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import static io.github.kumaisu.premisesevent.config.Config.programCode;
 
 /**
  *
@@ -28,7 +27,7 @@ public class Discord {
             post.setEntity( entity );
 
             try (CloseableHttpResponse response = client.execute(post)) {
-                Tools.Prt( "メッセージが送信されました。ステータスコード: " + response.getStatusLine().getStatusCode(), Tools.consoleMode.max, programCode );
+                System.out.println( "メッセージが送信されました。ステータスコード: " + response.getStatusLine().getStatusCode() );
             }
         } catch (Exception e) {
             e.printStackTrace();
