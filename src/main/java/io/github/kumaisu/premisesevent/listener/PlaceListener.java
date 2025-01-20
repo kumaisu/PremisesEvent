@@ -20,8 +20,8 @@ import io.github.kumaisu.premisesevent.config.Config;
 import io.github.kumaisu.premisesevent.config.Messages;
 import io.github.kumaisu.premisesevent.database.AreaManager;
 import io.github.kumaisu.premisesevent.utility.BukkitTool;
-import static io.github.kumaisu.premisesevent.PremisesEvent.config;
-import static io.github.kumaisu.premisesevent.PremisesEvent.pc;
+import static io.github.kumaisu.premisesevent.PremisesEvent.configManager;
+import static io.github.kumaisu.premisesevent.PremisesEvent.playerControlMap;
 import static io.github.kumaisu.premisesevent.config.Config.programCode;
 import io.github.kumaisu.premisesevent.database.Database;
 
@@ -55,12 +55,12 @@ public class PlaceListener implements Listener {
 
         Messages.RepPlayer = player.getName();
         Block block = event.getBlock();
-        String blockName = BukkitTool.getStoneName( block );
+        String blockName = block.getType().toString();
 
         if ( Config.CreativeCount && player.getGameMode() == GameMode.CREATIVE ) return;
         if ( Config.Field && !AreaManager.CheckArea( block.getLocation() ) ) return;
 
-        if ( pc.get( player.getUniqueId() ).getEntry() != 1 ) {
+        if ( playerControlMap.get( player.getUniqueId() ).getEntry() != 1 ) {
             if ( !Config.placeFree ) event.setCancelled( true );
             return;
         }
@@ -87,14 +87,14 @@ public class PlaceListener implements Listener {
             return;
         }
 
-        if ( ( Config.zeroPlace ) || ( config.getPoint( blockName ) == 0 ) || ( pc.get( player.getUniqueId() ).getStoneCount( blockName ) > 0 ) ) {
-            Tools.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + config.getPoint( blockName ), Tools.consoleMode.max, programCode );
-            if ( config.getPoint( blockName ) != 0 ) {
-                pc.get( player.getUniqueId() ).addScore( player, - config.getPoint( blockName ) );
-                pc.get( player.getUniqueId() ).subStoneCount( blockName, ( config.getPoint( blockName ) < 0 ) );
+        if ( ( Config.zeroPlace ) || ( configManager.getPoint( blockName ) == 0 ) || ( playerControlMap.get( player.getUniqueId() ).getStoneCount( blockName ) > 0 ) ) {
+            Tools.Prt( player.getDisplayName() + " Loss " + blockName + " Point: " + configManager.getPoint( blockName ), Tools.consoleMode.max, programCode );
+            if ( configManager.getPoint( blockName ) != 0 ) {
+                playerControlMap.get( player.getUniqueId() ).addScore( player, - configManager.getPoint( blockName ) );
+                playerControlMap.get( player.getUniqueId() ).subStoneCount( blockName, ( configManager.getPoint( blockName ) < 0 ) );
                 player.setPlayerListName(
-                    pc.get( player.getUniqueId() ).getListName() + " " +
-                    ChatColor.YELLOW + String.format( "%8d", pc.get( player.getUniqueId() ).getScore() )
+                    playerControlMap.get( player.getUniqueId() ).getListName() + " " +
+                    ChatColor.YELLOW + String.format( "%8d", playerControlMap.get( player.getUniqueId() ).getScore() )
                 );
             }
         } else {

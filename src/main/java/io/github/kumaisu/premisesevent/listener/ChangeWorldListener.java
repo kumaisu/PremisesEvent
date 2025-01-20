@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
-import static io.github.kumaisu.premisesevent.PremisesEvent.pc;
+import static io.github.kumaisu.premisesevent.PremisesEvent.playerControlMap;
 
 /**
  *
@@ -33,8 +33,8 @@ public class ChangeWorldListener implements Listener {
     @EventHandler( priority = EventPriority.HIGHEST )
     public void onChangeWorld( PlayerChangedWorldEvent event ) {
         Player player = event.getPlayer();
-        if ( pc.containsKey( player.getUniqueId() ) ) {
-            pc.get( player.getUniqueId() ).setListName( player.getPlayerListName() );
+        if ( playerControlMap.containsKey( player.getUniqueId() ) ) {
+            playerControlMap.get( player.getUniqueId() ).setListName( player.getPlayerListName() );
         }
     }
 }

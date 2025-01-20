@@ -32,31 +32,47 @@ import static io.github.kumaisu.premisesevent.config.Config.programCode;
  */
 public class PremisesEvent extends JavaPlugin implements Listener {
 
-    public static ConfigManager config;
-    public static MessagesManager messe;
-    public static Map<UUID, PlayerControl> pc = new HashMap<>();
+    private static final String PREMISES_COMMAND = "premises";
+    private static final String AREA_COMMAND = "area";
+
+    public static ConfigManager configManager;
+    public static MessagesManager messagesManager;
+    public static Map<UUID, PlayerControl> playerControlMap = new HashMap<>();
 
     /**
      * 起動シーケンス
      */
     @Override
     public void onEnable() {
-        getServer().getPluginManager().registerEvents( this, this );
+        initializeConfig();
+        initializeListeners();
+        initializeCommands();
+    }
+
+    private void initializeConfig() {
         Config.DataFolder = this.getDataFolder().toString();
-        config = new ConfigManager( this );
-        messe = new MessagesManager( this );
-        if ( Config.Field ) {
-            Tools.Prt( "Open SQLite Database : " + Config.databaseName, Tools.consoleMode.max, programCode );
+        this.configManager = new ConfigManager(this); // Ensure ConfigManager is correctly defined and has a matching constructor
+        this.messagesManager = new MessagesManager(this);
+
+        if (Config.Field) {
+            Tools.Prt("Open SQLite Database : " + Config.databaseName, Tools.consoleMode.max, Config.programCode);
             SQLControl.connect();
             SQLControl.TableUpdate();
         }
-        new PlayerListener( this );
-        new ClickListener( this );
-        new PlaceListener( this );
-        new BreakListener( this );
-        new ChangeWorldListener( this );
-        getCommand( "premises" ).setExecutor( new PECommand( this ) );
-        getCommand( "area" ).setExecutor( new AreaCommand( this ) );
+    }
+
+    private void initializeListeners() {
+        getServer().getPluginManager().registerEvents(this, this);
+        new PlayerListener(this);
+        new ClickListener(this);
+        new PlaceListener(this);
+        new BreakListener(this);
+        new ChangeWorldListener(this);
+    }
+
+    private void initializeCommands() {
+        getCommand( PREMISES_COMMAND ).setExecutor(new PECommand(this));
+        getCommand( AREA_COMMAND ).setExecutor(new AreaCommand(this));
     }
 
     /**
@@ -66,10 +82,10 @@ public class PremisesEvent extends JavaPlugin implements Listener {
     @Override
     public void onDisable(){
         Tools.Prt( "Disable processing...", programCode );
-        pc.entrySet().forEach( ( entry ) -> {
-            if ( pc.get( entry.getKey() ).getEntry() != 0 ) {
-                pc.get( entry.getKey() ).save();
-                Tools.Prt( ChatColor.AQUA + pc.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score", programCode );
+        playerControlMap.entrySet().forEach( ( entry ) -> {
+            if ( playerControlMap.get( entry.getKey() ).getEntry() != 0 ) {
+                playerControlMap.get( entry.getKey() ).save();
+                Tools.Prt( ChatColor.AQUA + playerControlMap.get( entry.getKey() ).getDisplayName() + " logged out, Saved the Score", programCode );
             }
         } );
         // SQLControl.disconnect();

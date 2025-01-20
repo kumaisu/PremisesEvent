@@ -12,7 +12,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import io.github.kumaisu.premisesevent.Lib.Tools;
 import io.github.kumaisu.premisesevent.config.Messages;
-import static io.github.kumaisu.premisesevent.PremisesEvent.pc;
+import static io.github.kumaisu.premisesevent.PremisesEvent.playerControlMap;
 import static io.github.kumaisu.premisesevent.config.Config.programCode;
 
 /**
@@ -28,10 +28,10 @@ public class PlayerStatus {
      * @return
      */
     public static boolean Print( Player player, String Other ) {
-        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
+        if ( playerControlMap.get( player.getUniqueId() ).getEntry() == 1 ) {
             if ( "".equals( Other ) ) {
-                pc.get( player.getUniqueId() ).save();
-                pc.get( player.getUniqueId() ).getStatus( player );
+                playerControlMap.get( player.getUniqueId() ).save();
+                playerControlMap.get( player.getUniqueId() ).getStatus( player );
             } else {
                 UUID uuid;
 
@@ -40,14 +40,14 @@ public class PlayerStatus {
                 OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( Other );
                 if ( op.hasPlayedBefore() ) {
                     uuid = op.getUniqueId();
-                    pc.put( uuid, new PlayerControl( op ) );
-                    pc.get( uuid ).load();
+                    playerControlMap.put( uuid, new PlayerControl( op ) );
+                    playerControlMap.get( uuid ).load();
                 } else {
                     Tools.Prt( player, ChatColor.RED + "This Player is not joined to server.", programCode );
                     return false;
                 }
-                pc.get( uuid ).getStatus( player );
-                if ( player.getUniqueId() != uuid ) pc.remove( uuid );
+                playerControlMap.get( uuid ).getStatus( player );
+                if ( player.getUniqueId() != uuid ) playerControlMap.remove( uuid );
             }
             return true;
         } else {

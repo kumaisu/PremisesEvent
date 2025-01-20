@@ -18,32 +18,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
  * @author sugichan
  */
 public class BukkitTool {
-    /**
-     * 特殊な名前のブロックに対する対処
-     * GRANITE：花崗岩
-     * DIORITE：閃緑岩
-     * ANDESITE：安山岩
-     *
-     * @param b
-     * @return
-     */
-    public static String getStoneName( Block b ) {
-        String retStr = b.getType().toString();
-        if ( b.getType().equals( Material.STONE ) ) {
-            switch ( b.getData() ) {
-                case 1:
-                    retStr = "GRANITE";
-                    break;
-                case 3:
-                    retStr = "DIORITE";
-                    break;
-                case 5:
-                    retStr = "ANDESITE";
-                    break;
-            }
-        }
-        return retStr;
-    }
 
     /**
      *  指定された場所に花火を打ち上げる関数

@@ -20,7 +20,7 @@ import io.github.kumaisu.premisesevent.utility.BukkitTool;
 import io.github.kumaisu.premisesevent.utility.DynmapControl;
 import io.github.kumaisu.premisesevent.config.Config;
 import io.github.kumaisu.premisesevent.config.Messages;
-import static io.github.kumaisu.premisesevent.PremisesEvent.config;
+import static io.github.kumaisu.premisesevent.PremisesEvent.configManager;
 import static io.github.kumaisu.premisesevent.config.Config.programCode;
 
 /**
@@ -341,16 +341,17 @@ public class AreaManager {
     }
 
     public static boolean WarningCheck( Player player, Block checkBlock ) {
-        if ( ( config.getPoint( BukkitTool.getStoneName( checkBlock ) ) > 0 ) && ( !Config.ignoreStone.contains( BukkitTool.getStoneName( checkBlock ) ) ) ) {
+        if ( ( configManager.getPoint( checkBlock.getType().toString() ) > 0 ) && ( !Config.ignoreStone.contains( checkBlock.getType().toString() ) ) ) {
+
             Messages.RepMessage = Config.JoinMessage;
             Messages.RepPlayer = player.getName();
             Tools.Prt( player, Messages.GetString( "WarningMsg" ), Tools.consoleMode.normal, programCode );
             Tools.Prt(
                 ChatColor.RED + player.getDisplayName() +
                 " Upper Block : " +
-                BukkitTool.getStoneName( checkBlock ) +
-                " (" + checkBlock.getLocation().toString() + ")",
-                Tools.consoleMode.full, programCode
+                        checkBlock.getType().toString() + " (" +
+                        checkBlock.getLocation().toString() + ")",
+                    Tools.consoleMode.full, programCode
             );
             if ( Config.titlePrint ) {
                 player.sendTitle(
@@ -409,8 +410,8 @@ public class AreaManager {
             for ( int y = 1; y <= 256; ++y ) {
                 for ( int z = lz; z <= hz; ++z ) {
                     Location loc = new Location( Bukkit.getWorld( Config.Event_World ), x, y, z, 0, 0 );
-                    if ( config.getPoint( loc.getBlock().getType().toString() ) > 0 ) {
-                        NGBlock += config.getPoint( loc.getBlock().getType().toString() );
+                    if ( configManager.getPoint( loc.getBlock().getType().toString() ) > 0 ) {
+                        NGBlock += configManager.getPoint( loc.getBlock().getType().toString() );
                         Tools.Prt( loc.getBlock().getType().toString() + "[" + x + "," + y + "," + z +"]", Tools.consoleMode.max, programCode );
                     }
                 }

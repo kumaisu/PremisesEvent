@@ -20,7 +20,7 @@ import io.github.kumaisu.premisesevent.Player.PlayerControl;
 import io.github.kumaisu.premisesevent.config.Config;
 import io.github.kumaisu.premisesevent.config.Messages;
 import io.github.kumaisu.premisesevent.database.AreaManager;
-import static io.github.kumaisu.premisesevent.PremisesEvent.pc;
+import static io.github.kumaisu.premisesevent.PremisesEvent.playerControlMap;
 import static io.github.kumaisu.premisesevent.config.Config.programCode;
 
 /**
@@ -51,30 +51,30 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         Messages.RepPlayer = player.getName();
 
-        pc.put( player.getUniqueId(), new PlayerControl( player ) );
-        pc.get( player.getUniqueId() ).load();
+        playerControlMap.put( player.getUniqueId(), new PlayerControl( player ) );
+        playerControlMap.get( player.getUniqueId() ).load();
 
-        if ( pc.get( player.getUniqueId() ).getEntry() != 1 ) {
+        if ( playerControlMap.get( player.getUniqueId() ).getEntry() != 1 ) {
             Tools.Prt( ChatColor.RED + player.getDisplayName() + " has not joined the this Event", programCode );
             return;
         }
 
-        pc.get( player.getUniqueId() ).ScoreBoardEntry( player );
+        playerControlMap.get( player.getUniqueId() ).ScoreBoardEntry( player );
         Tools.Prt( ChatColor.AQUA + player.getDisplayName() + " is participating in the this Event", programCode );
 
         ItemControl ic = new ItemControl();
-        if ( pc.get( player.getUniqueId() ).getPresentFlag() ) {
+        if ( playerControlMap.get( player.getUniqueId() ).getPresentFlag() ) {
             Tools.Prt( player, Messages.GetString( "DistArmor" ), Tools.consoleMode.normal, programCode );
             ic.ItemPresent( player );
         }
-        if ( pc.get( player.getUniqueId() ).getUpdateFlag() ) {
+        if ( playerControlMap.get( player.getUniqueId() ).getUpdateFlag() ) {
             Tools.Prt( player, Messages.GetString( "DistTool" ), Tools.consoleMode.normal, programCode );
             Config.tools.keySet().forEach( ( key ) -> {
                 Tools.Prt( ChatColor.GREEN + "Config Tool Name : " + key, programCode );
                 ic.ToolPresent( player, Material.getMaterial( key ), Config.tools.get( key ), Config.EventToolName );
             } );
         }
-        pc.get( player.getUniqueId() ).setListName( player.getPlayerListName() );
+        playerControlMap.get( player.getUniqueId() ).setListName( player.getPlayerListName() );
     }
 
     /**
@@ -87,14 +87,14 @@ public class PlayerListener implements Listener {
         if ( Config.EventName.equals( "none" ) ) return;
 
         Player player = event.getPlayer();
-        if ( pc.get( player.getUniqueId() ).getEntry() != 0 ) {
+        if ( playerControlMap.get( player.getUniqueId() ).getEntry() != 0 ) {
             Tools.Prt( ChatColor.AQUA + player.getDisplayName() + ChatColor.WHITE + " logged out, Saved the Score", programCode );
 
-            pc.get( player.getUniqueId() ).save();
+            playerControlMap.get( player.getUniqueId() ).save();
         } else {
             Tools.Prt( ChatColor.AQUA + player.getDisplayName() + ChatColor.LIGHT_PURPLE + " logged out, not Save", programCode );
         }
-        pc.remove( player.getUniqueId() );
+        playerControlMap.remove( player.getUniqueId() );
     }
     
     /**
@@ -109,12 +109,12 @@ public class PlayerListener implements Listener {
         if ( !player.getLocation().getWorld().getName().equals( Config.Event_World ) ) return;
 
         //  イベント参加判定
-        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) {
+        if ( playerControlMap.get( player.getUniqueId() ).getEntry() == 1 ) {
             if ( Config.Field ) {
                 if ( !AreaManager.CheckArea( player.getLocation() ) ) return;
                 Messages.AreaCode = AreaManager.PackAreaCode( player.getLocation() );
             }
-            pc.get( player.getUniqueId() ).PrintArea( player, Messages.AreaCode );
+            playerControlMap.get( player.getUniqueId() ).PrintArea( player, Messages.AreaCode );
         }
     }
 }
