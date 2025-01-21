@@ -406,7 +406,7 @@ public class AreaManager {
 
         Tools.Prt( "Area " + lx + "," + lz + " - " + hx + "," + hz, Tools.consoleMode.max, programCode );
         for ( int x = lx; x <= hx; ++x ) {
-            for ( int y = 1; y <= 256; ++y ) {
+            for ( int y = Config.Event_Y1; y <= Config.Event_Y2; ++y ) {
                 for ( int z = lz; z <= hz; ++z ) {
                     Location loc = new Location( Bukkit.getWorld( Config.Event_World ), x, y, z, 0, 0 );
                     if ( config.getPoint( loc.getBlock().getType().toString() ) > 0 ) {
@@ -429,9 +429,10 @@ public class AreaManager {
             int AC = 0;
             if ( Output ) Tools.Prt( player, "あなたの掘削未完リスト", programCode );
             while( rs.next() ) {
-                if ( AreaCount( rs.getString( "AreaCode" ) ) > 0 ) {
+                int RemainingPoints = AreaCount( rs.getString( "AreaCode" ) );
+                if ( RemainingPoints > 0 ) {
                     AC++;
-                    if ( Output ) Tools.Prt( player, rs.getString( "AreaCode" ), programCode );
+                    if ( Output ) Tools.Prt( player, rs.getString( "AreaCode" ) + " [" + RemainingPoints + " Point]", programCode );
                 }
             }
             con.close();

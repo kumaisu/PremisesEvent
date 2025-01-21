@@ -10,8 +10,8 @@ Debug: normal
 EventName: none
 Field: false
 World: world
-AreaPos1: 200,50,100
-AreaPos2: 100,2,200
+AreaPos1: 200,2,100
+AreaPos2: 100,50,200
 
 #   最大エリア登録数
 #   Fieldがfalseか、設定ゼロで無制限
