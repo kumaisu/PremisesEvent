@@ -100,7 +100,7 @@ public class BreakListener implements Listener {
 
         Block block = event.getBlock();
         Tools.Prt( "1.Get Stone Name : " + block.getType().toString(), Tools.consoleMode.max, programCode );
-        String blockName = BukkitTool.getStoneName( block );
+        String blockName = block.getType().toString();
         Tools.Prt( "2.Get Stone Name : " + blockName, Tools.consoleMode.max, programCode );
         ItemStack item = player.getInventory().getItemInMainHand();
 

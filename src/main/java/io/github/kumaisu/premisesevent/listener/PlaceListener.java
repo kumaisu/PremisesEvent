@@ -55,7 +55,7 @@ public class PlaceListener implements Listener {
 
         Messages.RepPlayer = player.getName();
         Block block = event.getBlock();
-        String blockName = BukkitTool.getStoneName( block );
+        String blockName = block.getType().toString();
 
         if ( Config.CreativeCount && player.getGameMode() == GameMode.CREATIVE ) return;
         if ( Config.Field && !AreaManager.CheckArea( block.getLocation() ) ) return;

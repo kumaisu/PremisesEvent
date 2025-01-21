@@ -341,14 +341,14 @@ public class AreaManager {
     }
 
     public static boolean WarningCheck( Player player, Block checkBlock ) {
-        if ( ( config.getPoint( BukkitTool.getStoneName( checkBlock ) ) > 0 ) && ( !Config.ignoreStone.contains( BukkitTool.getStoneName( checkBlock ) ) ) ) {
+        String blockName = checkBlock.getType().toString();
+        if ( ( config.getPoint( blockName ) > 0 ) && ( !Config.ignoreStone.contains( blockName ) ) ) {
             Messages.RepMessage = Config.JoinMessage;
             Messages.RepPlayer = player.getName();
             Tools.Prt( player, Messages.GetString( "WarningMsg" ), Tools.consoleMode.normal, programCode );
             Tools.Prt(
                 ChatColor.RED + player.getDisplayName() +
-                " Upper Block : " +
-                BukkitTool.getStoneName( checkBlock ) +
+                " Upper Block : " + blockName +
                 " (" + checkBlock.getLocation().toString() + ")",
                 Tools.consoleMode.full, programCode
             );

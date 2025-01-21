@@ -27,6 +27,7 @@ public class BukkitTool {
      * @param b
      * @return
      */
+    /*
     public static String getStoneName( Block b ) {
         String retStr = b.getType().toString();
         if ( b.getType().equals( Material.STONE ) ) {
@@ -44,7 +45,7 @@ public class BukkitTool {
         }
         return retStr;
     }
-
+    */
     /**
      *  指定された場所に花火を打ち上げる関数
      *
