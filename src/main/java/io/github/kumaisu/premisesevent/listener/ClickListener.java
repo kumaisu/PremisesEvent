@@ -21,7 +21,7 @@ import io.github.kumaisu.premisesevent.Player.PlayerStatus;
 import io.github.kumaisu.premisesevent.Player.TopList;
 import io.github.kumaisu.premisesevent.config.Config;
 import io.github.kumaisu.premisesevent.database.AreaManager;
-import static io.github.kumaisu.premisesevent.PremisesEvent.playerControlMap;
+import static io.github.kumaisu.premisesevent.PremisesEvent.pc;
 import static io.github.kumaisu.premisesevent.config.Config.programCode;
 
 /**
@@ -115,19 +115,19 @@ public class ClickListener implements Listener {
             if ( sign.getLine( 3 ).equals( ChatColor.DARK_PURPLE + "Premises" + ChatColor.RED  + " " ) ) {
                 switch ( sign.getLine( 0 ) ) {
                     case "[P-Get]":
-                        playerControlMap.get( player.getUniqueId() ).getEventItem( player, sign.getLine( 1 ) );
+                        pc.get( player.getUniqueId() ).getEventItem( player, sign.getLine( 1 ) );
                         break;
                     case "[P-Join]":
-                        playerControlMap.get( player.getUniqueId() ).JoinPlayer( player );
+                        pc.get( player.getUniqueId() ).JoinPlayer( player );
                         break;
                     case "[P-Status]":
                         PlayerStatus.Print( player, "" );
                         break;
                     case "[P-Update]":
-                        if ( playerControlMap.get( player.getUniqueId() ).getEntry() == 1 ) playerControlMap.get( player.getUniqueId() ).ToolUpdate( player, false );
+                        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).ToolUpdate( player, false );
                         break;
                     case "[P-TOP]":
-                        if ( playerControlMap.get( player.getUniqueId() ).getEntry() == 1 ) playerControlMap.get( player.getUniqueId() ).save();
+                        if ( pc.get( player.getUniqueId() ).getEntry() == 1 ) pc.get( player.getUniqueId() ).save();
                         TopList TL = new TopList( DataFolder );
                         TL.Top( player, Tools.consoleMode.max );
                         break;

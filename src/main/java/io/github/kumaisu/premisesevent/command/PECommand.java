@@ -18,12 +18,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.OfflinePlayer;
-import io.github.kumaisu.premisesevent.PremisesEvent;
 import io.github.kumaisu.premisesevent.Lib.Tools;
 import io.github.kumaisu.premisesevent.Item.ItemControl;
 import io.github.kumaisu.premisesevent.Player.PlayerControl;
 import io.github.kumaisu.premisesevent.Player.PlayerStatus;
 import io.github.kumaisu.premisesevent.Player.TopList;
+import io.github.kumaisu.premisesevent.PremisesEvent;
 import io.github.kumaisu.premisesevent.config.Config;
 import io.github.kumaisu.premisesevent.config.Messages;
 import io.github.kumaisu.premisesevent.config.MessagesManager;
@@ -31,8 +31,7 @@ import io.github.kumaisu.premisesevent.database.Database;
 import io.github.kumaisu.premisesevent.database.SQLControl;
 import io.github.kumaisu.premisesevent.database.AreaManager;
 import io.github.kumaisu.premisesevent.utility.BukkitTool;
-
-import static io.github.kumaisu.premisesevent.PremisesEvent.playerControlMap;
+import static io.github.kumaisu.premisesevent.PremisesEvent.pc;
 import static io.github.kumaisu.premisesevent.config.Config.programCode;
 
 /**
@@ -69,7 +68,7 @@ public class PECommand implements CommandExecutor {
         switch ( commandString ) {
             case "pstatus":
                 if ( hasPermission ) {
-                    instance.configManager.Status( player );
+                    instance.config.Status( player );
                     return true;
                 } else return false;
             case "message":
@@ -77,7 +76,7 @@ public class PECommand implements CommandExecutor {
                 return true;
             case "reload":
                 if ( hasPermission ) {
-                    instance.configManager.load();
+                    instance.config.load();
                     if ( Config.Field ) {
                         if ( Database.dataSource != null ) {
                             try {
@@ -94,7 +93,7 @@ public class PECommand implements CommandExecutor {
                 } else return false;
             case "messagereload":
                 if ( hasPermission ) {
-                    instance.messagesManager.load();
+                    instance.messe.load();
                     return true;
                 } else return false;
             case "csv":
@@ -128,21 +127,21 @@ public class PECommand implements CommandExecutor {
                 } else return false;
             case "stones":
                 if ( hasPermission ) {
-                    instance.configManager.getStoneList( player );
+                    instance.config.getStoneList( player );
                     return true;
                 }
             case "toplist":
-                if ( player != null && playerControlMap.get( player.getUniqueId() ).getEntry() != 0 ) playerControlMap.get( player.getUniqueId() ).save();
+                if ( player != null && pc.get( player.getUniqueId() ).getEntry() != 0 ) pc.get( player.getUniqueId() ).save();
                 Bukkit.getServer().getOnlinePlayers().stream().filter( ( onPlayer ) -> (
-                    playerControlMap.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ).forEachOrdered( ( onPlayer ) -> {
+                    pc.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ).forEachOrdered( ( onPlayer ) -> {
                         Tools.Prt(
                             onPlayer.getDisplayName() +
                             " is Online Event[" +
-                            ( ( playerControlMap.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ? "true":"false" ) +
+                            ( ( pc.get( onPlayer.getUniqueId() ).getEntry() == 1 ) ? "true":"false" ) +
                             "]",
                             programCode
                         );
-                        playerControlMap.get( onPlayer.getUniqueId() ).save();
+                        pc.get( onPlayer.getUniqueId() ).save();
                     }
                 );
                 TopList TL = new TopList( instance.getDataFolder().toString() );
@@ -187,10 +186,10 @@ public class PECommand implements CommandExecutor {
             Messages.RepPlayer = player.getName();
             switch ( commandString ) {
                 case "join":
-                    return playerControlMap.get( player.getUniqueId() ).JoinPlayer( player );
+                    return pc.get( player.getUniqueId() ).JoinPlayer( player );
                 case "get":
                     if ( hasPermission || player.hasPermission( "Premises.get" ) ) {
-                        return playerControlMap.get(player.getUniqueId()).getEventItem(player, itemName);
+                        return pc.get(player.getUniqueId()).getEventItem(player, itemName);
                     } else {
                         Tools.Prt( player, Messages.GetString("NoAuthority" ), programCode );
                         return false;
@@ -198,8 +197,8 @@ public class PECommand implements CommandExecutor {
                 case "update":
                     if ( hasPermission || player.hasPermission( "Premises.update" ) ) {
                         boolean force = (itemName.equals("force") && hasPermission);
-                        if ( playerControlMap.get(player.getUniqueId()).getEntry() == 1 )
-                            playerControlMap.get(player.getUniqueId()).ToolUpdate(player, force);
+                        if ( pc.get(player.getUniqueId()).getEntry() == 1 )
+                            pc.get(player.getUniqueId()).ToolUpdate(player, force);
                         return true;
                     } else {
                         Tools.Prt( player, Messages.GetString( "NoAuthority" ), programCode );
@@ -264,8 +263,8 @@ public class PECommand implements CommandExecutor {
                 OfflinePlayer op = Bukkit.getServer().getOfflinePlayer( name );
                 if ( op.hasPlayedBefore() ) {
                     scorePlayer = op.getPlayer();
-                    playerControlMap.put( scorePlayer.getUniqueId(), new PlayerControl( player ) );
-                    playerControlMap.get( scorePlayer.getUniqueId() ).load();
+                    pc.put( scorePlayer.getUniqueId(), new PlayerControl( player ) );
+                    pc.get( scorePlayer.getUniqueId() ).load();
                     createStat = true;
                 } else {
                     Tools.Prt( player, Messages.GetString( "NoPlayer" ), programCode );
@@ -274,16 +273,16 @@ public class PECommand implements CommandExecutor {
             }
         }
 
-        if ( playerControlMap.get( scorePlayer.getUniqueId() ).getEntry() == 1 ) {
-            playerControlMap.get( scorePlayer.getUniqueId() ).addScore( null, scoreNum );
-            playerControlMap.get( scorePlayer.getUniqueId() ).save();
+        if ( pc.get( scorePlayer.getUniqueId() ).getEntry() == 1 ) {
+            pc.get( scorePlayer.getUniqueId() ).addScore( null, scoreNum );
+            pc.get( scorePlayer.getUniqueId() ).save();
             retStat = true;
         } else {
             Tools.Prt( player, Messages.GetString( "NoJoin" ), programCode );
             retStat = false;
         }
 
-        if ( createStat ) playerControlMap.remove( scorePlayer.getUniqueId() );
+        if ( createStat ) pc.remove( scorePlayer.getUniqueId() );
         return retStat;
     }
 
