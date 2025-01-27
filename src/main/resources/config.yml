@@ -172,4 +172,9 @@ PointStone:
 #   イベントエリアの区切り等に利用するブロックを数種設定できる
 IgnoreStone:
     - SEA_LANTERN
-    
+
+#   自身のエリア外で取得した際にシステムへ通報するブロック
+#   鉱石のみを見えるからと掘る人への警戒用
+ReportStone:
+    - DIAMOND_ORE
+    - GOLD_ORE

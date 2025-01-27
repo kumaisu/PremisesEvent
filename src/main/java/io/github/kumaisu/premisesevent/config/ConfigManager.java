@@ -54,6 +54,7 @@ public class ConfigManager {
         config = plugin.getConfig();
 
         Config.ignoreStone = ( List< String > ) config.getList( "IgnoreStone" );
+        Config.reportStone = ( List< String > ) config.getList( "ReportStone" );
         
         Config.stones = new ArrayList<>();
         List< String > getstr = ( List< String > ) config.getList( "PointStone" );

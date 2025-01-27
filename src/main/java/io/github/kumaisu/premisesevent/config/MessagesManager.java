@@ -100,6 +100,9 @@ public class MessagesManager {
         Messages.PlayerMessage.put( "FraudEnum", UKData.getString( "FraudEnum", "error" ) );
         Messages.PlayerMessage.put( "EventList", UKData.getString( "EventList", "error" ) );
         Messages.PlayerMessage.put( "NoAuthority", UKData.getString( "NoAuthority", "error" ) );
+        Messages.PlayerMessage.put( "IncompleteArea", UKData.getString( "IncompleteArea", "error" ) );
+        Messages.PlayerMessage.put( "noIncomplete", UKData.getString( "noIncomplete", "error" ) );
+        Messages.PlayerMessage.put( "alreadyInUse", UKData.getString( "alreadyInUse", "error" ) );
     }
 
     /**

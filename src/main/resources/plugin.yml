@@ -1,5 +1,5 @@
 name: PremisesEvent
-version: ${project.version}
+version: '1.0.6'
 main: io.github.kumaisu.premisesevent.PremisesEvent
 api-version: '1.21'
 description: Premises Event Control plugin
@@ -29,3 +29,7 @@ permissions:
         default: op
     Premises.warning:
         description: rule warning message
+    Premises.reportBroadcast:
+        description: Report admins broadcast
+        default: op
+

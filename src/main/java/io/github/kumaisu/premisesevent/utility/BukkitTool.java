@@ -5,47 +5,31 @@
  */
 package io.github.kumaisu.premisesevent.utility;
 
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import io.github.kumaisu.premisesevent.Lib.Tools;
+import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.FireworkEffect;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
+
+import static io.github.kumaisu.premisesevent.config.Config.programCode;
 
 /**
  *
  * @author sugichan
  */
 public class BukkitTool {
+
     /**
-     * 特殊な名前のブロックに対する対処
-     * GRANITE：花崗岩
-     * DIORITE：閃緑岩
-     * ANDESITE：安山岩
-     *
-     * @param b
-     * @return
+     * パーミッションに該当するメンバーへのみメッセージを送信する
      */
-    /*
-    public static String getStoneName( Block b ) {
-        String retStr = b.getType().toString();
-        if ( b.getType().equals( Material.STONE ) ) {
-            switch ( b.getData() ) {
-                case 1:
-                    retStr = "GRANITE";
-                    break;
-                case 3:
-                    retStr = "DIORITE";
-                    break;
-                case 5:
-                    retStr = "ANDESITE";
-                    break;
-            }
+    public static void PermitBroadcast( String permit, String message ) {
+        Player[] onlinePlayers = Bukkit.getOnlinePlayers().toArray( new Player[0] );
+        for ( Player bp : onlinePlayers ) {
+            if ( bp.hasPermission( permit ) ) Tools.Prt( bp, message, programCode );
         }
-        return retStr;
     }
-    */
+
     /**
      *  指定された場所に花火を打ち上げる関数
      *
@@ -86,4 +70,32 @@ public class BukkitTool {
         meta.addEffect( effect.build() );
         firework.setFireworkMeta( meta );
     }
+    /**
+     * 特殊な名前のブロックに対する対処
+     * GRANITE：花崗岩
+     * DIORITE：閃緑岩
+     * ANDESITE：安山岩
+     *
+     * @param b
+     * @return
+     */
+    /*
+    public static String getStoneName( Block b ) {
+        String retStr = b.getType().toString();
+        if ( b.getType().equals( Material.STONE ) ) {
+            switch ( b.getData() ) {
+                case 1:
+                    retStr = "GRANITE";
+                    break;
+                case 3:
+                    retStr = "DIORITE";
+                    break;
+                case 5:
+                    retStr = "ANDESITE";
+                    break;
+            }
+        }
+        return retStr;
+    }
+    */
 }

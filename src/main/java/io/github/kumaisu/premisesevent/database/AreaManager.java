@@ -251,7 +251,7 @@ public class AreaManager {
             }
             Tools.Prt( player, "Manual Regist X:" + bx + " Y:" + by + " Z:" + bz + " Area Code [ " + Messages.AreaCode + " ]", Tools.consoleMode.full, programCode );
         } else {
-            Tools.Prt( player, "既に所有者が居ます", Tools.consoleMode.full, programCode );
+            Tools.Prt( player, Messages.GetString( "AlreadyInUse" ), Tools.consoleMode.full, programCode );
         }
     }
 
@@ -268,28 +268,32 @@ public class AreaManager {
             " Area Code [ " + Messages.AreaCode + " ]",
             Tools.consoleMode.max, programCode );
         if ( !GetSQL( Messages.AreaCode ) ) {
-            AddSQL( player.getName(), block.getLocation(), block.getType().name(), Messages.AreaCode );
-            DynmapControl.SetDynmapArea( player.getName(), Messages.AreaCode, block.getLocation() );
+            AddSQL(player.getName(), block.getLocation(), block.getType().name(), Messages.AreaCode);
+            DynmapControl.SetDynmapArea(player.getName(), Messages.AreaCode, block.getLocation());
 
             Messages.RepPlayer = player.getName();
-            String getMessage = Messages.GetString( "GetAreaM" );
+            String getMessage = Messages.GetString("GetAreaM");
             Messages.RepPlayer = Database.Owner;
-            String getSubMessage = Messages.GetString( "GetAreaS" );
-            Tools.Prt( player, Messages.GetString( "GetNewBlock" )
-                + " X:" + block.getLocation().getX()
-                + " Y:" + block.getLocation().getY()
-                + " Z:" + block.getLocation().getZ()
-                + " Name[" + Database.Block + "]",
-                Tools.consoleMode.normal, programCode
+            String getSubMessage = Messages.GetString("GetAreaS");
+            Tools.Prt(player, Messages.GetString("GetNewBlock")
+                            + " X:" + block.getLocation().getX()
+                            + " Y:" + block.getLocation().getY()
+                            + " Z:" + block.getLocation().getZ()
+                            + " Name[" + Database.Block + "]",
+                    Tools.consoleMode.normal, programCode
             );
-            if ( Config.AreaRegistBroadcast ) {
-                Bukkit.broadcastMessage( getMessage + getSubMessage );
+            if (Config.AreaRegistBroadcast) {
+                Bukkit.broadcastMessage(getMessage + getSubMessage);
                 // Discord.sendMessage( Config.WebHookURL, "Event", getMessage + getSubMessage );
             } else {
-                Tools.Prt( player, getMessage + getSubMessage, Tools.consoleMode.normal, programCode );
+                Tools.Prt(player, getMessage + getSubMessage, Tools.consoleMode.normal, programCode);
             }
-            if ( Config.titlePrint ) { player.sendTitle( getMessage + Messages.GetString( "GetAreaM2" ), getSubMessage, 0, 50, 0 ); }
-            Tools.Prt( "Area Code [ " + Messages.AreaCode + " ] : " + block.getLocation().toString(), Tools.consoleMode.max, programCode );
+            if (Config.titlePrint) {
+                player.sendTitle(getMessage + Messages.GetString("GetAreaM2"), getSubMessage, 0, 50, 0);
+            }
+            Tools.Prt("Area Code [ " + Messages.AreaCode + " ] : " + block.getLocation().toString(), Tools.consoleMode.max, programCode);
+            // エリア確保時に取得したブロックが違反指定かの判定
+            ReportCheck( player, block );
         } else {
             if ( !Database.Owner.contains( player.getName() ) || ( player.hasPermission( "Premises.admin" ) && player.isSneaking() ) ) {
                 Messages.RepPlayer = ( Database.Owner.equals( player.getName() ) ? ChatColor.AQUA : ChatColor.RED ) + Database.Owner;
@@ -346,12 +350,9 @@ public class AreaManager {
             Messages.RepMessage = Config.JoinMessage;
             Messages.RepPlayer = player.getName();
             Tools.Prt( player, Messages.GetString( "WarningMsg" ), Tools.consoleMode.normal, programCode );
-            Tools.Prt(
-                ChatColor.RED + player.getDisplayName() +
-                " Upper Block : " + blockName +
-                " (" + checkBlock.getLocation().toString() + ")",
-                Tools.consoleMode.full, programCode
-            );
+            String reportMessage = ChatColor.RED + player.getDisplayName() + " Upper Block : " + blockName + " (" + checkBlock.getLocation() + ")";
+            Tools.Prt( reportMessage, Tools.consoleMode.full, programCode );
+            BukkitTool.PermitBroadcast( "Premises.reportBroadcast", reportMessage );
             if ( Config.titlePrint ) {
                 player.sendTitle(
                     Messages.GetString( "WarnTitleM" ),
@@ -361,6 +362,14 @@ public class AreaManager {
             }
             return true;
         } else return false;
+    }
+
+    public static void ReportCheck( Player player, Block checkBlock ) {
+        if ( Config.reportStone.contains( checkBlock.getType().toString() ) ) {
+            String reportMessage = ChatColor.RED + player.getName() + " が違反ブロックの取得を検知しました [ " + checkBlock.getType() + " ]";
+            Tools.Prt( reportMessage, programCode );
+            BukkitTool.PermitBroadcast( "Premises.reportBroadcast", reportMessage );
+        }
     }
 
     public static void AllClear( Player player ) {
@@ -392,8 +401,9 @@ public class AreaManager {
         }
     }
 
-    public static int AreaCount( String AreaCode ) {
-        int NGBlock = 0;
+    public static int[] AreaCount( String AreaCode ) {
+        int areaPoint = 0;
+        int areaBlocks = 0;
         String[] param = AreaCode.split( "-" );
         int bx = Integer.valueOf( param[0] );
         int bz = Integer.valueOf( param[1] );
@@ -410,14 +420,15 @@ public class AreaManager {
                 for ( int z = lz; z <= hz; ++z ) {
                     Location loc = new Location( Bukkit.getWorld( Config.Event_World ), x, y, z, 0, 0 );
                     if ( config.getPoint( loc.getBlock().getType().toString() ) > 0 ) {
-                        NGBlock += config.getPoint( loc.getBlock().getType().toString() );
+                        areaPoint += config.getPoint( loc.getBlock().getType().toString() );
+                        areaBlocks += 1;
                         Tools.Prt( loc.getBlock().getType().toString() + "[" + x + "," + y + "," + z +"]", Tools.consoleMode.max, programCode );
                     }
                 }
             }
         }
-        Tools.Prt( "Area " + lx + "," + lz + " - " + hx + "," + hz + " : " + NGBlock, Tools.consoleMode.full, programCode );
-        return NGBlock;
+        Tools.Prt( "Area " + lx + "," + lz + " - " + hx + "," + hz + " : " + areaPoint + "[" + areaBlocks + "]", Tools.consoleMode.full, programCode );
+        return new int[]{ areaPoint, areaBlocks};
     }
 
     public static int GetRegist( String Owner, boolean Output, Player player ) {
@@ -427,16 +438,21 @@ public class AreaManager {
             Tools.Prt( "SQL : " + sql, Tools.consoleMode.max , programCode );
             ResultSet rs = stmt.executeQuery( sql );
             int AC = 0;
-            if ( Output ) Tools.Prt( player, "あなたの掘削未完リスト", programCode );
+            if ( Output ) Tools.Prt( player, Messages.GetString( "IncompleteArea" ), programCode );
             while( rs.next() ) {
-                int RemainingPoints = AreaCount( rs.getString( "AreaCode" ) );
-                if ( RemainingPoints > 0 ) {
+                int[] remainings = AreaCount( rs.getString( "AreaCode" ) );
+                if ( remainings[0] > 0 ) {
                     AC++;
-                    if ( Output ) Tools.Prt( player, rs.getString( "AreaCode" ) + " [" + RemainingPoints + " Point]", programCode );
+                    if ( Output ) Tools.Prt( player, rs.getString( "AreaCode" ) +
+                            " " + remainings[1] + " Blocks " +
+                            " [" + remainings[0] + " Point]", programCode );
                 }
             }
             con.close();
             Tools.Prt( "Area Regist Count : " + AC, Tools.consoleMode.full, programCode );
+            if ( AC == 0 ) {
+                Tools.Prt( player, Messages.GetString( "noIncomplete" ), programCode );
+            }
             return AC;
         } catch ( SQLException e ) {
             Tools.Prt( ChatColor.RED + "Error GetRegist : " + e.getMessage(), programCode );

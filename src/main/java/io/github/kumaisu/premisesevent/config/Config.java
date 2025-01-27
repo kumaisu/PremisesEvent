@@ -70,6 +70,7 @@ public class Config {
     public static List< String > bc_command;
     public static List< String > stones;
     public static List< String > ignoreStone;
+    public static List< String > reportStone;
     public static boolean OnDynmap;
     public static boolean MarkReleaseBlock;
     public static boolean SignPlace;
